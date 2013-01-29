@@ -7,6 +7,8 @@
 	<span><a class="filter" data-filter="promoted" href="javascript:void(0)">Editor's Pick</a></span>
 	<span><a class="filter" data-filter="popular" href="javascript:void(0)">Popular</a></span>
 	<span><a class="filter" data-filter="global" href="javascript:void(0)">All</a></span>
+	<span><a class="autoplay" onclick="autoplay=(autoplay)?0:1" href="javascript:void(0)">toggle_autoplay</a></span>
+	<div id="results"></div>
 	<div id="content"></div>
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.3/underscore-min.js"></script>
@@ -16,20 +18,24 @@
 var len = d.length;
 for(var i=0;i<len;i++){
 	var dd=d[i];
+	var auto = (autoplay)? 'autoplay':'';
+	
 	%>
 	<div class="iso-box" >
-		<video src="<%= dd.videoLowURL %>"></video>
+		<video controls loop <%= auto %> src="<%= dd.videoLowURL %>"></video>
 		<div class="desc"><div><img src="<%= dd.avatarUrl %>"/></div><span ><%= dd.description%></span></div>
 		</div>
 		<% } %>
 	
 </script>
 <script type="text/javascript">
+var autoplay = false;
 var box_tmpl = $('#box').html();
 function filterVine(page){
 	$.get('?filter='+page,function(data){
 		// todo:  count all tags and  make some filters from a template
 		$('#content').html('');
+		$('#results').text('Results: '+data.data.count);
 		var newItems=$($.trim(_.template(box_tmpl,{d:data.data.records})));
 		$('#content').append(newItems).isotope('appended',newItems,function(){
 				$('#content').isotope('reLayout');
@@ -40,6 +46,7 @@ function searchVine(tag,relayout){
 	$.get('/?q='+tag,function(data){
 		// todo:  count all tags and  make some filters from a template
 		$('#content').html('');
+		$('#results').text('Results: '+data.data.count);
 			var newItems=$($.trim(_.template(box_tmpl,{d:data.data.records})));
 			$('#content').append(newItems).isotope('appended',newItems,function(){
 				$('#content').isotope('reLayout');
