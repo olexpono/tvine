@@ -1,0 +1,60 @@
+<html>
+<head>
+<link rel="stylesheet" href="/css/style.css" />
+<head>
+<body>
+	<input id="search" type="text" placeholder="search tag"/>
+	<div id="content"></div>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.3/underscore-min.js"></script>
+<script src="/isotope-min.js"></script>
+<script id="box" type="text/template">
+<%
+var len = d.length;
+for(var i=0;i<len;i++){
+	var dd=d[i];
+	%>
+	<div class="iso-box" >
+	
+		<video src="<%= dd.videoUrl %>"></video>
+		<div class="desc"><div><img src="<%= dd.avatarUrl %>"/></div><span ><%= dd.description%></span></div>
+		</div>
+		<% } %>
+	
+</script>
+<script type="text/javascript">
+var box_tmpl = $('#box').html();
+function searchVine(tag,relayout){
+	$.get('/?q='+tag,function(data){
+		// todo:  count all tags and  make some filters from a template
+		$('#content').html('');
+			var newItems=$($.trim(_.template(box_tmpl,{d:data.data.records})));
+			$('#content').append(newItems).isotope('appended',newItems,function(){
+				$('#content').isotope('reLayout');
+		})
+	});
+}
+
+$(document).ready(function(){
+      $('#content').isotope({
+        itemSelector : '.iso-box',
+       	layoutMode:'fitRows'
+      });
+    
+	searchVine('nyc&p=3');
+	$('#search').on('keyup',function(e){
+		if(e.keyCode==13){
+			var query = $(this).val();
+			if(query){
+				
+				searchVine(query);	
+			}
+
+		}
+	})
+});
+
+</script>
+
+<body>
+<html>
