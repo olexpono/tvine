@@ -9,13 +9,19 @@ var fs = require('fs');
 var wl = ['/isotope-min.js','/test.html','/css/style.css'];
 //https://api.vineapp.com/users/profiles/906345798374133760
 ///timelines/tags/nyc?page=2&size=20&anchor=(null)
+
+// /timelines/global
+// /timelines/popular
+// /timelines/promoted
 function vineSnarf(query,page,method,cb){
   page_str = (page)? '?page='+page+'&size=20&anchor=(null)' : '';
+  filter = (query.length>1) ? method+query+page_str:method;
+  console.log(filter);
   https.get({
     host: 'api.vineapp.com',
-    path: method+query+page_str,
+    path: filter,
     headers: {
-      'vine-session-id': '906281047212298240-0f7e49ba-4f9c-492e-b63b-7f4939149fe1'
+      'vine-session-id': '906281047212298240-3c6bc1dd-7517-42a5-85c2-75a79e804d9b'
     }
   }, function(res) {
       var str='';
@@ -49,7 +55,7 @@ http.createServer(function(req,res){
   });
   }else{
     var param = url.parse(req.url,true).query;
-    var query = (param.q) ? param.q:'lol';
+    var query = param.q;
    
     //params.p is injectable here.  probably not the best
     var page = (param.p)? param.p:false;
@@ -59,9 +65,15 @@ http.createServer(function(req,res){
         res.end(result);//return
       });
     }else{
-      res.end('user fail');//return
+      var filter = 
+      filter = (param.filter) ? param.filter:'global';
+      filter  = '/timelines/'+filter;
+      res.writeHead(200,{'Content-Type': 'application/json'});
+      vineSnarf('' , '', filter,function(result){
+        res.end(result);//return
+      });
     }
   }
-}).listen(8888,'localhost');
+}).listen(80,'0.0.0.0');
 
 
