@@ -11,7 +11,8 @@
   "devDependencies": {
     "grunt": "0.3.x",
     "grunt-jstemplater": "0.1.x",
-    "grunt-contrib-less": "0.3.x"
+    "grunt-contrib-less": "0.3.x",
+    "grunt-forever": "0.2.x"
   },
   "engines": {
     "node": "0.8.x"
