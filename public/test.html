@@ -44,7 +44,7 @@ for(var i=0;i<len;i++){
 var autoplay = false;
 var box_tmpl = $('#box').html();
 function filterVine(page){
-	$.get('?filter='+page,function(data){
+	$.get('/filter/' + page,function(data){
 		// todo:  count all tags and  make some filters from a template
 		$('#content').html('');
 		$('#results').text('Results: '+data.data.count);
@@ -55,7 +55,7 @@ function filterVine(page){
 	});
 }
 function searchVine(tag,relayout){
-	$.get('/?q='+tag,function(data){
+	$.get('/query/' + tag,function(data){
 		// todo:  count all tags and  make some filters from a template
 		$('#content').html('');
 		$('#results').text('Results: '+data.data.count);

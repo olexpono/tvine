@@ -1,21 +1,25 @@
 var http = require('http');
 var https = require('https');
 var url = require('url');
-var fs = require('fs');
 //we'll want to cache things for sure.
 //var redis = require('redis');
 
-//whitelist for fileserving
-var wl = ['/js/isotope-min.js','/test.html','/css/style.css'];
+var express = require('express');
+
+var app = express();
+
+// TODO - delete
+// whitelist for fileserving
+// var wl = ['/js/isotope-min.js','/test.html','/css/style.css'];
 //https://api.vineapp.com/users/profiles/906345798374133760
 ///timelines/tags/nyc?page=2&size=20&anchor=(null)
 
 // /timelines/global
 // /timelines/popular
 // /timelines/promoted
-function vineSnarf(query,page,method,cb){
+function vineSnarf(query,page,method,callback){
   page_str = (page)? '?page='+page+'&size=20&anchor=(null)' : '';
-  filter = (query.length>1) ? method+query+page_str:method;
+  filter = (query.length>1) ? method+query+page_str : method;
   console.log(filter);
   https.get({
     host: 'api.vineapp.com',
@@ -30,7 +34,7 @@ function vineSnarf(query,page,method,cb){
         str+=chunk;
       });
       res.on('end', function() {
-        cb(str);
+        callback(str);
       });
   });
 }
@@ -40,39 +44,27 @@ function vineSnarf(query,page,method,cb){
   page two      :  /?q=nyc&p=2
  */
 
-http.createServer(function(req,res){
-  //todo: if file exists
-  if (req.url == wl[0] || req.url == wl[1] || req.url == wl[2]) {
-    fs.readFile(__dirname + "/public" + req.url, function (err,data) {
-      if (err) {
-        res.writeHead(404);
-        res.end(JSON.stringify(err));
-        return;
-      }
-      res.writeHead(200);
-      res.end(data);
-      return;
-    });
-  } else {
-    var param = url.parse(req.url,true).query;
-    var query = param.q;
+app.get("/query/:query", function (req, res) {
+  var page = req.query.p || "1";
+  var query = req.params.query;
 
-    //params.p is injectable here.  probably not the best
-    var page = (param.p) ? param.p : false;
-    if (typeof query != 'undefined') {
-      res.writeHead(200,{'Content-Type': 'application/json'});
-      vineSnarf(query , page,'/timelines/tags/',function(result){
-        res.end(result);//return
-      });
-    } else {
-      var filter = (param.filter) ? param.filter:'global';
-      filter  = '/timelines/'+filter;
-      res.writeHead(200,{'Content-Type': 'application/json'});
-      vineSnarf('' , '', filter,function(result){
-        res.end(result);//return
-      });
-    }
-  }
-}).listen(2,'0.0.0.0');
+  res.writeHead(200,{'Content-Type': 'application/json'});
+  vineSnarf(query , page,'/timelines/tags/',function(result){
+    res.end(result);//return
+  });
+});
 
+app.get("/filter/:filter", function (req, res) {
+  var filter = (req.params.filter) ? req.params.filter : 'global';
+  filter  = '/timelines/' + filter;
 
+  res.writeHead(200,{'Content-Type': 'application/json'});
+  vineSnarf('' , '', filter,function(result){
+    res.end(result);//return
+  });
+});
+
+app.use(express.static(__dirname + '/public'));
+app.use("/", express.static(__dirname + '/public/index.html'));
+
+app.listen(3000);
