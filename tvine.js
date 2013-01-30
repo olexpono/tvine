@@ -40,10 +40,9 @@ function vineSnarf(query,page,method,callback){
 }
 
 /*
-  example query :  /?q=nyc  
-  page two      :  /?q=nyc&p=2
+  Examples:  /query/nyc
+  Page Two:  /query/nyc&p=2
  */
-
 app.get("/query/:query", function (req, res) {
   var page = req.query.p || "1";
   var query = req.params.query;
@@ -54,6 +53,11 @@ app.get("/query/:query", function (req, res) {
   });
 });
 
+/*
+ * Examples:  /filter/global
+ * Picks   :  /filter/promoted
+ * Popular :  /filter/popular
+ */
 app.get("/filter/:filter", function (req, res) {
   var filter = (req.params.filter) ? req.params.filter : 'global';
   filter  = '/timelines/' + filter;
