@@ -24,7 +24,7 @@ module.exports = function(grunt) {
       },
       nodeapp: {
         files: "tvine.js",
-        tasks: [ "forever:restart" ],
+        tasks: [ "forever:stop", "forever:start" ],
         options: {
           interrupt: true
         }
@@ -58,6 +58,9 @@ module.exports = function(grunt) {
 
   grunt.registerTask("build", ["less", "template"]);
 
-  grunt.registerTask("run", ["forever:start", "watch"]);
+  grunt.registerTask("run",
+    [ "forever:stop",
+      "forever:start",
+      "watch"]);
   grunt.registerTask("default", "run");
 };
