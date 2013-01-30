@@ -6,7 +6,7 @@ var fs = require('fs');
 //var redis = require('redis');
 
 //whitelist for fileserving
-var wl = ['/isotope-min.js','/test.html','/css/style.css'];
+var wl = ['/js/isotope-min.js','/test.html','/css/style.css'];
 //https://api.vineapp.com/users/profiles/906345798374133760
 ///timelines/tags/nyc?page=2&size=20&anchor=(null)
 
@@ -42,31 +42,30 @@ function vineSnarf(query,page,method,cb){
 
 http.createServer(function(req,res){
   //todo: if file exists
-  if(req.url == wl[0] || req.url == wl[1] || req.url == wl[2]){
-        fs.readFile(__dirname + req.url, function (err,data) {
-    if (err) {
-      res.writeHead(404);
-      res.end(JSON.stringify(err));
+  if (req.url == wl[0] || req.url == wl[1] || req.url == wl[2]) {
+    fs.readFile(__dirname + "/public" + req.url, function (err,data) {
+      if (err) {
+        res.writeHead(404);
+        res.end(JSON.stringify(err));
+        return;
+      }
+      res.writeHead(200);
+      res.end(data);
       return;
-    }
-    res.writeHead(200);
-    res.end(data);
-    return;
-  });
-  }else{
+    });
+  } else {
     var param = url.parse(req.url,true).query;
     var query = param.q;
-   
+
     //params.p is injectable here.  probably not the best
-    var page = (param.p)? param.p:false;
-    if(typeof query != 'undefined'){
+    var page = (param.p) ? param.p : false;
+    if (typeof query != 'undefined') {
       res.writeHead(200,{'Content-Type': 'application/json'});
       vineSnarf(query , page,'/timelines/tags/',function(result){
         res.end(result);//return
       });
-    }else{
-      var filter = 
-      filter = (param.filter) ? param.filter:'global';
+    } else {
+      var filter = (param.filter) ? param.filter:'global';
       filter  = '/timelines/'+filter;
       res.writeHead(200,{'Content-Type': 'application/json'});
       vineSnarf('' , '', filter,function(result){

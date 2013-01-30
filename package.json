@@ -1,0 +1,16 @@
+{
+  "name": "tvine",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "start": node
+  },
+  "devDependencies": {
+    "grunt": "0.3.x",
+    "grunt-jstemplater": "0.1.x",
+    "grunt-contrib-less": "0.3.x"
+  },
+  "engines": {
+    "node": "0.8.x"
+  }
+}
