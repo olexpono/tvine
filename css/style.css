@@ -1,13 +1,22 @@
 .iso-box {
   height:480px;
+
   width:480px;
+}
+video{
+padding:5px;
 }
 .iso-box .desc{
   display:none;
   z-index: 3;
-  color: rgb(255, 0, 0);
+  color: #007f5b;
   bottom: 65px;
   position: absolute;
+  background-color: rgba(93%,93%,93%,.7);        
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+
 }
 .iso-box:hover .desc{
   display:block;
