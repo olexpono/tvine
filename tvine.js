@@ -69,6 +69,8 @@ app.get("/filter/:filter", function (req, res) {
 });
 
 app.use(express.static(__dirname + '/public'));
-app.use("/", express.static(__dirname + '/public/index.html'));
+app.get("/", function(req, res) {
+  res.sendfile(__dirname + "/public/index.html");
+});
 
 app.listen(3000);
