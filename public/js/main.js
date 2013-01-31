@@ -85,26 +85,6 @@ $.TVine = {
       }
     );
   },
-  /* circular list */
-  getNextVideo: function(){
-    this.current_idx = (this.current_idx+1) % this.playlist.length;
-    return this.playlist[this.current_idx];
-  },
-  /* circular list */
-  getPreviousVideo: function(){
-    this.current_idx = Math.abs((this.current_idx-1) % this.playlist.length);
-    return this.playlist[this.current_idx];
-  },
-  interleaveVideoLists: function(){
-    var that = this;
-     for(var i =0;i<this.total_videos;i++){
-      var current = this.tagDataList[ i % this.tagDataList.length ];
-      this.playlist.push(  current.shift()  )
-      if(current.length==0){
-        this.tagDataList.splice(i%this.tagDataList.length,1);
-      }
-     }
-  },
   /* Utility used by refreshFeed, careful using this directly */
   addTag: function(tag, data) {
     this.previousTags.push(tag);
@@ -118,6 +98,29 @@ $.TVine = {
                function(prevtag) { return prevtag != tag; });
     $(".tags [data-hashtag='" + tag + "']").parent().remove();
     /* TODO -- update video pool on hashtag deletion */
+  },
+
+  /* circular list */
+  getNextVideo: function(){
+    this.current_idx = (this.current_idx+1) % this.playlist.length;
+    return this.playlist[this.current_idx];
+  },
+
+  /* circular list */
+  getPreviousVideo: function(){
+    this.current_idx = Math.abs((this.current_idx-1) % this.playlist.length);
+    return this.playlist[this.current_idx];
+  },
+
+  interleaveVideoLists: function(){
+    var that = this;
+     for(var i =0;i<this.total_videos;i++){
+      var current = this.tagDataList[ i % this.tagDataList.length ];
+      this.playlist.push(  current.shift()  )
+      if(current.length==0){
+        this.tagDataList.splice(i%this.tagDataList.length,1);
+      }
+     }
   },
 
   receiveVideos: function(data) {
