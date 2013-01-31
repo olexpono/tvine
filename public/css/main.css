@@ -1,0 +1,234 @@
+/* ==========================================================================
+   HTML5 Boilerplate styles - h5bp.com (generated via initializr.com)
+   ========================================================================== */
+html,
+button,
+input,
+select,
+textarea {
+  color: #222;
+}
+body {
+  font-size: 1em;
+  line-height: 1.4;
+}
+::-moz-selection {
+  background: #b3d4fc;
+  text-shadow: none;
+}
+::selection {
+  background: #b3d4fc;
+  text-shadow: none;
+}
+hr {
+  display: block;
+  height: 1px;
+  border: 0;
+  border-top: 1px solid #ccc;
+  margin: 1em 0;
+  padding: 0;
+}
+img {
+  vertical-align: middle;
+}
+fieldset {
+  border: 0;
+  margin: 0;
+  padding: 0;
+}
+textarea {
+  resize: vertical;
+}
+.chromeframe {
+  margin: 0.2em 0;
+  background: #ccc;
+  color: #000;
+  padding: 0.2em 0;
+}
+html,
+body {
+  height: 100%;
+}
+body {
+  font-family: "Roboto", "Avenir Next", "Museo Sans";
+  font-weight: 400;
+  background: black;
+  color: white;
+}
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  position: relative;
+}
+.video-box {
+  position: absolute;
+  box-sizing: border-box;
+  padding-bottom: 100%;
+  width: 100%;
+}
+.logo {
+  padding: 4px 6px;
+  color: white;
+  background: red;
+  position: absolute;
+  top: 16px;
+  right: 20px;
+  box-shadow: 0 0 1px black;
+  z-index: 1337;
+  font-weight: 400;
+}
+.logo h1 {
+  font-size: 16px;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
+}
+.logo span {
+  font-size: 13px;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+#curvideo {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: #333;
+}
+#curvideo video {
+  width: 800px;
+}
+.tag-input {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  display: block;
+  width: 80px;
+  padding: 10px 18px;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: white;
+  margin: 0 0 0 auto;
+  font-size: 40px;
+  font-weight: 100;
+  font-family: "Roboto";
+  -webkit-transition: width 0.1s ease;
+  -webkit-transition-delay: 0s !important;
+}
+.tags {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 100%;
+  font-size: 16px;
+  color: white;
+  display: block;
+  text-align: right;
+}
+.tags li {
+  display: block;
+  overflow: hidden;
+}
+.tags:hover .tag {
+  letter-spacing: 0;
+  padding: 9px 34px 9px 14px;
+}
+.tags:hover .tag > * {
+  opacity: 1;
+}
+.tags:hover .tag > a {
+  -webkit-transition: opacity 0.75s linear;
+}
+.tags .tag {
+  position: relative;
+  display: inline-block;
+  color: white;
+  padding: 9px 0 9px 0;
+  min-width: 2%;
+  font-size: 13.5px;
+  font-weight: 600;
+  letter-spacing: -6px;
+  -webkit-transition: padding 0.3s linear, letter-spacing 0.3s ease, background 0.5s ease, color 0.5s ease;
+}
+.tags .tag > * {
+  opacity: 0;
+}
+.tags .tag > span {
+  -webkit-transition: opacity 0.6s ease;
+}
+.tags .tag > a {
+  -webkit-transition: opacity 0.1s ease;
+}
+.tags .tag .close {
+  position: absolute;
+  right: 0;
+  top: 0;
+  padding: 7px 10px 6px;
+  font-size: 24px;
+  font-weight: 400;
+  line-height: 24px;
+  background: none;
+  color: inherit;
+  text-decoration: none;
+}
+.tags > :nth-child(7n+1) .tag,
+.tags > .tag-input:nth-child(7n+1) {
+  background: red;
+}
+.tags > :nth-child(7n+2) .tag,
+.tags > .tag-input:nth-child(7n+2) {
+  background: green;
+  -webkit-transition-delay: 0.1s;
+}
+.tags > :nth-child(7n+3) .tag,
+.tags > .tag-input:nth-child(7n+3) {
+  background: blue;
+  -webkit-transition-delay: 0.2s;
+}
+.tags > :nth-child(7n+4) .tag,
+.tags > .tag-input:nth-child(7n+4) {
+  background: yellow;
+  color: black;
+  -webkit-transition-delay: 0.3s;
+}
+.tags > :nth-child(7n+5) .tag,
+.tags > .tag-input:nth-child(7n+5) {
+  background: cyan;
+  color: black;
+  -webkit-transition-delay: 0.4s;
+}
+.tags > :nth-child(7n+6) .tag,
+.tags > .tag-input:nth-child(7n+6) {
+  background: gray;
+  -webkit-transition-delay: 0.5s;
+}
+.tags > :nth-child(7n+7) .tag,
+.tags > .tag-input:nth-child(7n+7) {
+  background: #FF00FF;
+  -webkit-transition-delay: 0.6s;
+}
+.overlay:before {
+  position: absolute;
+  content: '';
+  top: auto;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 10px;
+  /* .stripe-background */
+
+}
+.stripe-background {
+  background: -webkit-linear-gradient(left, #f2f2f2 0%, #f2f2f2 14.3%, #ffff00 14.3%, #ffff00 28.6%, #00ffff 28.6%, #00ffff 42.9%, #00ff00 42.9%, #00ff00 57.3%, #ff00ff 57.3%, #ff00ff 71.7%, #ff0000 71.6%, #ff0000 84.9%, #0000ff 84.9%, #0000ff);
+  /* Chrome10+,Safari5.1+ */
+
+  background: -o-linear-gradient(left, #f2f2f2 0%, #f2f2f2 14.3%, #ffff00 14.3%, #ffff00 28.6%, #00ffff 28.6%, #00ffff 42.9%, #00ff00 42.9%, #00ff00 57.3%, #ff00ff 57.3%, #ff00ff 71.7%, #ff0000 71.6%, #ff0000 84.9%, #0000ff 84.9%, #0000ff);
+  /* Opera 11.10+ */
+
+  background: -ms-linear-gradient(left, #f2f2f2 0%, #f2f2f2 14.3%, #ffff00 14.3%, #ffff00 28.6%, #00ffff 28.6%, #00ffff 42.9%, #00ff00 42.9%, #00ff00 57.3%, #ff00ff 57.3%, #ff00ff 71.7%, #ff0000 71.6%, #ff0000 84.9%, #0000ff 84.9%, #0000ff);
+  /* IE10+ */
+
+  background: linear-gradient(to right, #f2f2f2 0%, #f2f2f2 14.3%, #ffff00 14.3%, #ffff00 28.6%, #00ffff 28.6%, #00ffff 42.9%, #00ff00 42.9%, #00ff00 57.3%, #ff00ff 57.3%, #ff00ff 71.7%, #ff0000 71.7%, #ff0000 84.9%, #0000ff 84.9%, #0000ff);
+  /* W3C */
+
+}

@@ -48,6 +48,13 @@ $.TVine = {
     var tag_info = { tag: val, count: count };
     var rendered = $(Mustache.to_html(TMPL.tag, tag_info));
     rendered.insertBefore($(".tags > *:last-child"));
+    rendered.find(".close").click(function() {
+      $.TVine.currentTags = _.filter(
+        $.TVine.currentTags,
+        function(tag) { return tag != tag_info.tag; }
+      );
+      $.TVine.navigateToCurrentTags();
+    });
   },
 
   /* Refreshes currentTags -> feed
@@ -127,9 +134,8 @@ $.TVine = {
         this.playlist.push(current.shift())
         if(current.length==0){
           this.tagDataList.splice( i % this.tagDataList.length,1);
-        }  
+        }
       }
-      
      }
   },
 
@@ -141,28 +147,33 @@ $.TVine = {
     /* TODO -- update video pool on new hashtag videos */
   },
 
+  /* Update currentTags from a listener, then call this to navigate. */
+  navigateToCurrentTags: function() {
+    window.location.hash = this.currentTags.join("+");
+  },
+
   setupListeners: function() {
     $(".tag-input").keyup(function(e) {
       if( $(".tag-input:focus") && e.keyCode == 13) {
         if ($.TVine.currentTags.indexOf($(".tag-input").val()) >= 0) {
-          console.log("tag already exists");
         } else {
-          $.TVine.currentTags.push($(".tag-input").val());
-          // Navigate to sorted currentTags instead.
-          window.location.hash = $.TVine.currentTags.join("+");
+          var sanitized = $(".tag-input").val().replace(/![a-zA-Z0-9]/gi,"");
+          $.TVine.currentTags.push(sanitized);
+          $.TVine.navigateToCurrentTags();
         }
         $(".tag-input").val("");
       }
     });
+
     this.video_ref = _V_('current_video').ready(function(){
       //dont feel like hearing this while testing
       this.play();
       this.addEvent('ended',function(){
         $.TVine.loadNextVideo();
       })
-  });
+    });
   }
-}
+} /* END TVine */
 
 
 $(function() {
