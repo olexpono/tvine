@@ -48,6 +48,13 @@ $.TVine = {
     var tag_info = { tag: val, count: count };
     var rendered = $(Mustache.to_html(TMPL.tag, tag_info));
     rendered.insertBefore($(".tags > *:last-child"));
+    rendered.find(".close").click(function() {
+      $.TVine.currentTags = _.filter(
+        $.TVine.currentTags,
+        function(tag) { return tag != tag_info.tag; }
+      );
+      $.TVine.navigateToCurrentTags();
+    });
   },
 
   /* Refreshes currentTags -> feed
@@ -90,13 +97,6 @@ $.TVine = {
     this.previousTags.push(tag);
     this.receiveVideos(data);
     this.renderNewTag(tag, data.data.count);
-    rendered.find(".close").click(function() {
-      $.TVine.currentTags = _.filter(
-        $.TVine.currentTags,
-        function(tag) { return tag != tag_info.tag; }
-      );
-      $.TVine.navigateToCurrentTags();
-    });
   },
   /* Utility used by refreshFeed, careful using this directly */
   removeTag: function(tag) {
