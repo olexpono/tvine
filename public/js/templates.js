@@ -1,1 +1,1 @@
-var TMPL = {"test":"Hello {{bob}}! "};
+var TMPL = {"test":"Hello {{bob}}! ","tag":"<li><a rel=\"tag\" data-hashtag=\"{{tag}}\" data-count=\"{{count}}\" href=\"javascript:void(0);\">{{tag}}</a></li> "};
