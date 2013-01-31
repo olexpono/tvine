@@ -1,8 +1,17 @@
+//if on the second to last item call ajax again.
+//attribution
+//jarrod:  handle ajax logic//preload based on 
+
+//ui/navigation
+
 $.TVine = {
   init: function() {
-    this.currentTags = [];
+    this.currentTags  = [];
     this.previousTags = [];
-
+    this.playlist     = [];
+    this.tagDataList  = [];
+    this.total_videos = 0;
+    this.current_idx  = 0;
     this.setupRoutes();
     this.setupListeners();
   },
@@ -39,6 +48,7 @@ $.TVine = {
    * Fetches data + renders new tags
    * Updates previousTags to currentTags */
   refreshFeed: function() {
+    this.total_videos=0;
     console.log("Refreshing feed.");
     var newTags =
       _.filter(this.currentTags,
@@ -63,7 +73,26 @@ $.TVine = {
       }
     );
   },
-
+  /* circular list */
+  getNextVideo: function(){
+    this.current_idx = (this.current_idx+1) % this.playlist.length;
+    return this.playlist[this.current_idx];
+  },
+  /* circular list */
+  getPreviousVideo: function(){
+    this.current_idx = Math.abs((this.current_idx-1) % this.playlist.length);
+    return this.playlist[this.current_idx];
+  },
+  interleaveVideoLists: function(){
+    var that = this;
+     for(var i =0;i<this.total_videos;i++){
+      var current = this.tagDataList[ i % this.tagDataList.length ];
+      this.playlist.push(  current.shift()  )
+      if(current.length==0){
+        this.tagDataList.splice(i%this.tagDataList.length,1);
+      }
+     }
+  },
   /* Utility used by refreshFeed, careful using this directly */
   addTag: function(tag, data) {
     this.previousTags.push(tag);
@@ -80,7 +109,10 @@ $.TVine = {
   },
 
   receiveVideos: function(data) {
-    console.log(data);
+    this.total_videos += data.data.records.length;
+    if(data.data.records.length>1){
+      this.tagDataList.push(data.data.records);  
+    }
     /* TODO -- update video pool on new hashtag videos */
   },
 
