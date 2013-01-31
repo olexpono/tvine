@@ -116,11 +116,7 @@ $.TVine = {
 
   loadNextVideo: function(){
     this.video_ref.src(this.getNextVideo().videoLowURL);
-    this.video_ref.volume(0);
     this.video_ref.play();
-    this.video_ref.addEvent('ended',function(){
-        this.loadNextVideo();
-    })
   },
 
   interleaveVideos: function(){
@@ -160,7 +156,6 @@ $.TVine = {
     });
     this.video_ref = _V_('current_video').ready(function(){
       //dont feel like hearing this while testing
-      this.volume(0);
       this.play();
       this.addEvent('ended',function(){
         $.TVine.loadNextVideo();
