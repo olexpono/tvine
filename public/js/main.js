@@ -8,6 +8,10 @@ $.TVine = {
   },
 
   setupRoutes: function() {
+    /* TODO Add route for filters?
+     * Or should we interweave them with tags?
+     * i.e. #/magic+_popular
+     */
     crossroads.addRoute(
       "/{tagstring}",
       function(tagstring) {
