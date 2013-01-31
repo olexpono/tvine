@@ -37,8 +37,11 @@ $.TVine = {
     var tag_info = { tag: val, count: count };
     var rendered = $(Mustache.to_html(TMPL.tag, tag_info));
     rendered.find(".close").click(function() {
-      $.TVine.currentTags = _.filter($.TVine.currentTags,
-        function(tag) { return tag != tag_info.tag; });
+      // Remove tag from currentTags & Navigate
+      $.TVine.currentTags = _.filter(
+        $.TVine.currentTags,
+        function(tag) { return tag != tag_info.tag; }
+      );
       $.TVine.navigateToCurrentTags();
     });
     rendered.insertBefore($(".tags > *:last-child"));
