@@ -10,9 +10,9 @@ $.TVine = {
     this.previousTags = [];
     this.playlist     = [];
     this.tagDataList  = [];
-    this.total_videos = 0;
-    this.current_idx  = 0;
-
+    this.totalVideos = 0;
+    this.currentIdx  = 0;
+    this.videoRef    = {};
     this.setupRoutes();
     this.setupListeners();
     $(".tag-input").autoGrowInput({
@@ -23,10 +23,6 @@ $.TVine = {
   },
 
   setupRoutes: function() {
-    /* TODO Add route for filters?
-     * Or should we interweave them with tags?
-     * i.e. #/magic+_popular
-     */
     crossroads.addRoute(
       "/{tagstring}",
       function(tagstring) {
@@ -51,14 +47,6 @@ $.TVine = {
   renderNewTag: function(val, count) {
     var tag_info = { tag: val, count: count };
     var rendered = $(Mustache.to_html(TMPL.tag, tag_info));
-    rendered.find(".close").click(function() {
-      // Remove tag from currentTags & Navigate
-      $.TVine.currentTags = _.filter(
-        $.TVine.currentTags,
-        function(tag) { return tag != tag_info.tag; }
-      );
-      $.TVine.navigateToCurrentTags();
-    });
     rendered.insertBefore($(".tags > *:last-child"));
   },
 
@@ -66,7 +54,7 @@ $.TVine = {
    * Fetches data + renders new tags
    * Updates previousTags to currentTags */
   refreshFeed: function() {
-    this.total_videos=0;
+    this.totalVideos=0;
     console.log("Refreshing feed.");
     var newTags =
       _.filter(this.currentTags,
@@ -77,11 +65,17 @@ $.TVine = {
       _.filter(this.previousTags,
                function(tag) { return $.TVine.currentTags.indexOf(tag) < 0; });
     console.log("removed tags: " + removedTags);
-
+    var end_of_array_check = newTags.length;
+    var count=0;
+    var that = this;
     _.each(newTags,
       function(tag) {
         $.get('/query/' + tag, function(data) {
           $.TVine.addTag(tag, data);
+          // re-interleave the videos each time you add a new tag.
+          that.playlist = [];
+          //we need to know when we're at the end of the list because $.get is async
+          that.interleaveVideos();
         });
       }
     );
@@ -108,37 +102,47 @@ $.TVine = {
 
   /* circular list */
   getNextVideo: function(){
-    this.current_idx = (this.current_idx+1) % this.playlist.length;
-    return this.playlist[this.current_idx];
+    this.currentIdx = (this.currentIdx+1) % this.playlist.length;
+    return this.playlist[this.currentIdx];
+    //load into view
   },
 
   /* circular list */
   getPreviousVideo: function(){
-    this.current_idx = Math.abs((this.current_idx-1) % this.playlist.length);
-    return this.playlist[this.current_idx];
+    this.currentIdx = Math.abs((this.currentIdx-1) % this.playlist.length);
+    return this.playlist[this.currentIdx];
+    //load into view
   },
 
-  interleaveVideoLists: function(){
+  loadNextVideo: function(){
+    this.video_ref.src(this.getNextVideo().videoLowURL);
+    this.video_ref.volume(0);
+    this.video_ref.play();
+    this.video_ref.addEvent('ended',function(){
+        this.loadNextVideo();
+    })
+  },
+
+  interleaveVideos: function(){
     var that = this;
-     for(var i =0;i<this.total_videos;i++){
+     for(var i=0;i < this.totalVideos; i++){
       var current = this.tagDataList[ i % this.tagDataList.length ];
-      this.playlist.push(  current.shift()  )
-      if(current.length==0){
-        this.tagDataList.splice(i%this.tagDataList.length,1);
+      if(current){
+        this.playlist.push(current.shift())
+        if(current.length==0){
+          this.tagDataList.splice( i % this.tagDataList.length,1);
+        }  
       }
+      
      }
   },
 
   receiveVideos: function(data) {
-    this.total_videos += data.data.records.length;
+    this.totalVideos += data.data.records.length;
     if(data.data.records.length>1){
       this.tagDataList.push(data.data.records);  
     }
     /* TODO -- update video pool on new hashtag videos */
-  },
-
-  navigateToCurrentTags: function() {
-    window.location.hash = this.currentTags.join("+");
   },
 
   setupListeners: function() {
@@ -149,11 +153,19 @@ $.TVine = {
         } else {
           $.TVine.currentTags.push($(".tag-input").val());
           // Navigate to sorted currentTags instead.
-          $.TVine.navigateToCurrentTags();
+          window.location.hash = $.TVine.currentTags.join("+");
         }
         $(".tag-input").val("");
       }
     });
+    this.video_ref = _V_('current_video').ready(function(){
+      //dont feel like hearing this while testing
+      this.volume(0);
+      this.play();
+      this.addEvent('ended',function(){
+        $.TVine.loadNextVideo();
+      })
+  });
   }
 }
 
@@ -170,4 +182,5 @@ $(function() {
   hasher.initialized.add(parseHash);
   hasher.changed.add(parseHash);
   hasher.init();
+
 });
