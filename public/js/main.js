@@ -12,8 +12,14 @@ $.TVine = {
     this.tagDataList  = [];
     this.total_videos = 0;
     this.current_idx  = 0;
+
     this.setupRoutes();
     this.setupListeners();
+    $(".tag-input").autoGrowInput({
+      maxWidth: 500,
+      minWidth: 70,
+      comfortZone: 50
+    });
   },
 
   setupRoutes: function() {
