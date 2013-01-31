@@ -145,10 +145,9 @@ $.TVine = {
     $(".tag-input").keyup(function(e) {
       if( $(".tag-input:focus") && e.keyCode == 13) {
         if ($.TVine.currentTags.indexOf($(".tag-input").val()) >= 0) {
-          console.log("tag already exists");
         } else {
-          $.TVine.currentTags.push($(".tag-input").val());
-          // Navigate to sorted currentTags instead.
+          var sanitized = $(".tag-input").val().replace(/![a-zA-Z0-9]/gi,"");
+          $.TVine.currentTags.push(sanitized);
           $.TVine.navigateToCurrentTags();
         }
         $(".tag-input").val("");
