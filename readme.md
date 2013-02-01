@@ -1,5 +1,15 @@
 TVine
 #####
 
-Work in progress.
-Made by @adkatrit, @haikoo, and @super_haik
+#Installation
+Clone it and run:
+
+    npm install
+
+#Dev Server
+
+    grunt
+
+#Deploy
+
+Made by @adkatrit, @tholex, and @super_haik
