@@ -174,6 +174,12 @@ $.TVine = {
     window.location.hash = this.currentTags.join("+");
   },
 
+  adjustOnResize: function() {
+    var heightOfVideoBox = Math.min($(".video-box").width(), window.innerHeight);
+    console.log("height of video-box :: " + heightOfVideoBox);
+    $(".video-box").css("padding-bottom", heightOfVideoBox);
+  },
+
   setupListeners: function() {
     $(".tag-input").keyup(function(e) {
       if( $(".tag-input:focus") && e.keyCode == 13) {
@@ -194,9 +200,9 @@ $.TVine = {
       })
     });
 
-    $(".video-box").css("padding-bottom", window.innerHeight);
+    this.adjustOnResize();
     $(window).resize(function() {
-      $(".video-box").css("padding-bottom", window.innerHeight);
+      $.TVine.adjustOnResize();
     });
     $(".tag-input").focus();
   }
