@@ -5,7 +5,7 @@ var url = require('url');
 var redis = require('redis');
 
 var redisServer   = process.env.REDIS_HOST || '127.0.0.1';
-var redisPassword = process.env.REDIS_PASS || 'nodejitsudb4622528573.redis.irstack.com:f327cfe980c971946e80b8e975fbebb4'
+var redisPassword = process.env.REDIS_PASS || 'nodejitsudb4622528573.redis.irstack.com:f327cfe980c971946e80b8e975fbebb4';
 var client = redis.createClient(null,redisServer);
 if(redisServer == 'nodejitsudb4622528573.redis.irstack.com'){
   client.auth(redisPassword);
