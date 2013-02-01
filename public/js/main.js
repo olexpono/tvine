@@ -9,9 +9,6 @@ $.TVine = {
     this.currentTags  = [];
     this.previousTags = [];
     this.playlist     = [];
-    this.totalVideos = 0;
-    this.currentIdx  = 0;
-    this.videoRef    = {};
     this.setupRoutes();
     this.setupListeners();
     $(".tag-input").autoGrowInput({
@@ -60,7 +57,6 @@ $.TVine = {
    * Fetches data + renders new tags
    * Updates previousTags to currentTags */
   refreshFeed: function() {
-    this.totalVideos=0;
     var newTags =
       _.filter(this.currentTags,
                function(tag) { return $.TVine.previousTags.indexOf(tag) < 0; });
@@ -162,12 +158,16 @@ $.TVine = {
     if (typeof this.tagData[tag] == "undefined") {
       return;
     }
-    this.playlist = _.filter(
-      this.playlist,
-      function(queued) {
-        return $.TVine.tagData[tag].indexOf(queued) < 0;
-      }
-    );
+    var currentVideo = $.TVine.playlist[0];
+    /* Currently playing video always preserved in case total videos goes to 0. */
+    this.playlist =
+      _.filter(
+        _.rest(this.playlist),
+        function(queued) {
+          return $.TVine.tagData[tag].indexOf(queued) < 0;
+        }
+      );
+    this.playlist.push(currentVideo);
   },
 
   /* Update currentTags from a listener, then call this to navigate. */
