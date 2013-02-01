@@ -134,7 +134,7 @@ $.TVine = {
      * the /2 plus the Math function should be removed */
     spacing = Math.floor(_.size(this.tagData) / 2);
     records = _.reduce(
-      records,
+      records, 
       function (paddedArray, record) {
         paddedArray.push(record);
         for (var i = 0; i < spacing; i++) {
@@ -152,7 +152,7 @@ $.TVine = {
         )
       );
   },
-
+  
   removeVideos: function(tag) {
     if (typeof this.tagData[tag] == "undefined") {
       return;
@@ -168,7 +168,13 @@ $.TVine = {
       );
     this.playlist.push(currentVideo);
   },
-
+  toggleMute: function(){
+      if(this.video_ref.volume()){
+        this.video_ref.volume(0);        
+      }else{
+        this.video_ref.volume(1);
+      }
+  },
   /* Update currentTags from a listener, then call this to navigate. */
   navigateToCurrentTags: function() {
     window.location.hash = this.currentTags.join("+");
@@ -199,7 +205,6 @@ $.TVine = {
         $.TVine.loadNextVideo();
       })
     });
-
     this.adjustOnResize();
     $(window).resize(function() {
       $.TVine.adjustOnResize();
@@ -214,6 +219,17 @@ $.TVine = {
       $("body").removeClass("idle");
       $(".tag-input").focus();
     });
+
+    /*click to pause/play*/
+    $('video').click(function(){
+      _V_('current_video').ready(function(){
+        if(this.paused()){
+          this.play();
+        }else{
+          this.pause();
+        }
+      });
+    })
   }
 } /* END TVine */
 

@@ -2,7 +2,15 @@ var http = require('http');
 var https = require('https');
 var url = require('url');
 //we'll want to cache things for sure.
-//var redis = require('redis');
+var redis = require('redis');
+
+var redisServer   = process.env.REDIS_HOST || '127.0.0.1';
+var redisPassword = process.env.REDIS_PASS || 'nodejitsudb4622528573.redis.irstack.com:f327cfe980c971946e80b8e975fbebb4'
+var client = redis.createClient(null,redisServer);
+if(redisServer == 'nodejitsudb4622528573.redis.irstack.com'){
+  client.auth(redisPassword);
+}
+
 
 var express = require('express');
 
@@ -20,22 +28,32 @@ var app = express();
 function vineSnarf(query,page,method,callback){
   page_str = (page)? '?page='+page+'&size=20&anchor=(null)' : '';
   filter = (query.length>1) ? method+query+page_str : method;
-  https.get({
-    host: 'api.vineapp.com',
-    path: filter,
-    headers: {
-      'vine-session-id': '906281047212298240-3c6bc1dd-7517-42a5-85c2-75a79e804d9b'
-    }
-  }, function(res) {
-      var str='';
-      res.setEncoding('utf8');
-      res.on('data', function(chunk) {
-        str+=chunk;
-      });
-      res.on('end', function() {
-        callback(str);
-      });
+  client.get(filter,function(err,result){
+      if(result){
+        callback(result);
+      }else{
+        https.get({
+          host: 'api.vineapp.com',
+          path: filter,
+          headers: {
+            'vine-session-id': '906281047212298240-3c6bc1dd-7517-42a5-85c2-75a79e804d9b'
+          }
+        }, function(res) {
+          var str='';
+          res.setEncoding('utf8');
+          res.on('data', function(chunk) {
+            str+=chunk;
+          });
+          res.on('end', function() {
+            client.set(filter,str);
+            client.expire(filter,12);
+            callback(str);
+          });
+        });
+
+      }
   });
+  
 }
 
 /*
