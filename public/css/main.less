@@ -16,12 +16,14 @@ body {
   max-width: 800px;
   margin: 0 auto;
   position: relative;
+  height: 100%;
 }
 .video-box {
   position: absolute;
   box-sizing: border-box;
   padding-bottom: 100%;
   width: 100%;
+  max-height: 100%;
 }
 
 .logo {
@@ -46,16 +48,22 @@ body {
   }
 }
 
-#curvideo {
+#current_video {
   position: absolute;
   top: 0;
   right: 0;
   bottom: 0;
   left:0;
-  background: #333;
+  height: 100% !important;
+  max-width: 100% !important;
+  width: auto !important;
 }
-#curvideo video{
-  width: 800px;
+#current_video video{
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 100%;
+  max-width: 100%;
 }
 
 .tag-input {
@@ -75,6 +83,15 @@ body {
   font-family: "Roboto";
   -webkit-transition: width 0.1s ease;
   -webkit-transition-delay: 0s !important;
+}
+.tag-input:after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: yellow;
 }
 
 .tags {
@@ -140,38 +157,38 @@ body {
     }
   }
   > :nth-child(7n+1) .tag,
-  > .tag-input:nth-child(7n+1) {
+  > .tag-input:nth-child(7n+1):after {
     background: red;
   }
   > :nth-child(7n+2) .tag,
-  > .tag-input:nth-child(7n+2) {
+  > .tag-input:nth-child(7n+2):after {
     background: green;
     -webkit-transition-delay: 0.1s;
   }
   > :nth-child(7n+3) .tag,
-  > .tag-input:nth-child(7n+3) {
+  > .tag-input:nth-child(7n+3):after {
     background: blue;
     -webkit-transition-delay: 0.2s;
   }
   > :nth-child(7n+4) .tag,
-  > .tag-input:nth-child(7n+4) {
+  > .tag-input:nth-child(7n+4):after {
     background: yellow;
     color: black;
     -webkit-transition-delay: 0.3s;
   }
   > :nth-child(7n+5) .tag,
-  > .tag-input:nth-child(7n+5) {
+  > .tag-input:nth-child(7n+5):after {
     background: cyan;
     color: black;
     -webkit-transition-delay: 0.4s;
   }
   > :nth-child(7n+6) .tag,
-  > .tag-input:nth-child(7n+6) {
+  > .tag-input:nth-child(7n+6):after {
     background: gray;
     -webkit-transition-delay: 0.5s;
   }
   > :nth-child(7n+7) .tag,
-  > .tag-input:nth-child(7n+7) {
+  > .tag-input:nth-child(7n+7):after {
     background: #FF00FF;
     -webkit-transition-delay: 0.6s;
   }

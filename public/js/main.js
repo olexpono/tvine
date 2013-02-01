@@ -133,7 +133,6 @@ $.TVine = {
     /* If all tags were the same page length, and we didn't want to stack more up closer
      * the /2 plus the Math function should be removed */
     spacing = Math.floor(_.size(this.tagData) / 2);
-    /* [4] */
     records = _.reduce(
       records, 
       function (paddedArray, record) {
@@ -181,6 +180,12 @@ $.TVine = {
     window.location.hash = this.currentTags.join("+");
   },
 
+  adjustOnResize: function() {
+    var heightOfVideoBox = Math.min($(".video-box").width(), window.innerHeight);
+    console.log("height of video-box :: " + heightOfVideoBox);
+    $(".video-box").css("padding-bottom", heightOfVideoBox);
+  },
+
   setupListeners: function() {
     $(".tag-input").keyup(function(e) {
       if( $(".tag-input:focus") && e.keyCode == 13) {
@@ -200,15 +205,11 @@ $.TVine = {
         $.TVine.loadNextVideo();
       })
     });
-    // $('video').click(function(){
-    //   _V_('current_video').ready(function(){
-    //     if(this.paused()){
-    //       this.play();
-    //     }else{
-    //       this.pause();
-    //     }
-    //   });
-    //})
+    this.adjustOnResize();
+    $(window).resize(function() {
+      $.TVine.adjustOnResize();
+    });
+    $(".tag-input").focus();
   }
 } /* END TVine */
 
