@@ -133,6 +133,9 @@ $.TVine = {
     /* Inject empty values into records to space them out,
      * then zip them with the current playlist.
      * more active tags => more empty values between each of the new videos */
+
+    /* If all tags were the same page length, and we didn't want to stack more up closer
+     * the /2 plus the Math function should be removed */
     spacing = Math.floor(_.size(this.tagData) / 2);
     /* [4] */
     records = _.reduce(
@@ -165,19 +168,6 @@ $.TVine = {
         return $.TVine.tagData[tag].indexOf(queued) < 0;
       }
     );
-  },
-
-  interleaveVideos: function(){
-    for(var i=0;i < this.totalVideos; i++){
-
-      var current = this.tagData[ i % this.tagDataList.length ];
-      if(current){
-        this.playlist.push(current.shift())
-        if(current.length == 0){
-          this.tagDataList.splice( i % this.tagDataList.length,1);
-        }
-      }
-    }
   },
 
   /* Update currentTags from a listener, then call this to navigate. */
