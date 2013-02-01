@@ -205,6 +205,15 @@ $.TVine = {
       $.TVine.adjustOnResize();
     });
     $(".tag-input").focus();
+
+    $(document).idleTimer(3500, {startImmediately: false});
+    $(document).on( "idle.idleTimer", function() {
+      $("body").addClass("idle");
+    });
+    $(document).on( "active.idleTimer", function() {
+      $("body").removeClass("idle");
+      $(".tag-input").focus();
+    });
   }
 } /* END TVine */
 
