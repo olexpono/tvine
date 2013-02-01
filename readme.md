@@ -12,4 +12,4 @@ Clone it and run:
 
 #Deploy
 
-Made by @adkatrit, @haikoo, and @super_haik
+Made by @adkatrit, @tholex, and @super_haik
