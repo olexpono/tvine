@@ -73,19 +73,19 @@ $.TVine = {
     console.log("removed tags: " + removedTags);
     var end_of_array_check = newTags.length;
     var count=0;
-    var that = this;
     _.each(newTags,
       function(tag) {
         $.get('/query/' + tag, function(data) {
           $.TVine.addTag(tag, data);
           // re-interleave the videos each time you add a new tag.
-          that.interleaveVideos();
+          $.TVine.interleaveVideos();
         });
       }
     );
     _.each(removedTags,
       function(tag) {
         $.TVine.removeTag(tag);
+        $.TVine.interleaveVideos();
       }
     );
   },
@@ -125,24 +125,23 @@ $.TVine = {
 
   interleaveVideos: function(){
     var that = this;
-     for(var i=0;i < this.totalVideos; i++){
+    for(var i=0;i < this.totalVideos; i++){
 
       var current = this.tagDataList[ i % this.tagDataList.length ];
       if(current){
         this.playlist.push(current.shift())
-        if(current.length==0){
+        if(current.length == 0){
           this.tagDataList.splice( i % this.tagDataList.length,1);
         }
       }
-     }
+    }
   },
 
   receiveVideos: function(data) {
     this.totalVideos += data.data.records.length;
-    if(data.data.records.length>1){
-      this.tagDataList.push(data.data.records);  
+    if (data.data.records.length > 1){
+      this.tagDataList.push(data.data.records);
     }
-    /* TODO -- update video pool on new hashtag videos */
   },
 
   /* Update currentTags from a listener, then call this to navigate. */
@@ -164,7 +163,6 @@ $.TVine = {
     });
 
     this.video_ref = _V_('current_video').ready(function(){
-      //dont feel like hearing this while testing
       this.play();
       this.addEvent('ended',function(){
         $.TVine.loadNextVideo();
