@@ -153,7 +153,7 @@ $.TVine = {
         )
       );
   },
-
+  
   removeVideos: function(tag) {
     if (typeof this.tagData[tag] == "undefined") {
       return;
@@ -169,7 +169,13 @@ $.TVine = {
       );
     this.playlist.push(currentVideo);
   },
-
+  toggleMute: function(){
+      if(this.video_ref.volume()){
+        this.video_ref.volume(0);        
+      }else{
+        this.video_ref.volume(1);
+      }
+  },
   /* Update currentTags from a listener, then call this to navigate. */
   navigateToCurrentTags: function() {
     window.location.hash = this.currentTags.join("+");
@@ -202,7 +208,7 @@ $.TVine = {
     //       this.pause();
     //     }
     //   });
-    })
+    //})
   }
 } /* END TVine */
 

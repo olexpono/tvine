@@ -46,8 +46,7 @@ function vineSnarf(query,page,method,callback){
           });
           res.on('end', function() {
             client.set(filter,str);
-            var fiveSecAhead = Math.floor(+(new Date()) / 1000) + 12;
-            client.expireat(filter,fiveSecAhead);
+            client.expire(filter,12);
             callback(str);
           });
         });
