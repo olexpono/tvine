@@ -211,21 +211,40 @@ $.TVine = {
     });
     $(".tag-input").focus();
 
+    /*click to pause/play*/
+    $('video').click(function(){
+      _V_('current_video').ready(function(){
+        if(this.paused()){
+          this.play();
+        }else{
+          this.pause();
+        }
+      });
+    })
+
     /* detect idle */
     var timer;
-    $(document).mousemove(function(){
-      if(timer){
-        clearTimeout(timer);
-        timer=0;
-        console.log('not idle');
-      }
-      /*code to fadein stuff*/
-      timer = setTimeout(function(){
+    $(document).mousemove(
+
+      _.throttle(function(){
+        if(timer){
+          clearTimeout(timer);
+          timer=0;
+           $('.tags').fadeIn();
+            $('.logo').animate({
+              opacity:1
+            }).css('background','red');
+        }
+        /*code to fadein stuff*/
+        timer = setTimeout(function(){
           /*code to fadeout stuff*/
-          console.log('idle');
-      },3000); 
-    });
-    
+          $('.tags').fadeOut('slow');
+          $('.logo').animate({
+            opacity:.2
+          }).css('background','#1d1d1d');
+        },3000); 
+      },250)
+    );
   }
 } /* END TVine */
 
