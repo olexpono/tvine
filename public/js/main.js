@@ -210,6 +210,22 @@ $.TVine = {
       $.TVine.adjustOnResize();
     });
     $(".tag-input").focus();
+
+    /* detect idle */
+    var timer;
+    $(document).mousemove(function(){
+      if(timer){
+        clearTimeout(timer);
+        timer=0;
+        console.log('not idle');
+      }
+      /*code to fadein stuff*/
+      timer = setTimeout(function(){
+          /*code to fadeout stuff*/
+          console.log('idle');
+      },3000); 
+    });
+    
   }
 } /* END TVine */
 
