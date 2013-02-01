@@ -1,8 +1,7 @@
-//if on the second to last item call ajax again.
-//attribution
-//jarrod:  handle ajax logic//preload based on 
+/*
+need to store as an object 
+*/
 
-//ui/navigation
 
 $.TVine = {
   init: function() {
@@ -80,8 +79,6 @@ $.TVine = {
         $.get('/query/' + tag, function(data) {
           $.TVine.addTag(tag, data);
           // re-interleave the videos each time you add a new tag.
-          that.playlist = [];
-          //we need to know when we're at the end of the list because $.get is async
           that.interleaveVideos();
         });
       }
@@ -129,6 +126,7 @@ $.TVine = {
   interleaveVideos: function(){
     var that = this;
      for(var i=0;i < this.totalVideos; i++){
+
       var current = this.tagDataList[ i % this.tagDataList.length ];
       if(current){
         this.playlist.push(current.shift())
