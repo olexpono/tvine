@@ -4,11 +4,11 @@
 html, button, input, select, textarea { color: #222; } body { font-size: 1em; line-height: 1.4; } ::-moz-selection { background: #b3d4fc; text-shadow: none; } ::selection { background: #b3d4fc; text-shadow: none; } hr { display: block; height: 1px; border: 0; border-top: 1px solid #ccc; margin: 1em 0; padding: 0; } img { vertical-align: middle; } fieldset { border: 0; margin: 0; padding: 0; } textarea { resize: vertical; } .chromeframe { margin: 0.2em 0; background: #ccc; color: #000; padding: 0.2em 0; }
 
 html, body {
-  height: 100%; 
+  height: 100%;
 }
 body {
-  font-family: "Roboto", "Avenir Next","Museo Sans";
-  font-weight: 500;
+  font-family: "Roboto", "Avenir Next", "Museo Sans";
+  font-weight: 400;
   background: black;
   color: white;
 }
@@ -32,8 +32,9 @@ body {
   top: 16px;
   right: 20px;
   box-shadow: 0 0 1px black;
+  z-index: 1337;
 
-  font-weight: 300;
+  font-weight: 400;
   h1 {
     font-size: 16px;
     text-shadow: 0 1px 1px rgba(0,0,0,0.3);
@@ -53,14 +54,16 @@ body {
   left:0;
   background: #333;
 }
-
+#curvideo video{
+  width: 800px;
+}
 
 .tag-input {
   position: absolute;
   left: 0;
   bottom: 0;
   display: block;
-  width: 150px;
+  width: 80px;
   padding: 10px 18px;
   background: transparent;
   border: none;
@@ -69,10 +72,9 @@ body {
   margin: 0 0 0 auto;
   font-size: 40px;
   font-weight: 100;
-}
-
-.tag-input:focus {
-  border-color: gray;
+  font-family: "Roboto";
+  -webkit-transition: width 0.1s ease;
+  -webkit-transition-delay: 0s !important;
 }
 
 .tags {
@@ -85,39 +87,93 @@ body {
 
   display: block;
   text-align: right;
-  li { display: block; }
-  a {
-    display: inline-block;
-    padding: 9px 14px 9px;
-    color: white;
-    font-size: 13.5px;
-    text-decoration: none;
+
+  li {
+    display: block;
+    overflow: hidden;
   }
-  > :nth-child(7n+1) a,
+
+  &:hover .tag {
+    letter-spacing: 0;
+    padding: 9px 34px 9px 14px;
+    > * {
+      opacity: 1;
+    }
+    > a {
+      -webkit-transition: opacity 0.75s linear;
+    }
+  }
+  .tag {
+    position: relative;
+    display: inline-block;
+    color: white;
+    padding: 9px 0 9px 0;
+    min-width: 2%;
+    font-size: 13.5px;
+    font-weight: 600;
+    letter-spacing: -6px;
+    -webkit-transition: padding 0.3s linear,
+                        letter-spacing 0.3s ease,
+                        background 0.5s ease,
+                        color 0.5s ease;
+    > * {
+      opacity: 0;
+    }
+    > span {
+      -webkit-transition: opacity 0.6s ease;
+    }
+    > a {
+      -webkit-transition: opacity 0.1s ease;
+    }
+
+    .close {
+      position: absolute;
+      right: 0;
+      top: 0;
+      padding: 7px 10px 6px;
+      font-size: 24px;
+      font-weight: 400;
+      line-height: 24px;
+      background: none;
+      color: inherit;
+      text-decoration: none;
+    }
+  }
+  > :nth-child(7n+1) .tag,
   > .tag-input:nth-child(7n+1) {
     background: red;
   }
-  > :nth-child(7n+2) a,
+  > :nth-child(7n+2) .tag,
   > .tag-input:nth-child(7n+2) {
     background: green;
+    -webkit-transition-delay: 0.1s;
   }
-  > :nth-child(7n+3) a,
+  > :nth-child(7n+3) .tag,
   > .tag-input:nth-child(7n+3) {
     background: blue;
+    -webkit-transition-delay: 0.2s;
   }
-  > :nth-child(7n+4) a,
+  > :nth-child(7n+4) .tag,
   > .tag-input:nth-child(7n+4) {
     background: yellow;
     color: black;
+    -webkit-transition-delay: 0.3s;
   }
-  > :nth-child(7n+5) a,
+  > :nth-child(7n+5) .tag,
   > .tag-input:nth-child(7n+5) {
     background: cyan;
     color: black;
+    -webkit-transition-delay: 0.4s;
   }
-  > :nth-child(7n+6) a,
+  > :nth-child(7n+6) .tag,
   > .tag-input:nth-child(7n+6) {
-    background: limegreen;
+    background: gray;
+    -webkit-transition-delay: 0.5s;
+  }
+  > :nth-child(7n+7) .tag,
+  > .tag-input:nth-child(7n+7) {
+    background: #FF00FF;
+    -webkit-transition-delay: 0.6s;
   }
 }
 
