@@ -29,6 +29,7 @@ function vineSnarf(query,page,method,callback){
   page_str = (page)? '?page='+page+'&size=20&anchor=(null)' : '';
   filter = (query.length>1) ? method+query+page_str : method;
   client.get(filter,function(err,result){
+    client.get('session_id',function(_err,id_from_redis){
       if(result){
         callback(result);
       }else{
@@ -36,7 +37,7 @@ function vineSnarf(query,page,method,callback){
           host: 'api.vineapp.com',
           path: filter,
           headers: {
-            'vine-session-id': '906281047212298240-3c6bc1dd-7517-42a5-85c2-75a79e804d9b'
+            'vine-session-id': (id_from_redis) ? id_from_redis:'906281047212298240-3c6bc1dd-7517-42a5-85c2-75a79e804d9b'
           }
         }, function(res) {
           var str='';
@@ -50,8 +51,9 @@ function vineSnarf(query,page,method,callback){
             callback(str);
           });
         });
-
       }
+    });
+
   });
   
 }
