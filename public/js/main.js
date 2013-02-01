@@ -78,8 +78,6 @@ $.TVine = {
       function(tag) {
         $.get('/query/' + tag, function(data) {
           $.TVine.addTag(tag, data);
-          // re-interleave the videos each time you add a new tag.
-          that.interleaveVideos();
         });
       }
     );
@@ -125,23 +123,37 @@ $.TVine = {
 
   interleaveVideos: function(){
     var that = this;
-     for(var i=0;i < this.totalVideos; i++){
-
-      var current = this.tagDataList[ i % this.tagDataList.length ];
-      if(current){
-        this.playlist.push(current.shift())
-        if(current.length==0){
-          this.tagDataList.splice( i % this.tagDataList.length,1);
+    var max = 0;
+    var tmp = this.tagDataList;
+    //console.log(this.tagDataList);
+    if(tmp.length == 1){
+      this.playlist=this.tagDataList[0];
+    }else{
+      for(var i in tmp){
+        if(max < tmp[i].length) {
+          max = tmp[i].length;
         }
       }
-     }
+       for(var i=0; i < max; i++){
+         for(var j in tmp){
+           var val =tmp[j].shift();
+           if(val){
+            this.playlist.push(val);  
+           }
+         }
+      }
+    }
+    
   },
 
   receiveVideos: function(data) {
     this.totalVideos += data.data.records.length;
     if(data.data.records.length>1){
-      this.tagDataList.push(data.data.records);  
+      console.log(data.data.records);
+      this.tagDataList.push(data.data.records);
+      this.interleaveVideos();
     }
+    
     /* TODO -- update video pool on new hashtag videos */
   },
 
