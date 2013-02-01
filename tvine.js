@@ -20,7 +20,6 @@ var app = express();
 function vineSnarf(query,page,method,callback){
   page_str = (page)? '?page='+page+'&size=20&anchor=(null)' : '';
   filter = (query.length>1) ? method+query+page_str : method;
-  console.log(filter);
   https.get({
     host: 'api.vineapp.com',
     path: filter,
