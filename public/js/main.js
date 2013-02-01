@@ -68,6 +68,7 @@ $.TVine = {
     var count=0;
     _.each(newTags,
       function(tag) {
+        $.TVine.previousTags.push(tag);
         $.get('/query/' + tag, function(data) {
           $.TVine.addTag(tag, data);
         });
@@ -82,7 +83,6 @@ $.TVine = {
 
   /* Utility used by refreshFeed, careful using this directly */
   addTag: function(tag, data) {
-    this.previousTags.push(tag);
     this.renderNewTag(tag, data.data.count);
 
     if (data.data.records.length > 1){
