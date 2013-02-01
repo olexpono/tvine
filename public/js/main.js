@@ -133,7 +133,6 @@ $.TVine = {
     /* If all tags were the same page length, and we didn't want to stack more up closer
      * the /2 plus the Math function should be removed */
     spacing = Math.floor(_.size(this.tagData) / 2);
-    /* [4] */
     records = _.reduce(
       records,
       function (paddedArray, record) {
@@ -194,6 +193,12 @@ $.TVine = {
         $.TVine.loadNextVideo();
       })
     });
+
+    $(".video-box").css("padding-bottom", window.innerHeight);
+    $(window).resize(function() {
+      $(".video-box").css("padding-bottom", window.innerHeight);
+    });
+    $(".tag-input").focus();
   }
 } /* END TVine */
 
