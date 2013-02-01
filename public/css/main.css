@@ -115,6 +115,9 @@ body {
   padding: 10px 18px;
   background: transparent;
   border: none;
+  border-radius: 0;
+  /* override iphone default */
+
   outline: none;
   color: white;
   margin: 0 0 0 auto;
@@ -237,6 +240,14 @@ body.idle .tag-input {
 body.idle .tags .tag {
   min-width: 3px;
   width: 3px;
+}
+body.idle .tags:hover .tag {
+  padding: 9px 0;
+}
+body.idle .tags:hover .tag > * {
+  opacity: 0;
+  letter-spacing: -7px;
+  -webkit-transition: opacity 0.2s ease;
 }
 .overlay:before {
   position: absolute;

@@ -184,6 +184,7 @@ $.TVine = {
     var heightOfVideoBox = Math.min($(".video-box").width(), window.innerHeight);
     console.log("height of video-box :: " + heightOfVideoBox);
     $(".video-box").css("padding-bottom", heightOfVideoBox);
+    $(".tags").css("width", heightOfVideoBox);
   },
 
   setupListeners: function() {
