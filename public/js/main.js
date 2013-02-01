@@ -135,7 +135,7 @@ $.TVine = {
     spacing = Math.floor(_.size(this.tagData) / 2);
     /* [4] */
     records = _.reduce(
-      records,
+      records, 
       function (paddedArray, record) {
         paddedArray.push(record);
         for (var i = 0; i < spacing; i++) {
@@ -194,6 +194,15 @@ $.TVine = {
         $.TVine.loadNextVideo();
       })
     });
+    // $('video').click(function(){
+    //   _V_('current_video').ready(function(){
+    //     if(this.paused()){
+    //       this.play();
+    //     }else{
+    //       this.pause();
+    //     }
+    //   });
+    })
   }
 } /* END TVine */
 
