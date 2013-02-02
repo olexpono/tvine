@@ -10,9 +10,9 @@ var client = redis.createClient(null,redisServer);
 if(redisServer == 'nodejitsudb4622528573.redis.irstack.com'){
   client.auth(redisPassword);
 }
-
-
 var express = require('express');
+var ejs   = require('ejs');
+
 
 var app = express();
 
@@ -88,8 +88,11 @@ app.get("/filter/:filter", function (req, res) {
 });
 
 app.use(express.static(__dirname + '/public'));
+app.set('view engine', 'ejs');
+
 app.get("/", function(req, res) {
-  res.sendfile(__dirname + "/public/index.html");
+  var version = process.env.VERSION || '1';
+  res.render("index",{cachebust: version});
 });
 
 app.listen(3000);
