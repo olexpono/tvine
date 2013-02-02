@@ -106,7 +106,32 @@ $.TVine = {
   getNextVideo: function(){
     /* TODO - fetch more than one page for given tags */
     /* Idea for paging: If playlist.shift() is the last video in any tagData, fetch more for that tag */
-    this.playlist.push(this.playlist.shift());
+    var justWatched = this.playlist.shift();
+    var nextIdx = this.tagData[justWatched.tag].indexOf(justWatched);
+    console.log(nextIdx);
+    if(nextIdx/(this.tagData[justWatched.tag].length-1) > 0.9){
+      //fetch next page
+      var page = 2;
+      if(this.tagData[justWatched.tag].page){
+        ++this.tagData[justWatched.tag].page;
+      }
+      if(!this.tagData[justWatched.tag].noMore){
+        var that = this;
+        $.get('/query/'+justWatched.tag+'?p='+page,function(data){
+          if(data.data.records.length == 0){
+            that.tagData[justWatched.tag].noMore=true;
+          }else{
+            $.TVine.addVideos(justWatched.tag,data.data.records);
+          }
+        });
+      }
+      console.log('almost the end of the line');
+    }
+    //preload the next video if it exists 
+    if(typeof this.playlist[1] != 'undefined'){
+     $('#video_preloader').attr('src',this.playlist[1].videoLowURL);
+    }
+    this.playlist.push(justWatched);
     return this.playlist[0];
   },
 
@@ -124,9 +149,7 @@ $.TVine = {
 
   addVideos: function(tag, records) {
     var spacing = 1;
-    if (typeof this.tagData[tag] == "undefined") {
-      this.tagData[tag] = _.union(this.tagData[tag],records);
-    }
+    this.tagData[tag] = _.compact(_.union(this.tagData[tag],records));
     /* Inject empty values into records to space them out,
      * then zip them with the current playlist.
      * more active tags => more empty values between each of the new videos */
@@ -137,7 +160,8 @@ $.TVine = {
     records = _.reduce(
       records, 
       function (paddedArray, record) {
-        paddedArray.push(record);
+        record.tag = tag;
+	paddedArray.push(record);
         for (var i = 0; i < spacing; i++) {
           paddedArray.push(undefined);
         }
@@ -145,7 +169,6 @@ $.TVine = {
       },
       []
     );
-
     this.playlist =
       _.compact(
         _.flatten(
@@ -227,9 +250,15 @@ $.TVine = {
 
     this.video_ref = _V_('current_video').ready(function(){
       this.play();
+      var that = this;
+      this.addEvent('timeupdate',function(){
+	 if(that.currentTime/that.duration > 0.5){
+		console.log('load next!');
+	 }
+      });
       this.addEvent('ended',function(){
         $.TVine.loadNextVideo();
-      })
+      });
     });
     this.adjustOnResize();
     $(window).resize(function() {
