@@ -48,7 +48,7 @@ function vineSnarf(query,page,method,callback){
           });
           res.on('end', function() {
             client.set(filter,str);
-            client.expire(filter,12);
+            client.expire(filter,60);
             callback(str);
           });
         });
