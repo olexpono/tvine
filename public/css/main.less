@@ -48,6 +48,7 @@ body {
   .about {
     position: absolute;
     right: 0;
+    left: 0;
     bottom: 0;
     padding-left: 48px;
     padding-right: 24px;
@@ -71,8 +72,8 @@ body {
   .disclaimer {
     font-weight: 400;
     line-height: 1.1;
-    color: #555;
-    margin-top: 12px;
+    color: #666;
+    margin-top: 36px;
     margin-bottom: 28px;
   }
   .fb-like {
@@ -503,7 +504,11 @@ background: linear-gradient(to right, #73655D 0%,#73655D 14.3%,
   .sidebar {
     position: static;
     width: 100%;
-    max-height: 400px;
+    max-height: 250px;
+    .about {
+      padding-top: 36px;
+      position: static;
+    }
   }
 
   .overlay {
