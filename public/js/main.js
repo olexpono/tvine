@@ -218,6 +218,7 @@ $.TVine = {
     console.log("height of video-box :: " + heightOfVideoBox);
     $(".video-box").css("padding-bottom", heightOfVideoBox);
     $(".container").css("max-height", heightOfVideoBox);
+    $(".overlay").css("width", heightOfVideoBox);
     $(".tags").css("width", heightOfVideoBox);
   },
 

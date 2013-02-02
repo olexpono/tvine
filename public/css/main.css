@@ -68,8 +68,9 @@ body {
   -ms-box-sizing: border-box;
   box-sizing: border-box;
   padding-bottom: 72.5%;
-  width: 72.5%;
+  width: 77.5%;
   max-height: 100%;
+  overflow: hidden;
 }
 .sidebar {
   position: absolute;
@@ -388,6 +389,7 @@ body.idle .tags:hover .tag > * {
   left: 0;
   right: 0;
   height: 0;
+  margin-left: auto;
   text-align: center;
   z-index: 4000;
   -webkit-transition: height 1s ease;
