@@ -89,6 +89,7 @@ $.TVine = {
     } else {
       this.inputAlert("No " + _.escape(tag) + " vines found.");
     }
+    this.loop((this.currentTags.length == 0 ))
   },
   /* Utility used by refreshFeed, careful using this directly */
   removeTag: function(tag) {
@@ -98,6 +99,7 @@ $.TVine = {
     $(".tags [data-hashtag='" + tag + "']").parent().remove();
 
     this.removeVideos(tag);
+    this.loop((this.currentTags.length == 0 ))
   },
 
   /* circular list */
@@ -123,7 +125,7 @@ $.TVine = {
   addVideos: function(tag, records) {
     var spacing = 1;
     if (typeof this.tagData[tag] == "undefined") {
-      this.tagData[tag] = records;
+      this.tagData[tag] = _.union(this.tagData[tag],records);
     }
     /* Inject empty values into records to space them out,
      * then zip them with the current playlist.
@@ -173,6 +175,13 @@ $.TVine = {
       }else{
         this.video_ref.volume(1);
       }
+  },
+  loop: function(turnLoopOn){
+    if(turnLoopOn){
+      $('video').attr('loop');
+    }else{
+      $('video').removeAttr('loop');        
+    }
   },
   /* Update currentTags from a listener, then call this to navigate. */
   navigateToCurrentTags: function() {
