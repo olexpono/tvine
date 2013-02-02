@@ -92,7 +92,28 @@ app.set('view engine', 'ejs');
 
 app.get("/", function(req, res) {
   var version = process.env.VERSION || '1';
-  res.render("index",{cachebust: version});
+  client.get('popularNow',function(err,data){
+    //could alternatively just store the video url in a env variable
+    //to save the call to redis and drop the redis dependency for index
+    var _data = JSON.parse(data);
+    res.render("index",{cachebust: version,popularVine: _data});
+  });
 });
 
 app.listen(3000);
+
+/*
+get popular from vine
+*/
+function getPopular(){
+  vineSnarf('','','/timelines/popular',function(data){
+      var popPage = JSON.parse(data);
+      client.set('popularNow',JSON.stringify(popPage.data.records[0]));
+  });
+}
+getPopular();
+
+//fetch popular 4 times per day (every 6 hours)
+setInterval(getPopular,21600);
+
+
