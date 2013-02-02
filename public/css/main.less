@@ -75,6 +75,10 @@ body {
     margin-top: 12px;
     margin-bottom: 28px;
   }
+  .fb-like {
+    margin-top: 4px;
+    height: 35px !important;
+  }
 }
 
 .logo {
@@ -131,6 +135,7 @@ body {
   max-width: 135px;
   text-align: left;
   opacity: 0;
+  pointer-events: none;
 
   -webkit-transition: opacity 0.1s ease;
   -moz-transition: opacity 0.1s ease;
@@ -177,6 +182,7 @@ body:not(.idle) .tag-input.clear ~ .input-overlay-message {
 
   &.clear {
     background: transparent !important;
+    color: white !important;
   }
 }
 /* Hmmm */

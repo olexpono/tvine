@@ -1,6 +1,6 @@
 {
   "name": "tvine",
-  "version": "0.0.4-1",
+  "version": "0.0.4-2",
   "private": true,
   "scripts": {
     "start": "node tvine.js"
@@ -8,7 +8,7 @@
   "dependencies": {
     "express": "3.1.x",
     "redis": "0.8.x",
-    "ejs" : "0.8.x"
+    "ejs": "0.8.x"
   },
   "devDependencies": {
     "grunt": "0.3.x",
