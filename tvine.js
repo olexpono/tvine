@@ -107,6 +107,7 @@ get popular from vine
 */
 function getPopular(){
   vineSnarf('','','/timelines/popular',function(data){
+      console.log("Vine data received: ", data);
       var popPage = JSON.parse(data);
       client.set('popularNow',JSON.stringify(popPage.data.records[0]));
   });
