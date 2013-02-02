@@ -23,6 +23,13 @@ module.exports = function(grunt) {
       }
     },
     watch: {
+      jsfiles: {
+        files: "public/js/!(tvine-min).js",
+        tasks: [ "min:dist" ],
+        options: {
+          interrupt: true
+        }
+      },
       less: {
         files: "public/**/*.less",
         tasks: [ "less" ],

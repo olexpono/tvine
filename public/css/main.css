@@ -52,14 +52,16 @@ body {
 body {
   font-family: "Roboto", "Avenir Next", "Museo Sans";
   font-weight: 400;
-  background: black;
+  background: #333;
   color: white;
 }
 .container {
-  max-width: 1050px;
+  max-width: 1160px;
   margin: 0 auto;
   position: relative;
   height: 100%;
+  max-height: 841px;
+  box-shadow: 0 0 10px black;
 }
 .video-box {
   position: absolute;
@@ -67,9 +69,21 @@ body {
   -moz-box-sizing: border-box;
   -ms-box-sizing: border-box;
   box-sizing: border-box;
-  padding-bottom: 80%;
-  width: 80%;
+  padding-bottom: 72.5%;
+  width: 72.5%;
   max-height: 100%;
+}
+.sidebar {
+  position: absolute;
+  top: 0;
+  right: 0;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -ms-box-sizing: border-box;
+  box-sizing: border-box;
+  width: 27.5%;
+  height: 100%;
+  background: black;
 }
 .logo {
   padding: 4px 6px;
@@ -382,20 +396,20 @@ body.idle .tags:hover .tag > * {
 }
 .overlay h1 {
   display: block;
-  width: 354px;
+  width: 4.4em;
   margin: 35% auto 0 auto;
-  padding: 16px 0;
-  border: 16px solid white;
-  font-size: 80px;
+  padding: 0.2em 0;
+  border: 0.2em solid white;
+  font-size: 5em;
   font-weight: 600;
   font-family: "Roboto";
   line-height: 1.666em;
-  letter-spacing: -5px;
+  letter-spacing: -0.075em;
   box-shadow: inset 0 0 2px rgba(0, 0, 0, 0.5), 0 0 2px rgba(0, 0, 0, 0.5);
   text-shadow: 0 0px 2px rgba(0, 0, 0, 0.5);
 }
 .overlay h1 i {
-  padding-left: 7px;
+  padding-left: 0.09em;
   font-size: 1.333em;
   font-weight: 500;
   line-height: 1.1em;
@@ -434,8 +448,14 @@ body.idle .tags:hover .tag > * {
 }
 @media screen and (max-width: 640px) {
   .video-box {
+    position: relative;
     padding-bottom: 100%;
     width: 100%;
     max-height: 100%;
+  }
+  .sidebar {
+    position: static;
+    width: 100%;
+    max-height: 400px;
   }
 }
