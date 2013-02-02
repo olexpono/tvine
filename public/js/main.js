@@ -12,11 +12,17 @@ $.TVine = {
     this.setupRoutes();
     this.setupListeners();
 
+    /* Show header for first second only */
+    setTimeout( function() {
+      $(".overlay").removeClass("shown");
+    }, 1000);
+
     $(".tag-input").autoGrowInput({
       maxWidth: 500,
       minWidth: 70,
       comfortZone: 50
     });
+    $(".tag-input").focus();
   },
 
   setupRoutes: function() {
@@ -106,17 +112,16 @@ $.TVine = {
     var justWatched = this.playlist.shift();
     var nextIdx = this.tagData[justWatched.tag].indexOf(justWatched);
     console.log(nextIdx);
-    if(nextIdx/(this.tagData[justWatched.tag].length-1) > 0.9){
+    if(nextIdx / (this.tagData[justWatched.tag].length-1) > 0.9){
       //fetch next page
       var page = 2;
       if(this.tagData[justWatched.tag].page){
         ++this.tagData[justWatched.tag].page;
       }
       if(!this.tagData[justWatched.tag].noMore){
-        var that = this;
         $.get('/query/'+justWatched.tag+'?p='+page,function(data){
           if(data.data.records.length == 0){
-            that.tagData[justWatched.tag].noMore=true;
+            $.TVine.tagData[justWatched.tag].noMore = true;
           }else{
             $.TVine.addVideos(justWatched.tag,data.data.records);
           }
@@ -262,7 +267,6 @@ $.TVine = {
     $(window).resize(function() {
       $.TVine.adjustOnResize();
     });
-    $(".tag-input").focus();
 
     $(document).idleTimer(3500, {startImmediately: false});
     $(document).on( "idle.idleTimer", function() {

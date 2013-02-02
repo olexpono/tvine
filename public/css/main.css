@@ -56,7 +56,7 @@ body {
   color: white;
 }
 .container {
-  max-width: 800px;
+  max-width: 1050px;
   margin: 0 auto;
   position: relative;
   height: 100%;
@@ -336,7 +336,14 @@ body.idle .tags:hover .tag > * {
   top: 0;
   left: 0;
   right: 0;
+  height: 0;
+  text-align: center;
   z-index: 4000;
+  -webkit-transition: height 1s ease;
+  -moz-transition: height 1s ease;
+  -o-transition: height 1s ease;
+  -ms-transition: height 1s ease;
+  transition: height 1s ease;
   background: -webkit-linear-gradient(left, #73655d 0%, #73655d 14.3%, #8b7c27 14.3%, #8b7c27 28.6%, #45766b 28.6%, #45766b 42.9%, #377519 42.9%, #377519 57.3%, #7e2965 57.3%, #7e2965 71.7%, #761b17 71.6%, #761b17 84.9%, #1c1249 84.9%, #1c1249);
   /* Chrome10+,Safari5.1+ */
 
@@ -349,6 +356,62 @@ body.idle .tags:hover .tag > * {
   background: linear-gradient(to right, #73655d 0%, #73655d 14.3%, #8b7c27 14.3%, #8b7c27 28.6%, #45766b 28.6%, #45766b 42.9%, #377519 42.9%, #377519 57.3%, #7e2965 57.3%, #7e2965 71.7%, #761b17 71.7%, #761b17 84.9%, #1c1249 84.9%, #1c1249);
   /* W3C */
 
+}
+.overlay.shown {
+  height: 100%;
+}
+.overlay.shown h1,
+.overlay.shown h2,
+.overlay.shown .attribution {
+  opacity: 1;
+}
+.overlay h1,
+.overlay h2,
+.overlay .attribution {
+  opacity: 0;
+  -webkit-transition: opacity 0.5s ease;
+  -moz-transition: opacity 0.5s ease;
+  -o-transition: opacity 0.5s ease;
+  -ms-transition: opacity 0.5s ease;
+  transition: opacity 0.5s ease;
+}
+.overlay h1 {
+  display: block;
+  width: 354px;
+  margin: 35% auto 0 auto;
+  padding: 16px 0;
+  border: 16px solid white;
+  font-size: 80px;
+  font-weight: 600;
+  font-family: "Roboto";
+  line-height: 1.666em;
+  letter-spacing: -5px;
+  box-shadow: inset 0 0 2px rgba(0, 0, 0, 0.5), 0 0 2px rgba(0, 0, 0, 0.5);
+  text-shadow: 0 0px 2px rgba(0, 0, 0, 0.5);
+}
+.overlay h1 i {
+  padding-left: 7px;
+  font-size: 1.333em;
+  font-weight: 500;
+  line-height: 1.1em;
+  letter-spacing: 0px;
+}
+.overlay h2 {
+  margin: 16px auto 0 auto;
+  font-size: 1.82em;
+  line-height: 1;
+  letter-spacing: 1px;
+  max-width: 380px;
+  text-shadow: 0 0px 2px rgba(0, 0, 0, 0.8);
+}
+.overlay .attribution {
+  font-size: 1.25em;
+  margin-top: 20%;
+  text-shadow: 0 0px 2px rgba(0, 0, 0, 0.8);
+}
+.overlay .attribution a {
+  color: white;
+  text-decoration: none;
 }
 .stripe-background {
   background: -webkit-linear-gradient(left, #73655d 0%, #73655d 14.3%, #8b7c27 14.3%, #8b7c27 28.6%, #45766b 28.6%, #45766b 42.9%, #377519 42.9%, #377519 57.3%, #7e2965 57.3%, #7e2965 71.7%, #761b17 71.6%, #761b17 84.9%, #1c1249 84.9%, #1c1249);
