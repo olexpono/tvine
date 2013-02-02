@@ -71,7 +71,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-jstemplater');
   grunt.loadNpmTasks('grunt-forever');
 
-  grunt.registerTask("build", ["less", "template"]);
+  grunt.registerTask("build", ["less", "min", "template"]);
 
   grunt.registerTask("run",
     [ "forever:stop",
