@@ -77,13 +77,44 @@ body {
   position: absolute;
   top: 0;
   right: 0;
+  font-size: 13px;
+  width: 27.5%;
+  height: 100%;
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   -ms-box-sizing: border-box;
   box-sizing: border-box;
-  width: 27.5%;
-  height: 100%;
   background: black;
+}
+.sidebar .about {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  padding-left: 48px;
+  padding-right: 24px;
+  max-height: 400px;
+}
+.sidebar .about a {
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  color: #6becd3;
+}
+.sidebar .about a ~ a {
+  color: #fff38d;
+}
+.sidebar .about a ~ a ~ a {
+  color: #ff00ca;
+}
+.sidebar .creators {
+  margin-bottom: 40px;
+}
+.sidebar .disclaimer {
+  font-weight: 400;
+  line-height: 1.1;
+  color: #555;
+  margin-top: 12px;
+  margin-bottom: 28px;
 }
 .logo {
   padding: 4px 6px;
@@ -420,7 +451,7 @@ body.idle .tags:hover .tag > * {
   font-size: 1.82em;
   line-height: 1;
   letter-spacing: 1px;
-  max-width: 380px;
+  max-width: 15em;
   text-shadow: 0 0px 2px rgba(0, 0, 0, 0.8);
 }
 .overlay .attribution {
@@ -446,6 +477,14 @@ body.idle .tags:hover .tag > * {
   /* W3C */
 
 }
+@media screen and (max-width: 960px) {
+  .overlay {
+    font-size: 0.8em;
+  }
+  .overlay h1 {
+    margin-top: 20%;
+  }
+}
 @media screen and (max-width: 640px) {
   .video-box {
     position: relative;
@@ -457,5 +496,8 @@ body.idle .tags:hover .tag > * {
     position: static;
     width: 100%;
     max-height: 400px;
+  }
+  .overlay {
+    font-size: 0.5em;
   }
 }
