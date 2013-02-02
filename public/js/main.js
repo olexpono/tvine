@@ -15,7 +15,7 @@ $.TVine = {
     /* Show header for first second only */
     setTimeout( function() {
       $(".overlay").removeClass("shown");
-    }, 1000);
+    }, 3000);
 
     $(".tag-input").autoGrowInput({
       maxWidth: 500,
