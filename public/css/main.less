@@ -77,8 +77,28 @@ body {
   max-width: 100%;
 }
 
+.input-overlay-message {
+  position: absolute;
+  left: 26px;
+  bottom: 12px;
+  max-width: 135px;
+  text-align: left;
+  opacity: 0;
+
+  -webkit-transition: opacity 0.1s ease;
+  -moz-transition: opacity 0.1s ease;
+  -o-transition: opacity 0.1s ease;
+  -ms-transition: opacity 0.1s ease;
+  transition: opacity 0.1s ease;
+}
+
+body:not(.idle) .tag-input.clear ~ .input-overlay-message {
+  opacity: 1;
+}
+
 .tag-input {
   position: absolute;
+  z-index: 3001;
   left: 0;
   bottom: 0;
   display: block;
@@ -94,28 +114,33 @@ body {
   font-weight: 100;
   font-family: "Roboto";
   -webkit-transition: width 0.1s ease,
-                      opacity 0.5s ease;
+                      opacity 0.5s ease,
+                      background-color 0.5s ease;
 
-	-moz-transition: width 0.1s ease, opacity 0.5s ease;
-	-o-transition: width 0.1s ease, opacity 0.5s ease;
-	-ms-transition: width 0.1s ease, opacity 0.5s ease;
-	transition: width 0.1s ease, opacity 0.5s ease;
+	-moz-transition: width 0.1s ease, opacity 0.5s ease, background-color 0.5s ease;
+	-o-transition: width 0.1s ease, opacity 0.5s ease, background-color 0.5s ease;
+	-ms-transition: width 0.1s ease, opacity 0.5s ease, background-color 0.5s ease;
+	transition: width 0.1s ease, opacity 0.5s ease, background-color 0.5s ease;
 
   -webkit-transition-delay: 0s !important;
 	-moz-transition-delay: 0s !important;
 	-o-transition-delay: 0s !important;
 	-ms-transition-delay: 0s !important;
 	transition-delay: 0s !important;
+
+  &.clear {
+    background: transparent !important;
+  }
 }
 /* Hmmm */
 .tag-input:after {
   content: '';
   position: absolute;
+  z-index: 3000;
   top: 0;
   right: 0;
   bottom: 0;
   left: 0;
-  z-index: 3000;
 }
 
 .tags {
@@ -297,7 +322,6 @@ body.idle {
   left: 0;
   right: 0;
   height: 10px;
-  /* .stripe-background */
 }
 
 .stripe-background {

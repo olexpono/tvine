@@ -11,6 +11,7 @@ $.TVine = {
     this.playlist     = [];
     this.setupRoutes();
     this.setupListeners();
+
     $(".tag-input").autoGrowInput({
       maxWidth: 500,
       minWidth: 70,
@@ -34,7 +35,6 @@ $.TVine = {
       "/",
       function() {
         console.log("Default route detected.");
-        window.location.hash = "/magic";
       }
     );
   },
@@ -43,7 +43,7 @@ $.TVine = {
   renderNewTag: function(val, count) {
     var tag_info = { tag: val, count: count };
     var rendered = $(Mustache.to_html(TMPL.tag, tag_info));
-    rendered.insertBefore($(".tags > *:last-child"));
+    rendered.insertBefore($(".tags > .tag-input"));
     rendered.find(".close").click(function() {
       $.TVine.currentTags = _.filter(
         $.TVine.currentTags,
@@ -83,12 +83,11 @@ $.TVine = {
 
   /* Utility used by refreshFeed, careful using this directly */
   addTag: function(tag, data) {
-    this.renderNewTag(tag, data.data.count);
-
     if (data.data.records.length > 1){
+      this.renderNewTag(tag, data.data.count);
       this.addVideos(tag, data.data.records);
     } else {
-      /* TODO -- no results found */
+      this.inputAlert("No " + _.escape(tag) + " vines found.");
     }
   },
   /* Utility used by refreshFeed, careful using this directly */
@@ -187,16 +186,33 @@ $.TVine = {
     $(".tags").css("width", heightOfVideoBox);
   },
 
+  inputAlert: function(message) {
+    $(".input-overlay-message").text(message);
+  },
+
   setupListeners: function() {
     $(".tag-input").keyup(function(e) {
       if( $(".tag-input:focus") && e.keyCode == 13) {
         if ($.TVine.currentTags.indexOf($(".tag-input").val()) >= 0) {
+          $.TVine.inputAlert("You're already watching that tag!");
         } else {
           var sanitized = $(".tag-input").val().replace(/![a-zA-Z0-9]/gi,"");
           $.TVine.currentTags.push(sanitized);
           $.TVine.navigateToCurrentTags();
+
+          if ($.TVine.currentTags.length == 1) {
+            $.TVine.inputAlert("Now add a few more and sit back!");
+          } else {
+            $.TVine.inputAlert("");
+          }
         }
         $(".tag-input").val("");
+      }
+
+      if( $(".tag-input").val() == "" ) {
+        $(".tag-input").addClass("clear");
+      } else {
+        $(".tag-input").removeClass("clear");
       }
     });
 
@@ -220,6 +236,7 @@ $.TVine = {
       $("body").removeClass("idle");
       $(".tag-input").focus();
     });
+
 
     /*click to pause/play*/
     $('video').click(function(){
