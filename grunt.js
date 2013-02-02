@@ -6,7 +6,22 @@ module.exports = function(grunt) {
     forever: {
       main: "tvine.js"
     },
+    min: {
+      dist: {
+        src:['public/js/vendor/modernizr-2.6.1.min.js',
+        'public/js/vendor/video.js',
+        'public/js/vendor/mustache.js',
+        'public/js/vendor/underscore.js',
+        'public/js/vendor/signals.min.js',
+        'public/js/vendor/crossroads.min.js',
+        'public/js/vendor/hasher.min.js',
+        'public/js/templates.js',
+        'public/js/plugins.js',
+        'public/js/main.js'],
 
+        dest:'public/js/tvine-min.js'
+      }
+    },
     watch: {
       less: {
         files: "public/**/*.less",
@@ -61,6 +76,7 @@ module.exports = function(grunt) {
   grunt.registerTask("run",
     [ "forever:stop",
       "forever:start",
+      "min",
       "watch"]);
   grunt.registerTask("default", "run");
 };
