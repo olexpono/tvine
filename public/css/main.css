@@ -67,17 +67,17 @@ body {
   -moz-box-sizing: border-box;
   -ms-box-sizing: border-box;
   box-sizing: border-box;
-  padding-bottom: 72.5%;
-  width: 77.5%;
+  padding-bottom: 75.5%;
+  width: 75.5%;
   max-height: 100%;
   overflow: hidden;
 }
 .sidebar {
   position: absolute;
   top: 0;
-  right: 0;
+  left: 75.5%;
   font-size: 13px;
-  width: 27.5%;
+  width: 24.5%;
   height: 100%;
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
@@ -397,20 +397,8 @@ body.idle .tags:hover .tag > * {
   -o-transition: height 1s ease;
   -ms-transition: height 1s ease;
   transition: height 1s ease;
-  background: -webkit-linear-gradient(left, #73655d 0%, #73655d 14.3%, #8b7c27 14.3%, #8b7c27 28.6%, #45766b 28.6%, #45766b 42.9%, #377519 42.9%, #377519 57.3%, #7e2965 57.3%, #7e2965 71.7%, #761b17 71.6%, #761b17 84.9%, #1c1249 84.9%, #1c1249);
-  /* Chrome10+,Safari5.1+ */
-
-  background: -o-linear-gradient(left, #73655d 0%, #73655d 14.3%, #8b7c27 14.3%, #8b7c27 28.6%, #45766b 28.6%, #45766b 42.9%, #377519 42.9%, #377519 57.3%, #7e2965 57.3%, #7e2965 71.7%, #761b17 71.6%, #761b17 84.9%, #1c1249 84.9%, #1c1249);
-  /* Opera 11.10+ */
-
-  background: -ms-linear-gradient(left, #73655d 0%, #73655d 14.3%, #8b7c27 14.3%, #8b7c27 28.6%, #45766b 28.6%, #45766b 42.9%, #377519 42.9%, #377519 57.3%, #7e2965 57.3%, #7e2965 71.7%, #761b17 71.6%, #761b17 84.9%, #1c1249 84.9%, #1c1249);
-  /* IE10+ */
-
-  background: linear-gradient(to right, #73655d 0%, #73655d 14.3%, #8b7c27 14.3%, #8b7c27 28.6%, #45766b 28.6%, #45766b 42.9%, #377519 42.9%, #377519 57.3%, #7e2965 57.3%, #7e2965 71.7%, #761b17 71.7%, #761b17 84.9%, #1c1249 84.9%, #1c1249);
-  /* W3C */
-
 }
-.overlay.shown {
+.stripe-backgroundj .overlay.shown {
   height: 100%;
   -webkit-transition: height 0s ease;
   -moz-transition: height 0s ease;
@@ -418,9 +406,9 @@ body.idle .tags:hover .tag > * {
   -ms-transition: height 0s ease;
   transition: height 0s ease;
 }
-.overlay.shown h1,
-.overlay.shown h2,
-.overlay.shown .attribution {
+.stripe-backgroundj .overlay.shown h1,
+.stripe-backgroundj .overlay.shown h2,
+.stripe-backgroundj .overlay.shown .attribution {
   opacity: 1;
 }
 .overlay h1,
