@@ -102,10 +102,7 @@ $.TVine = {
     this.loop((this.currentTags.length == 0 ))
   },
 
-  /* circular list */
   getNextVideo: function(){
-    /* TODO - fetch more than one page for given tags */
-    /* Idea for paging: If playlist.shift() is the last video in any tagData, fetch more for that tag */
     var justWatched = this.playlist.shift();
     var nextIdx = this.tagData[justWatched.tag].indexOf(justWatched);
     console.log(nextIdx);
@@ -129,7 +126,7 @@ $.TVine = {
     }
     //preload the next video if it exists 
     if(typeof this.playlist[1] != 'undefined'){
-     $('#video_preloader').attr('src',this.playlist[1].videoLowURL);
+      $('#video_preloader').attr('src',this.playlist[1].videoLowURL);
     }
     this.playlist.push(justWatched);
     return this.playlist[0];
@@ -161,7 +158,7 @@ $.TVine = {
       records, 
       function (paddedArray, record) {
         record.tag = tag;
-	paddedArray.push(record);
+        paddedArray.push(record);
         for (var i = 0; i < spacing; i++) {
           paddedArray.push(undefined);
         }
@@ -176,7 +173,7 @@ $.TVine = {
         )
       );
   },
-  
+
   removeVideos: function(tag) {
     if (typeof this.tagData[tag] == "undefined") {
       return;
@@ -193,17 +190,17 @@ $.TVine = {
     this.playlist.push(currentVideo);
   },
   toggleMute: function(){
-      if(this.video_ref.volume()){
-        this.video_ref.volume(0);        
-      }else{
-        this.video_ref.volume(1);
-      }
+    if(this.video_ref.volume()){
+      this.video_ref.volume(0);
+    }else{
+      this.video_ref.volume(1);
+    }
   },
   loop: function(turnLoopOn){
     if(turnLoopOn){
       $('video').attr('loop');
     }else{
-      $('video').removeAttr('loop');        
+      $('video').removeAttr('loop');
     }
   },
   /* Update currentTags from a listener, then call this to navigate. */
@@ -252,15 +249,16 @@ $.TVine = {
       this.play();
       var that = this;
       this.addEvent('timeupdate',function(){
-	 if(that.currentTime/that.duration > 0.5){
-		console.log('load next!');
-	 }
+        if(that.currentTime / that.duration > 0.5){
+          console.log('load next!');
+        }
       });
       this.addEvent('ended',function(){
         $.TVine.loadNextVideo();
       });
     });
     this.adjustOnResize();
+
     $(window).resize(function() {
       $.TVine.adjustOnResize();
     });
@@ -274,7 +272,6 @@ $.TVine = {
       $("body").removeClass("idle");
       $(".tag-input").focus();
     });
-
 
     /*click to pause/play*/
     $('video').click(function(){
