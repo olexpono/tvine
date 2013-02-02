@@ -37,7 +37,8 @@ function vineSnarf(query,page,method,callback){
           host: 'api.vineapp.com',
           path: filter,
           headers: {
-            'vine-session-id': (id_from_redis) ? id_from_redis:'906281047212298240-3c6bc1dd-7517-42a5-85c2-75a79e804d9b'
+            'vine-session-id': (id_from_redis) ? id_from_redis:'906277305146548224-5e08e0b8-4db0-4c4b-a062-3b1d13e7c6a4',
+            'User-Agent': 'com.vine.iphone/1.0.1 (unknown, iPhone OS 6.0, iPhone, Scale/2.000000)'
           }
         }, function(res) {
           var str='';
@@ -101,14 +102,18 @@ app.get("/", function(req, res) {
 });
 
 app.listen(3000);
-
+process.on('error',function(){
+//catch the error and do nothing
+});
 /*
 get popular from vine
 */
 function getPopular(){
   vineSnarf('','','/timelines/popular',function(data){
-      var popPage = JSON.parse(data);
-      client.set('popularNow',JSON.stringify(popPage.data.records[0]));
+	try{
+          var popPage = JSON.parse(data);
+          client.set('popularNow',JSON.stringify(popPage.data.records[0]));
+	}catch(e){}
   });
 }
 getPopular();
