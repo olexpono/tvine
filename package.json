@@ -1,6 +1,6 @@
 {
   "name": "tvine",
-  "version": "0.0.5-6",
+  "version": "0.0.6",
   "private": true,
   "scripts": {
     "start": "node tvine.js"
