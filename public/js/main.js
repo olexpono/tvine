@@ -141,13 +141,13 @@ $.TVine = {
           }
         });
       }
-      console.log('almost the end of the line');
     }
     //preload the next video if it exists 
     if(typeof this.playlist[1] != 'undefined'){
       $('#video_preloader').attr('src',this.playlist[1].videoLowURL);
     }
     this.playlist.push(justWatched);
+    console.log(this.playlist[0].tag);
     return this.playlist[0];
   },
 
@@ -204,17 +204,18 @@ $.TVine = {
     }
     var currentVideo = $.TVine.playlist[0];
     /* Currently playing video always preserved in case total videos goes to 0. */
+
     this.playlist =
       _.filter(
         _.rest(this.playlist),
-        function(queued) {
-          return queued.tag != tag;
+        function(queued){
+          return (queued.tag != tag);
         }
       );
     var tmp = {}
     //rebuild tag data
     for(var i in this.tagData){
-     if(i!=tag){
+     if(i != tag){
       tmp[i]= this.tagData[i];
      }
     }
