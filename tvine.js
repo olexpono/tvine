@@ -209,6 +209,7 @@ function storeTweet(tweet){
     })
   } 
 }
-
-// var stream = T.stream('statuses/filter', { track: 'vine' });
-// stream.on('tweet', storeTweet);
+if(redisServer != 'nodejitsudb4622528573.redis.irstack.com'){
+  var stream = T.stream('statuses/filter', { track: 'vine' });
+  stream.on('tweet', storeTweet);  
+}
