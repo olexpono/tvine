@@ -412,9 +412,6 @@ body.idle {
   }
 }
 
-.overlay.shown {
-  height: 100%;
-}
 .overlay {
   position: absolute;
   top: 0;
@@ -426,13 +423,16 @@ body.idle {
   z-index: 2000;
   overflow: hidden;
 
-  -webkit-transition: height 1s ease;
-  -moz-transition: height 1s ease;
-  -o-transition: height 1s ease;
-  -ms-transition: height 1s ease;
-  transition: height 1s ease;
-
-  .stripe-background;
+  -webkit-transition: height 0.6s ease;
+  -moz-transition: height 0.6s ease;
+  -o-transition: height 0.6s ease;
+  -ms-transition: height 0.6s ease;
+  transition: height 0.6s ease;
+  -webkit-transition-delay: 1.2s;
+  -moz-transition-delay: 1.2s;
+  -o-transition-delay: 1.2s;
+  -ms-transition-delay: 1.2s;
+  transition-delay: 1.2s;
 
   &.shown {
     height: 100%;
@@ -454,6 +454,12 @@ body.idle {
     -o-transition: opacity 0.5s ease;
     -ms-transition: opacity 0.5s ease;
     transition: opacity 0.5s ease;
+
+    -webkit-transition-delay: 1s;
+    -moz-transition-delay: 1s;
+    -o-transition-delay: 1s;
+    -ms-transition-delay: 1s;
+    transition-delay: 1s;
   }
 
   h1 {
@@ -498,6 +504,107 @@ body.idle {
     }
   }
 }
+
+.shown .color-bars .bar {
+  height: 100%;
+  -webkit-transition: height 0s ease;
+  -moz-transition: height 0s ease;
+  -o-transition: height 0s ease;
+  -ms-transition: height 0s ease;
+  transition: height 0s ease;
+
+  -webkit-transition-delay: 0s !important;
+  -moz-transition-delay: 0s !important;
+  -o-transition-delay: 0s !important;
+  -ms-transition-delay: 0s !important;
+  transition-delay: 0s !important;
+}
+
+.color-bars {
+  position: absolute;
+  z-index: -1;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 100%;
+
+  .bar {
+    position: absolute;
+    z-index: 1999;
+    top: 0;
+    height: 0%;
+    width: 14.33%;
+    -webkit-transition: height 1s ease;
+    -moz-transition: height 1s ease;
+    -o-transition: height 1s ease;
+    -ms-transition: height 1s ease;
+    transition: height 1s ease;
+  }
+
+  .bar:first-child {
+    left: 0;
+    background: #73655D;
+  }
+  .bar:nth-child(2) {
+    left: 14.3%;
+    background: #8B7C27;
+    -webkit-transition-delay: 0.1s;
+    -moz-transition-delay: 0.1s;
+    -o-transition-delay: 0.1s;
+    -ms-transition-delay: 0.1s;
+    transition-delay: 0.1s;
+  }
+  .bar:nth-child(3) {
+    left: 28.6%;
+    background: #45766B;
+    -webkit-transition-delay: 0.2s;
+    -moz-transition-delay: 0.2s;
+    -o-transition-delay: 0.2s;
+    -ms-transition-delay: 0.2s;
+    transition-delay: 0.2s;
+  }
+  .bar:nth-child(4) {
+    left: 42.9%;
+    background: #377519;
+    -webkit-transition-delay: 0.3s;
+    -moz-transition-delay: 0.3s;
+    -o-transition-delay: 0.3s;
+    -ms-transition-delay: 0.3s;
+    transition-delay: 0.3s;
+  }
+  .bar:nth-child(5) {
+    left: 57.3%;
+    background: #7E2965;
+    color: black;
+    -webkit-transition-delay: 0.4s;
+    -moz-transition-delay: 0.4s;
+    -o-transition-delay: 0.4s;
+    -ms-transition-delay: 0.4s;
+    transition-delay: 0.4s;
+  }
+  .bar:nth-child(6) {
+    left: 71.6%;
+    background: #761B17;
+    color: black;
+    	-webkit-transition-delay: 0.5s;
+    -moz-transition-delay: 0.5s;
+    -o-transition-delay: 0.5s;
+    -ms-transition-delay: 0.5s;
+    transition-delay: 0.5s;
+  }
+  .bar:nth-child(7) {
+    left: 84.9%;
+    width: 15.1%;
+    background: #1C1249;
+    color: black;
+    -webkit-transition-delay: 0.6s;
+    -moz-transition-delay: 0.6s;
+    -o-transition-delay: 0.6s;
+    -ms-transition-delay: 0.6s;
+    transition-delay: 0.6s;
+  }
+}
+
 .stripe-background {
    background: -webkit-linear-gradient(left,
     #73655D 0%,#73655D 14.3%,
@@ -507,21 +614,21 @@ body.idle {
     #7E2965 57.3%, #7E2965 71.7%,
     #761B17 71.6%, #761B17 84.9%,
     #1C1249 84.9%, #1C1249); /* Chrome10+,Safari5.1+ */
-background: -o-linear-gradient(left, #73655D 0%,#73655D 14.3%,
+  background: -o-linear-gradient(left, #73655D 0%,#73655D 14.3%,
     #8B7C27 14.3%, #8B7C27 28.6%,
     #45766B 28.6%, #45766B 42.9%,
     #377519 42.9%, #377519 57.3%,
     #7E2965 57.3%, #7E2965 71.7%,
     #761B17 71.6%, #761B17 84.9%,
     #1C1249 84.9%, #1C1249); /* Opera 11.10+ */
-background: -ms-linear-gradient(left, #73655D 0%,#73655D 14.3%,
+  background: -ms-linear-gradient(left, #73655D 0%,#73655D 14.3%,
     #8B7C27 14.3%, #8B7C27 28.6%,
     #45766B 28.6%, #45766B 42.9%,
     #377519 42.9%, #377519 57.3%,
     #7E2965 57.3%, #7E2965 71.7%,
     #761B17 71.6%, #761B17 84.9%,
     #1C1249 84.9%, #1C1249); /* IE10+ */
-background: linear-gradient(to right, #73655D 0%,#73655D 14.3%,
+  background: linear-gradient(to right, #73655D 0%,#73655D 14.3%,
     #8B7C27 14.3%, #8B7C27 28.6%,
     #45766B 28.6%, #45766B 42.9%,
     #377519 42.9%, #377519 57.3%,
