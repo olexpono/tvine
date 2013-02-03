@@ -1,5 +1,6 @@
 var http = require('http');
 var https = require('https');
+var cheerio = require('cheerio');
 var url = require('url');
 //we'll want to cache things for sure.
 var redis = require('redis');
@@ -12,9 +13,18 @@ if(redisServer == 'nodejitsudb4622528573.redis.irstack.com'){
 }
 var express = require('express');
 var ejs   = require('ejs');
-
-
 var app = express();
+
+var twitter_creds= {
+  'consumerKey':'tQMRFGDXyeNobjg4ITI8Gw',
+  'consumerSecret': 'w4NoaJKp53hjx0rF0g5YJivIuKo9AEGVixoTWAohyA',
+  'requestToken_url': 'https://api.twitter.com/oauth/request_token',
+  'authorizeUrl': 'https://api.twitter.com/oauth/authorize',
+  'accessTokenUrl': 'https://api.twitter.com/oauth/access_token',
+  'jarrodAccessToken':'40843553-VlpHMZ72JFBVzXYBYulmBm4fuw6gXa8ix6VqA6Lw4',
+  'jarrodSecret':'UYMWAPaASCUljrRGNPxfnPCHo6lhXQ3grNzKWxFxhgo',
+  'callbackUrl': 'http://tvine.co/twcb'
+}
 
 // TODO - delete
 // whitelist for fileserving
@@ -56,6 +66,22 @@ function vineSnarf(query,page,method,callback){
     });
 
   });
+  
+}
+
+function twitterSnarf(query,page,method,callback){
+  client.zrange('vine:'+query,function(err,result){
+    if(result){
+
+    }else{
+      T.get('search/tweets', { q: 'vine.co '+query+' since:2013-01-21' }, function(err, reply) {
+            for(var i in reply.statuses){
+              storeTweet(reply.statuses[i]);
+            }
+        });
+    }
+  });
+  
   
 }
 
@@ -102,23 +128,87 @@ app.get("/", function(req, res) {
 });
 
 app.listen(3000);
+
 process.on('error',function(){
 //catch the error and do nothing
 });
+
 /*
 get popular from vine
 */
 function getPopular(){
   vineSnarf('','','/timelines/popular',function(data){
-	try{
+ try{
           var popPage = JSON.parse(data);
           client.set('popularNow',JSON.stringify(popPage.data.records[0]));
-	}catch(e){}
+ }catch(e){}
   });
 }
+/*
+  we can get popular when we have api access
 getPopular();
-
 //fetch popular 4 times per day (every 6 hours)
 setInterval(getPopular,21600);
+*/
 
 
+
+
+/*
+get popular from vine
+*/
+function getPopular(){
+  vineSnarf('','','/timelines/popular',function(data){
+      var popPage = JSON.parse(data);
+      client.set('popularNow',JSON.stringify(popPage.data.records[0]));
+  });
+}
+
+
+var Twit = require('twit')
+
+var T = new Twit({
+    consumer_key: 'tQMRFGDXyeNobjg4ITI8Gw',
+    consumer_secret: 'w4NoaJKp53hjx0rF0g5YJivIuKo9AEGVixoTWAohyA',
+    access_token: '40843553-VlpHMZ72JFBVzXYBYulmBm4fuw6gXa8ix6VqA6Lw4',
+    access_token_secret: 'UYMWAPaASCUljrRGNPxfnPCHo6lhXQ3grNzKWxFxhgo'
+  });
+
+
+
+/*
+  store tweets in redis zsets
+  vine:<tag> {<source_mp4>,<timestamp>}
+  all_vines  {<source_mp4>,<timestamp>}
+*/
+function storeTweet(tweet){
+  var url=tweet.entities.urls[0].expanded_url;
+  var tags = tweet.entities.hashtags;
+  if(url.indexOf('http://vine.co/')==0){
+    https.get({
+      host: 'vine.co',
+      path: '/v/'+url.split('/v/')[1]
+    }, function(res) {
+      var str='';
+      res.setEncoding('utf8');
+      res.on('data', function(chunk) {
+        str += chunk;
+      });
+      res.on('end', function() {
+        var $ = cheerio.load(str); //jquery-ish
+        var src = $('source').attr('src');
+        if(src.indexOf('.mp4') != -1){
+          if(tags){
+            for(var i in tags){
+              client.zadd('vine:'+tags[i]['text'],+new Date(),src);
+            }  
+          }
+          client.zadd('all_vines',+new Date(),src);
+        }
+      });
+    })
+  } 
+}
+
+// var stream = T.stream('statuses/filter', { track: 'vine' });
+// stream.on('tweet', storeTweet);
