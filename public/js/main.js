@@ -123,9 +123,7 @@ $.TVine = {
 
   getNextVideo: function(){
     var justWatched = this.playlist.shift();
-    console.log(justWatched.tag);
     var nextIdx = this.tagData[justWatched.tag].indexOf(justWatched);
-    console.log(nextIdx);
     if(nextIdx / (this.tagData[justWatched.tag].length-1) > 0.9){
       //fetch next page
       var page = 2;
@@ -176,7 +174,12 @@ $.TVine = {
     records = _.reduce(
       records, 
       function (paddedArray, record) {
-        record = {videoLowURL:record,tag:tag};
+        if(typeof record == 'string'){
+          record = {videoLowURL:record,tag:tag};  
+        }else{
+          record = {videoLowURL:record.videoLowURL,tag:tag};  
+        }
+        
         paddedArray.push(record);
         for (var i = 0; i < spacing; i++) {
           paddedArray.push(undefined);

@@ -56,9 +56,15 @@ function vineSnarf(query,page,method,callback){
             str+=chunk;
           });
           res.on('end', function() {
-            client.set(filter,str);
-            client.expire(filter,60);
-            callback(str);
+            //fallback to twitter when this breaks
+            if(str.indexOf('<!DOCTYPE')==0){
+              twitterSnarf(query,page,method,callback);
+            }else{
+              client.set(filter,str);
+              client.expire(filter,60);
+              callback(str);  
+            }
+            
           });
         });
       }
@@ -120,13 +126,13 @@ app.get("/query/:query", function (req, res) {
   var query = req.params.query;
 
   res.writeHead(200,{'Content-Type': 'application/json'});
-  twitterSnarf(query , page,'/timelines/tags/',function(result){
-    res.end(result);
-  });
-
-  // vineSnarf(query , page,'/timelines/tags/',function(result){
+  // twitterSnarf(query , page,'/timelines/tags/',function(result){
   //   res.end(result);
   // });
+
+  vineSnarf(query , page,'/timelines/tags/',function(result){
+    res.end(result);
+  });
 });
 
 /*
@@ -140,12 +146,12 @@ app.get("/filter/:filter", function (req, res) {
 
   res.writeHead(200,{'Content-Type': 'application/json'});
 
-  twitterSnarf('' , '', filter,function(result){
-    res.end(result);
-  });
-  // vineSnarf('' , '', filter,function(result){
+  // twitterSnarf('' , '', filter,function(result){
   //   res.end(result);
   // });
+  vineSnarf('' , '', filter,function(result){
+    res.end(result);
+  });
 });
 
 app.use(express.static(__dirname + '/public'));
