@@ -99,7 +99,15 @@ body {
   font-size: 14px;
   font-weight: 600;
   text-decoration: none;
+  -webkit-transition: opacity 0.1s ease;
+  -moz-transition: opacity 0.1s ease;
+  -o-transition: opacity 0.1s ease;
+  -ms-transition: opacity 0.1s ease;
+  transition: opacity 0.1s ease;
   color: #6becd3;
+}
+.sidebar .about a:hover {
+  opacity: 0.8;
 }
 .sidebar .about a ~ a {
   color: #fff38d;
