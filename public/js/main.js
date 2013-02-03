@@ -1,7 +1,7 @@
 /*
 need to store as an object 
 */
-
+console.log('hi');
 
 $.TVine = {
   init: function() {
@@ -75,9 +75,19 @@ $.TVine = {
     _.each(newTags,
       function(tag) {
         $.TVine.previousTags.push(tag);
-        $.get('/query/' + tag, function(data) {
-          $.TVine.addTag(tag, data);
-        });
+        console.log('in ',tag);
+
+        $.get('/query/'+tag,function(data){
+          $.TVine.addTag(tag,data);
+        })
+        // $.ajax({type:'GET',
+        //         url:'/query/'+tag,
+        //         dataType:'json'
+        //       }).always(function(d){
+        //         var data = JSON.parse(d.responseText);
+        //         console.log(data);
+        //         $.TVine.addTag(tag,data);
+        //       });
       }
     );
     _.each(removedTags,
@@ -110,6 +120,7 @@ $.TVine = {
 
   getNextVideo: function(){
     var justWatched = this.playlist.shift();
+    console.log(justWatched.tag);
     var nextIdx = this.tagData[justWatched.tag].indexOf(justWatched);
     console.log(nextIdx);
     if(nextIdx / (this.tagData[justWatched.tag].length-1) > 0.9){
@@ -146,7 +157,7 @@ $.TVine = {
 
   loadNextVideo: function(){
     this.video_ref.src(this.getNextVideo().videoLowURL);
-    this.video_ref.play();
+    this.video_ref.play();    
   },
 
   addVideos: function(tag, records) {
@@ -162,7 +173,7 @@ $.TVine = {
     records = _.reduce(
       records, 
       function (paddedArray, record) {
-        record.tag = tag;
+        record = {videoLowURL:record,tag:tag};
         paddedArray.push(record);
         for (var i = 0; i < spacing; i++) {
           paddedArray.push(undefined);
