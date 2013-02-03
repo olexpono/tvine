@@ -1,11 +1,11 @@
 /*
 need to store as an object 
 */
-console.log('hi');
 
 $.TVine = {
   init: function() {
     this.tagData = {};
+    this.tagData.noMore = [];
     this.currentTags  = [];
     this.previousTags = [];
     this.playlist     = [];
@@ -123,17 +123,19 @@ $.TVine = {
 
   getNextVideo: function(){
     var justWatched = this.playlist.shift();
-    var nextIdx = this.tagData[justWatched.tag].indexOf(justWatched);
-    if(nextIdx / (this.tagData[justWatched.tag].length-1) > 0.9){
+    var next = this.tagData[justWatched.tag];
+    var nextIdx= (!_.isUndefined(next))? next.indexOf(justWatched):-1;
+    var lastIdx = (!_.isUndefined(next))? next.length : -2;
+    if(nextIdx == lastIdx){
       //fetch next page
       var page = 2;
       if(this.tagData[justWatched.tag].page){
         ++this.tagData[justWatched.tag].page;
       }
-      if(!this.tagData[justWatched.tag].noMore){
+      if(!_.isUndefined(this.tagData.noMore(justWatched.tag))){
         $.get('/query/'+justWatched.tag+'?p='+page,function(data){
           if(data.data.records.length == 0){
-            $.TVine.tagData[justWatched.tag].noMore = true;
+            $.TVine.tagData.noMore.push(justWatched.tag);
           }else{
             $.TVine.addVideos(justWatched.tag,data.data.records);
           }
@@ -206,9 +208,18 @@ $.TVine = {
       _.filter(
         _.rest(this.playlist),
         function(queued) {
-          return $.TVine.tagData[tag].indexOf(queued) < 0;
+          return queued.tag != tag;
         }
       );
+    var tmp = {}
+    //rebuild tag data
+    for(var i in this.tagData){
+     if(i!=tag){
+      tmp[i]= this.tagData[i];
+     }
+    }
+         
+    this.tagData = tmp;                  
     this.playlist.push(currentVideo);
   },
   toggleMute: function(){
@@ -290,7 +301,7 @@ $.TVine = {
       $.TVine.adjustOnResize();
     });
 
-    $(document).idleTimer(3500, {startImmediately: false});
+    $(document).idleTimer(5000, {startImmediately: false});
     $(document).on( "idle.idleTimer", function() {
       $("body").addClass("idle");
     });
