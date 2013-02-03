@@ -294,11 +294,13 @@ body:not(.idle) .tag-input.clear ~ .input-overlay-message {
   transition: opacity 0.6s ease;
 }
 .tags .tag > a {
-  -webkit-transition: opacity 0.1s ease;
-  -moz-transition: opacity 0.1s ease;
-  -o-transition: opacity 0.1s ease;
-  -ms-transition: opacity 0.1s ease;
-  transition: opacity 0.1s ease;
+  background: transparent !important;
+  color: inherit !important;
+  -webkit-transition: opacity 0.1s ease, background 0.5s ease, color 0.5s ease;
+  -moz-transition: opacity 0.1s ease, background 0.5s ease, color 0.5s ease;
+  -o-transition: opacity 0.1s ease, background 0.5s ease, color 0.5s ease;
+  -ms-transition: opacity 0.1s ease, background 0.5s ease, color 0.5s ease;
+  transition: opacity 0.1s ease, background 0.5s ease, color 0.5s ease;
 }
 .tags .tag .close {
   position: absolute;
