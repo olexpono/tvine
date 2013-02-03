@@ -8,7 +8,9 @@
   "dependencies": {
     "express": "3.1.x",
     "redis": "0.8.x",
-    "ejs": "0.8.x"
+    "ejs": "0.8.x",
+    "twit": "1.0.x",
+    "cherrio":"0.10.x"
   },
   "devDependencies": {
     "grunt": "0.3.x",
