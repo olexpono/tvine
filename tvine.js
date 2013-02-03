@@ -48,7 +48,7 @@ function vineSnarf(query,page,method,callback){
           host: 'api.vineapp.com',
           path: filter,
           headers: {
-            'vine-session-id': (random_id) ? id_from_redis:'906277305146548224-5e08e0b8-4db0-4c4b-a062-3b1d13e7c6a4',
+            'vine-session-id': (random_id) ? random_id:'906277305146548224-5e08e0b8-4db0-4c4b-a062-3b1d13e7c6a4',
             'User-Agent': 'com.vine.iphone/1.0.1 (unknown, iPhone OS 6.0, iPhone, Scale/2.000000)'
           }
         }, function(res) {
