@@ -57,6 +57,9 @@ $.TVine = {
       );
       $.TVine.navigateToCurrentTags();
     });
+    setTimeout( function() {
+      rendered.find(".tag").removeClass("just-inserted");
+    }, 750);
   },
 
   /* Refreshes currentTags -> feed
