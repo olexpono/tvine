@@ -562,6 +562,7 @@ body.idle .tags:hover .tag > * {
 }
 .color-bars .bar:nth-child(4) {
   left: 42.9%;
+  width: 14.5%;
   background: #377519;
   -webkit-transition-delay: 0.3s;
   -moz-transition-delay: 0.3s;
