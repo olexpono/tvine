@@ -290,7 +290,7 @@ $.TVine = {
       $.TVine.adjustOnResize();
     });
 
-    $(document).idleTimer(3500, {startImmediately: false});
+    $(document).idleTimer(5000, {startImmediately: false});
     $(document).on( "idle.idleTimer", function() {
       $("body").addClass("idle");
     });
