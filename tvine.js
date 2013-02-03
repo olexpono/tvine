@@ -38,15 +38,17 @@ function vineSnarf(query,page,method,callback){
   page_str = (page)? '?page='+page+'&size=20&anchor=(null)' : '';
   filter = (query.length>1) ? method+query+page_str : method;
   client.get(filter,function(err,result){
-    client.get('session_id',function(_err,id_from_redis){
+   // client.get('session_id',function(_err,id_from_redis){
+   client.smembers('session_ids',function(_err,ids){
       if(result){
         callback(result);
       }else{
+        var random_id = ids[Math.floor(Math.random() * ids.length)];
         https.get({
           host: 'api.vineapp.com',
           path: filter,
           headers: {
-            'vine-session-id': (id_from_redis) ? id_from_redis:'906277305146548224-5e08e0b8-4db0-4c4b-a062-3b1d13e7c6a4',
+            'vine-session-id': (random_id) ? id_from_redis:'906277305146548224-5e08e0b8-4db0-4c4b-a062-3b1d13e7c6a4',
             'User-Agent': 'com.vine.iphone/1.0.1 (unknown, iPhone OS 6.0, iPhone, Scale/2.000000)'
           }
         }, function(res) {
@@ -126,9 +128,6 @@ app.get("/query/:query", function (req, res) {
   var query = req.params.query;
 
   res.writeHead(200,{'Content-Type': 'application/json'});
-  // twitterSnarf(query , page,'/timelines/tags/',function(result){
-  //   res.end(result);
-  // });
 
   vineSnarf(query , page,'/timelines/tags/',function(result){
     res.end(result);
@@ -197,12 +196,6 @@ setInterval(getPopular,21600);
 /*
 get popular from vine
 */
-function getPopular(){
-  vineSnarf('','','/timelines/popular',function(data){
-      var popPage = JSON.parse(data);
-      client.set('popularNow',JSON.stringify(popPage.data.records[0]));
-  });
-}
 
 
 
