@@ -133,7 +133,7 @@ body {
   position: absolute;
   left: 46px;
   bottom: 16px;
-  max-width: 170px;
+  max-width: 200px;
   font-size: 1.5em;
   font-weight: 100;
   text-align: left;
@@ -153,6 +153,7 @@ body:not(.idle) .tag-input.clear ~ .input-overlay-message {
 
 .tag-input:focus {
   padding: 16px 24px;
+  opacity: 1;
 }
 
 .tag-input {
@@ -172,6 +173,8 @@ body:not(.idle) .tag-input.clear ~ .input-overlay-message {
   font-size: 56px;
   font-weight: 100;
   font-family: "Roboto";
+  opacity: 0;
+
   -webkit-transition: width 0.1s ease,
                       opacity 0.5s ease,
                       background-color 0.5s ease;

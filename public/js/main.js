@@ -254,6 +254,9 @@ $.TVine = {
         $(".tag-input").removeClass("clear");
       }
     });
+    $(".tag-input").blur(function() {
+      $(".tag-input").val("");
+    });
 
     this.video_ref = _V_('current_video').ready(function(){
       this.play();
