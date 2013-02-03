@@ -317,6 +317,7 @@ body:not(.idle) .tag-input.clear ~ .input-overlay-message {
   background: #32018c;
 }
 .tags > :nth-child(7n+2) .tag,
+.tags > :nth-child(7n+2) .tag > a,
 .tags > .tag-input:nth-child(7n+2) {
   background: #e20b19;
   -webkit-transition-delay: 0.1s;
@@ -326,6 +327,7 @@ body:not(.idle) .tag-input.clear ~ .input-overlay-message {
   transition-delay: 0.1s;
 }
 .tags > :nth-child(7n+3) .tag,
+.tags > :nth-child(7n+3) .tag > a,
 .tags > .tag-input:nth-child(7n+3) {
   background: #f20ebf;
   -webkit-transition-delay: 0.2s;
@@ -335,6 +337,7 @@ body:not(.idle) .tag-input.clear ~ .input-overlay-message {
   transition-delay: 0.2s;
 }
 .tags > :nth-child(7n+4) .tag,
+.tags > :nth-child(7n+4) .tag > a,
 .tags > .tag-input:nth-child(7n+4) {
   background: #61e91a;
   -webkit-transition-delay: 0.3s;
@@ -344,6 +347,7 @@ body:not(.idle) .tag-input.clear ~ .input-overlay-message {
   transition-delay: 0.3s;
 }
 .tags > :nth-child(7n+5) .tag,
+.tags > :nth-child(7n+5) .tag > a,
 .tags > .tag-input:nth-child(7n+5) {
   background: #79e4c6;
   color: black;
@@ -354,6 +358,7 @@ body:not(.idle) .tag-input.clear ~ .input-overlay-message {
   transition-delay: 0.4s;
 }
 .tags > :nth-child(7n+6) .tag,
+.tags > :nth-child(7n+6) .tag > a,
 .tags > .tag-input:nth-child(7n+6) {
   background: #ffef84;
   color: black;
@@ -364,6 +369,7 @@ body:not(.idle) .tag-input.clear ~ .input-overlay-message {
   transition-delay: 0.5s;
 }
 .tags > :nth-child(7n+7) .tag,
+.tags > :nth-child(7n+7) .tag > a,
 .tags > .tag-input:nth-child(7n+7) {
   background: #d9baa7;
   color: black;
