@@ -2,29 +2,28 @@ var http = require('http');
 var https = require('https');
 var cheerio = require('cheerio');
 var url = require('url');
-//we'll want to cache things for sure.
 var redis = require('redis');
-
+var express = require('express');
+var ejs   = require('ejs');
 var redisServer   = process.env.REDIS_HOST || '127.0.0.1';
 var redisPassword = process.env.REDIS_PASS || 'nodejitsudb4622528573.redis.irstack.com:f327cfe980c971946e80b8e975fbebb4';
 var client = redis.createClient(null,redisServer);
 if(redisServer == 'nodejitsudb4622528573.redis.irstack.com'){
   client.auth(redisPassword);
 }
-var express = require('express');
-var ejs   = require('ejs');
+
+var Twit = require('twit');
+
+var T = new Twit({
+    consumer_key: 'tQMRFGDXyeNobjg4ITI8Gw',
+    consumer_secret: 'w4NoaJKp53hjx0rF0g5YJivIuKo9AEGVixoTWAohyA',
+    access_token: '40843553-VlpHMZ72JFBVzXYBYulmBm4fuw6gXa8ix6VqA6Lw4',
+    access_token_secret: 'UYMWAPaASCUljrRGNPxfnPCHo6lhXQ3grNzKWxFxhgo'
+  });
+
 var app = express();
 
-var twitter_creds= {
-  'consumerKey':'tQMRFGDXyeNobjg4ITI8Gw',
-  'consumerSecret': 'w4NoaJKp53hjx0rF0g5YJivIuKo9AEGVixoTWAohyA',
-  'requestToken_url': 'https://api.twitter.com/oauth/request_token',
-  'authorizeUrl': 'https://api.twitter.com/oauth/authorize',
-  'accessTokenUrl': 'https://api.twitter.com/oauth/access_token',
-  'jarrodAccessToken':'40843553-VlpHMZ72JFBVzXYBYulmBm4fuw6gXa8ix6VqA6Lw4',
-  'jarrodSecret':'UYMWAPaASCUljrRGNPxfnPCHo6lhXQ3grNzKWxFxhgo',
-  'callbackUrl': 'http://tvine.co/twcb'
-}
+
 
 // TODO - delete
 // whitelist for fileserving
@@ -57,32 +56,65 @@ function vineSnarf(query,page,method,callback){
             str+=chunk;
           });
           res.on('end', function() {
-            client.set(filter,str);
-            client.expire(filter,60);
-            callback(str);
+            //fallback to twitter when this breaks
+            if(str.indexOf('<!DOCTYPE')==0){
+              twitterSnarf(query,page,method,callback);
+            }else{
+              client.set(filter,str);
+              client.expire(filter,60);
+              callback(str);  
+            }
+            
           });
         });
       }
     });
 
   });
-  
 }
+function searchTwitter(query,callback){
+  T.get('search/tweets', { q: 'vine.co '+query+' since:2013-01-21',count:'40'}, function(err, reply) {
+    var len = reply.statuses.length;
+    var n = 0;
+        for(var i in reply.statuses){
+  //store it
+          storeTweet(reply.statuses[i]);
+          if(++n==len){
+  //return it just like we would w/o twitter (almost)
+            client.zrevrange('vine:'+query.toLowerCase(),'0','40',function(_err,_result){
+              if(_result){
+                var _ret = {data:{count:_result.length ,records:_result}};
+                callback(JSON.stringify(_ret));
+              }else{
+                var _ret = {data:{count:0,records:[]}}
+                callback(JSON.stringify(_ret));
+              }
+          })
+          }
+        }
 
+    });
+}
 function twitterSnarf(query,page,method,callback){
-  client.zrange('vine:'+query,function(err,result){
-    if(result){
+  client.zrevrange('vine:'+query.toLowerCase(),'0','40',function(err,result){
+    //if we dont already have this tag stored.
 
+    if(result){
+      if(result.length>40){
+        var _ret = {data:{count:_result.length ,records:_result}};
+        callback(JSON.stringify(_ret));
+      }else{
+        searchTwitter(query,function(d){
+          callback(d);
+        })
+      }
     }else{
-      T.get('search/tweets', { q: 'vine.co '+query+' since:2013-01-21' }, function(err, reply) {
-            for(var i in reply.statuses){
-              storeTweet(reply.statuses[i]);
-            }
-        });
+    //search for it
+      searchTwitter(query,function(d){
+        callback(d);
+      })
     }
   });
-  
-  
 }
 
 /*
@@ -94,6 +126,10 @@ app.get("/query/:query", function (req, res) {
   var query = req.params.query;
 
   res.writeHead(200,{'Content-Type': 'application/json'});
+  // twitterSnarf(query , page,'/timelines/tags/',function(result){
+  //   res.end(result);
+  // });
+
   vineSnarf(query , page,'/timelines/tags/',function(result){
     res.end(result);
   });
@@ -109,6 +145,10 @@ app.get("/filter/:filter", function (req, res) {
   filter  = '/timelines/' + filter;
 
   res.writeHead(200,{'Content-Type': 'application/json'});
+
+  // twitterSnarf('' , '', filter,function(result){
+  //   res.end(result);
+  // });
   vineSnarf('' , '', filter,function(result){
     res.end(result);
   });
@@ -165,15 +205,6 @@ function getPopular(){
 }
 
 
-var Twit = require('twit')
-
-var T = new Twit({
-    consumer_key: 'tQMRFGDXyeNobjg4ITI8Gw',
-    consumer_secret: 'w4NoaJKp53hjx0rF0g5YJivIuKo9AEGVixoTWAohyA',
-    access_token: '40843553-VlpHMZ72JFBVzXYBYulmBm4fuw6gXa8ix6VqA6Lw4',
-    access_token_secret: 'UYMWAPaASCUljrRGNPxfnPCHo6lhXQ3grNzKWxFxhgo'
-  });
-
 
 
 /*
@@ -197,14 +228,17 @@ function storeTweet(tweet){
       res.on('end', function() {
         var $ = cheerio.load(str); //jquery-ish
         var src = $('source').attr('src');
-        if(src.indexOf('.mp4') != -1){
-          if(tags){
-            for(var i in tags){
-              client.zadd('vine:'+tags[i]['text'],+new Date(),src);
-            }  
+        if(typeof src =='string'){
+           if(src.indexOf('.mp4') != -1){
+            if(tags){
+              for(var i in tags){
+                client.zadd('vine:'+tags[i]['text'],+new Date(),src);
+              }  
+            }
+            client.zadd('all_vines',+new Date(),src);
           }
-          client.zadd('all_vines',+new Date(),src);
         }
+        
       });
     })
   } 
@@ -213,3 +247,4 @@ if(redisServer != 'nodejitsudb4622528573.redis.irstack.com'){
   var stream = T.stream('statuses/filter', { track: 'vine' });
   stream.on('tweet', storeTweet);  
 }
+
