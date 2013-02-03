@@ -19,7 +19,7 @@ $.TVine = {
 
     $(".tag-input").autoGrowInput({
       maxWidth: 500,
-      minWidth: 70,
+      minWidth: 120,
       comfortZone: 50
     });
     $(".tag-input").focus();

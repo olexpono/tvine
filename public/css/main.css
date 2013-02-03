@@ -122,30 +122,29 @@ body {
   height: 35px !important;
 }
 .logo {
-  padding: 4px 6px;
-  color: white;
-  background: red;
   position: absolute;
-  top: 16px;
-  right: 20px;
-  -webkit-box-shadow: 0 0 1px black;
-  box-shadow: 0 0 1px black;
   z-index: 1337;
-  -webkit-transition: background 0.3s ease;
-  -moz-transition: background 0.3s ease;
-  -o-transition: background 0.3s ease;
-  -ms-transition: background 0.3s ease;
-  transition: background 0.3s ease;
-  font-weight: 400;
+  right: 38px;
+  top: 38px;
+  padding: 0.15em 0.5em 0.1em;
+  border: 0.2em solid white;
+  font-size: 1.25em;
+  font-weight: 600;
+  font-family: "Roboto";
+  letter-spacing: -0.01em;
+  box-shadow: inset 1px 1px 1px rgba(0, 0, 0, 0.5);
+  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.5);
+  cursor: default;
+  -webkit-transition: border-radius 35s linear;
 }
-.logo h1 {
-  font-size: 16px;
-  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
+.logo i {
+  font-size: 1.333em;
+  font-weight: 500;
+  line-height: 1.1em;
+  letter-spacing: 0px;
 }
-.logo span {
-  font-size: 13px;
-  font-weight: bold;
-  letter-spacing: 1px;
+.logo:hover {
+  border-radius: 10px;
 }
 #current_video {
   position: absolute;
@@ -187,7 +186,7 @@ body:not(.idle) .tag-input.clear ~ .input-overlay-message {
   left: 0;
   bottom: 0;
   display: block;
-  width: 80px;
+  width: 120px;
   padding: 10px 18px;
   background: transparent;
   border: none;
@@ -359,7 +358,7 @@ body:not(.idle) .tag-input.clear ~ .input-overlay-message {
   transition-delay: 0.6s;
 }
 body.idle .logo {
-  background: rgba(0, 0, 0, 0.4);
+  opacity: 0.5;
 }
 body.idle .tag-input {
   opacity: 0;
@@ -397,8 +396,20 @@ body.idle .tags:hover .tag > * {
   -o-transition: height 1s ease;
   -ms-transition: height 1s ease;
   transition: height 1s ease;
+  background: -webkit-linear-gradient(left, #73655d 0%, #73655d 14.3%, #8b7c27 14.3%, #8b7c27 28.6%, #45766b 28.6%, #45766b 42.9%, #377519 42.9%, #377519 57.3%, #7e2965 57.3%, #7e2965 71.7%, #761b17 71.6%, #761b17 84.9%, #1c1249 84.9%, #1c1249);
+  /* Chrome10+,Safari5.1+ */
+
+  background: -o-linear-gradient(left, #73655d 0%, #73655d 14.3%, #8b7c27 14.3%, #8b7c27 28.6%, #45766b 28.6%, #45766b 42.9%, #377519 42.9%, #377519 57.3%, #7e2965 57.3%, #7e2965 71.7%, #761b17 71.6%, #761b17 84.9%, #1c1249 84.9%, #1c1249);
+  /* Opera 11.10+ */
+
+  background: -ms-linear-gradient(left, #73655d 0%, #73655d 14.3%, #8b7c27 14.3%, #8b7c27 28.6%, #45766b 28.6%, #45766b 42.9%, #377519 42.9%, #377519 57.3%, #7e2965 57.3%, #7e2965 71.7%, #761b17 71.6%, #761b17 84.9%, #1c1249 84.9%, #1c1249);
+  /* IE10+ */
+
+  background: linear-gradient(to right, #73655d 0%, #73655d 14.3%, #8b7c27 14.3%, #8b7c27 28.6%, #45766b 28.6%, #45766b 42.9%, #377519 42.9%, #377519 57.3%, #7e2965 57.3%, #7e2965 71.7%, #761b17 71.7%, #761b17 84.9%, #1c1249 84.9%, #1c1249);
+  /* W3C */
+
 }
-.stripe-backgroundj .overlay.shown {
+.overlay.shown {
   height: 100%;
   -webkit-transition: height 0s ease;
   -moz-transition: height 0s ease;
@@ -406,9 +417,9 @@ body.idle .tags:hover .tag > * {
   -ms-transition: height 0s ease;
   transition: height 0s ease;
 }
-.stripe-backgroundj .overlay.shown h1,
-.stripe-backgroundj .overlay.shown h2,
-.stripe-backgroundj .overlay.shown .attribution {
+.overlay.shown h1,
+.overlay.shown h2,
+.overlay.shown .attribution {
   opacity: 1;
 }
 .overlay h1,

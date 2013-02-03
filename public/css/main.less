@@ -83,30 +83,30 @@ body {
 }
 
 .logo {
-  padding: 4px 6px;
-  color: white;
-  background: red;
   position: absolute;
-  top: 16px;
-  right: 20px;
-  -webkit-box-shadow: 0 0 1px black;
-  box-shadow: 0 0 1px black;
   z-index: 1337;
-  -webkit-transition: background 0.3s ease;
-	-moz-transition: background 0.3s ease;
-	-o-transition: background 0.3s ease;
-	-ms-transition: background 0.3s ease;
-	transition: background 0.3s ease;
-
-  font-weight: 400;
-  h1 {
-    font-size: 16px;
-    text-shadow: 0 1px 1px rgba(0,0,0,0.3);
+  right: 38px;
+  top: 38px;
+  padding: 0.15em 0.5em 0.1em;
+  border: 0.2em solid white;
+  font-size: 1.25em;
+  font-weight: 600;
+  font-family: "Roboto";
+  letter-spacing: -0.01em;
+  box-shadow: inset 1px 1px 1px rgba(0,0,0,0.5);
+  text-shadow: 1px 1px 1px rgba(0,0,0,0.5);
+  cursor: default;
+  i {
+    font-size: 1.333em;
+    font-weight: 500;
+    line-height: 1.1em;
+    letter-spacing: 0px;
   }
-  span {
-    font-size: 13px;
-    font-weight: bold;
-    letter-spacing: 1px;
+
+  -webkit-transition: border-radius 35s linear;
+
+  &:hover {
+    border-radius: 10px;
   }
 }
 
@@ -155,7 +155,7 @@ body:not(.idle) .tag-input.clear ~ .input-overlay-message {
   left: 0;
   bottom: 0;
   display: block;
-  width: 80px;
+  width: 120px;
   padding: 10px 18px;
   background: transparent;
   border: none;
@@ -343,7 +343,7 @@ body:not(.idle) .tag-input.clear ~ .input-overlay-message {
 
 body.idle {
   .logo {
-    background: rgba(0,0,0,0.4);
+    opacity: 0.5;
   }
 
   .tag-input {
@@ -387,7 +387,7 @@ body.idle {
   -ms-transition: height 1s ease;
   transition: height 1s ease;
 
-  .stripe-backgroundj
+  .stripe-background;
 
   &.shown {
     height: 100%;
