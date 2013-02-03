@@ -1,6 +1,6 @@
 {
   "name": "tvine",
-  "version": "0.0.6-2",
+  "version": "0.0.6-3",
   "private": true,
   "scripts": {
     "start": "node tvine.js"
@@ -10,7 +10,7 @@
     "redis": "0.8.x",
     "ejs": "0.8.x",
     "twit": "1.0.x",
-    "cherrio":"0.10.x"
+    "cheerio": "0.10.x"
   },
   "devDependencies": {
     "grunt": "0.3.x",

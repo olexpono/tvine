@@ -123,7 +123,7 @@ body {
 }
 .logo {
   position: absolute;
-  z-index: 1337;
+  z-index: 99;
   right: 38px;
   top: 38px;
   padding: 0.15em 0.5em 0.1em;
@@ -165,9 +165,11 @@ body {
 }
 .input-overlay-message {
   position: absolute;
-  left: 26px;
-  bottom: 12px;
-  max-width: 135px;
+  left: 46px;
+  bottom: 16px;
+  max-width: 170px;
+  font-size: 1.5em;
+  font-weight: 100;
   text-align: left;
   opacity: 0;
   pointer-events: none;
@@ -180,14 +182,17 @@ body {
 body:not(.idle) .tag-input.clear ~ .input-overlay-message {
   opacity: 1;
 }
+.tag-input:focus {
+  padding: 16px 24px;
+}
 .tag-input {
   position: absolute;
-  z-index: 3001;
+  z-index: 10;
   left: 0;
   bottom: 0;
   display: block;
-  width: 120px;
-  padding: 10px 18px;
+  width: 100px;
+  padding: 140px 280px 16px 24px;
   background: transparent;
   border: none;
   border-radius: 0;
@@ -196,7 +201,7 @@ body:not(.idle) .tag-input.clear ~ .input-overlay-message {
   outline: none;
   color: white;
   margin: 0 0 0 auto;
-  font-size: 40px;
+  font-size: 56px;
   font-weight: 100;
   font-family: "Roboto";
   -webkit-transition: width 0.1s ease, opacity 0.5s ease, background-color 0.5s ease;
@@ -218,7 +223,7 @@ body:not(.idle) .tag-input.clear ~ .input-overlay-message {
 .tag-input:after {
   content: '';
   position: absolute;
-  z-index: 3000;
+  z-index: 9;
   top: 0;
   right: 0;
   bottom: 0;
@@ -233,43 +238,58 @@ body:not(.idle) .tag-input.clear ~ .input-overlay-message {
   color: white;
   display: block;
   text-align: right;
+  /**
+#32018c
+#e20b19
+#f20ebf
+#61e91a
+#79e4c6
+#ffef84
+#d9baa7
+
+  */
+
 }
 .tags li {
   display: block;
   overflow: hidden;
 }
-.tags:hover .tag {
+.tags:hover .tag:not(.just-inserted) {
   letter-spacing: 0;
   padding: 9px 34px 9px 14px;
 }
-.tags:hover .tag > * {
+.tags:hover .tag:not(.just-inserted) > * {
   opacity: 1;
 }
-.tags:hover .tag > a {
+.tags:hover .tag:not(.just-inserted) > a {
   -webkit-transition: opacity 0.75s ease;
   -moz-transition: opacity 0.75s ease;
   -o-transition: opacity 0.75s ease;
   -ms-transition: opacity 0.75s ease;
   transition: opacity 0.75s ease;
 }
+.tags .tag:not(.just-inserted) {
+  padding: 9px 0 9px 0;
+  letter-spacing: -7px;
+}
+.tags .tag:not(.just-inserted) > * {
+  opacity: 0;
+}
 .tags .tag {
   position: relative;
   display: inline-block;
   color: white;
-  padding: 9px 0 9px 0;
   width: auto;
   min-width: 9px;
+  padding: 9px 34px 9px 14px;
   font-size: 13.5px;
   font-weight: 600;
-  letter-spacing: -7px;
+  letter-spacing: 0;
   -webkit-transition: padding 0.3s linear, letter-spacing 0.3s ease, width 0.3s ease, background 0.5s ease, color 0.5s ease;
   -moz-transition: padding 0.3s linear, letter-spacing 0.3s ease, width 0.3s ease, background 0.5s ease, color 0.5s ease;
   -o-transition: padding 0.3s linear, letter-spacing 0.3s ease, width 0.3s ease, background 0.5s ease, color 0.5s ease;
   -ms-transition: padding 0.3s linear, letter-spacing 0.3s ease, width 0.3s ease, background 0.5s ease, color 0.5s ease;
   transition: padding 0.3s linear, letter-spacing 0.3s ease, width 0.3s ease, background 0.5s ease, color 0.5s ease;
-}
-.tags .tag > * {
-  opacity: 0;
 }
 .tags .tag > span {
   -webkit-transition: opacity 0.6s ease;
@@ -279,11 +299,13 @@ body:not(.idle) .tag-input.clear ~ .input-overlay-message {
   transition: opacity 0.6s ease;
 }
 .tags .tag > a {
-  -webkit-transition: opacity 0.1s ease;
-  -moz-transition: opacity 0.1s ease;
-  -o-transition: opacity 0.1s ease;
-  -ms-transition: opacity 0.1s ease;
-  transition: opacity 0.1s ease;
+  background: transparent !important;
+  color: inherit !important;
+  -webkit-transition: opacity 0.1s ease, background 0.5s ease, color 0.5s ease;
+  -moz-transition: opacity 0.1s ease, background 0.5s ease, color 0.5s ease;
+  -o-transition: opacity 0.1s ease, background 0.5s ease, color 0.5s ease;
+  -ms-transition: opacity 0.1s ease, background 0.5s ease, color 0.5s ease;
+  transition: opacity 0.1s ease, background 0.5s ease, color 0.5s ease;
 }
 .tags .tag .close {
   position: absolute;
@@ -299,11 +321,12 @@ body:not(.idle) .tag-input.clear ~ .input-overlay-message {
 }
 .tags > :nth-child(7n+1) .tag,
 .tags > .tag-input:nth-child(7n+1) {
-  background: red;
+  background: #32018c;
 }
 .tags > :nth-child(7n+2) .tag,
+.tags > :nth-child(7n+2) .tag > a,
 .tags > .tag-input:nth-child(7n+2) {
-  background: green;
+  background: #e20b19;
   -webkit-transition-delay: 0.1s;
   -moz-transition-delay: 0.1s;
   -o-transition-delay: 0.1s;
@@ -311,8 +334,9 @@ body:not(.idle) .tag-input.clear ~ .input-overlay-message {
   transition-delay: 0.1s;
 }
 .tags > :nth-child(7n+3) .tag,
+.tags > :nth-child(7n+3) .tag > a,
 .tags > .tag-input:nth-child(7n+3) {
-  background: blue;
+  background: #f20ebf;
   -webkit-transition-delay: 0.2s;
   -moz-transition-delay: 0.2s;
   -o-transition-delay: 0.2s;
@@ -320,9 +344,9 @@ body:not(.idle) .tag-input.clear ~ .input-overlay-message {
   transition-delay: 0.2s;
 }
 .tags > :nth-child(7n+4) .tag,
+.tags > :nth-child(7n+4) .tag > a,
 .tags > .tag-input:nth-child(7n+4) {
-  background: yellow;
-  color: black;
+  background: #61e91a;
   -webkit-transition-delay: 0.3s;
   -moz-transition-delay: 0.3s;
   -o-transition-delay: 0.3s;
@@ -330,8 +354,9 @@ body:not(.idle) .tag-input.clear ~ .input-overlay-message {
   transition-delay: 0.3s;
 }
 .tags > :nth-child(7n+5) .tag,
+.tags > :nth-child(7n+5) .tag > a,
 .tags > .tag-input:nth-child(7n+5) {
-  background: cyan;
+  background: #79e4c6;
   color: black;
   -webkit-transition-delay: 0.4s;
   -moz-transition-delay: 0.4s;
@@ -340,8 +365,10 @@ body:not(.idle) .tag-input.clear ~ .input-overlay-message {
   transition-delay: 0.4s;
 }
 .tags > :nth-child(7n+6) .tag,
+.tags > :nth-child(7n+6) .tag > a,
 .tags > .tag-input:nth-child(7n+6) {
-  background: gray;
+  background: #ffef84;
+  color: black;
   -webkit-transition-delay: 0.5s;
   -moz-transition-delay: 0.5s;
   -o-transition-delay: 0.5s;
@@ -349,8 +376,10 @@ body:not(.idle) .tag-input.clear ~ .input-overlay-message {
   transition-delay: 0.5s;
 }
 .tags > :nth-child(7n+7) .tag,
+.tags > :nth-child(7n+7) .tag > a,
 .tags > .tag-input:nth-child(7n+7) {
-  background: #FF00FF;
+  background: #d9baa7;
+  color: black;
   -webkit-transition-delay: 0.6s;
   -moz-transition-delay: 0.6s;
   -o-transition-delay: 0.6s;
@@ -364,8 +393,8 @@ body.idle .tag-input {
   opacity: 0;
 }
 body.idle .tags .tag {
-  min-width: 3px;
-  width: 3px;
+  min-width: 0px;
+  width: 0px;
 }
 body.idle .tags:hover .tag {
   padding: 9px 0;
@@ -390,7 +419,8 @@ body.idle .tags:hover .tag > * {
   height: 0;
   margin-left: auto;
   text-align: center;
-  z-index: 4000;
+  z-index: 2000;
+  overflow: hidden;
   -webkit-transition: height 1s ease;
   -moz-transition: height 1s ease;
   -o-transition: height 1s ease;

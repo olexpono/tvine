@@ -19,7 +19,7 @@ $.TVine = {
 
     $(".tag-input").autoGrowInput({
       maxWidth: 500,
-      minWidth: 120,
+      minWidth: 90,
       comfortZone: 50
     });
     $(".tag-input").focus();
@@ -57,6 +57,9 @@ $.TVine = {
       );
       $.TVine.navigateToCurrentTags();
     });
+    setTimeout( function() {
+      rendered.find(".tag").removeClass("just-inserted");
+    }, 750);
   },
 
   /* Refreshes currentTags -> feed
