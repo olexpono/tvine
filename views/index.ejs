@@ -9,6 +9,8 @@
         <title></title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width">
+        <link rel="icon" type="image/png" href="apple-touch-icon.png">
+        <link rel="shortcut icon" href="favicon.ico">
         <link rel="stylesheet" href="css/reset.css">
         <link rel="stylesheet" href="css/main.css">
         <link href='http://fonts.googleapis.com/css?family=Roboto:100,700,400' rel='stylesheet' type='text/css'>
@@ -21,27 +23,31 @@
         <div class="container">
           <div class="video-box">
             <header class="overlay shown">
+              <div class="color-bars">
+                <div class="bar"></div>
+                <div class="bar"></div><div class="bar"></div>
+                <div class="bar"></div><div class="bar"></div>
+                <div class="bar"></div><div class="bar"></div>
+              </div>
               <h1>TV<i>ine</i></h1>
               <h2>A personalized channel of videos posted to Vine.</h2>
               <div class="attribution">TVine is not affiliated with or endorsed by <a target="_blank" href="http://vine.co">Vine</a> in any way.</div>
             </header>
-            <div class="logo">
-              <h1><span>TV</span>ine</h1>
-            </div>
+            <h1 class="logo">TV<i>ine</i></h1>
             <video id="current_video" class=""  loop preload="auto" data-setup="{}">
               <source type="video/mp4" src="<%= popularVine.videoLowURL %>">
             </video>
             <video id="video_preloader" style="display:none" preload="auto"></video>
             <section class="tags">
-              <input class="tag-input clear" type="text" />
-              <span class="input-overlay-message">What would you like to see?</span>
+              <input class="tag-input clear" tabindex="1" type="text" />
+              <span class="input-overlay-message">Type something here and hit Enter.</span>
             </section>
           </div>
           <div class="sidebar">
             <section class="about">
               <p class="creators">TVine was designed and developed by <a href="http://twitter.com/tholex">@tholex</a>, <a href="http://twitter.com/adkatrit">@adkatrit</a>, and <a href="http://twitter.com/super_haik">@super_haik</a>.</p>
               <a href="https://twitter.com/share" class="twitter-share-button" data-hashtags="tvine">Tweet</a>
-              <div class="fb-like" data-href="http://tvine.co" data-send="false" data-width="250"></div>
+              <div class="fb-like" data-href="http://tvine.co" data-send="false" data-width="250" data-show-faces="false"></div>
               <div class="disclaimer">TVine is not affiliated with or endorsed by Vine in any way.</div>
             </section>
           </div>

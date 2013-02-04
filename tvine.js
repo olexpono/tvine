@@ -1,20 +1,29 @@
 var http = require('http');
 var https = require('https');
+var cheerio = require('cheerio');
 var url = require('url');
-//we'll want to cache things for sure.
 var redis = require('redis');
-
+var express = require('express');
+var ejs   = require('ejs');
 var redisServer   = process.env.REDIS_HOST || '127.0.0.1';
 var redisPassword = process.env.REDIS_PASS || 'nodejitsudb4622528573.redis.irstack.com:f327cfe980c971946e80b8e975fbebb4';
 var client = redis.createClient(null,redisServer);
 if(redisServer == 'nodejitsudb4622528573.redis.irstack.com'){
   client.auth(redisPassword);
 }
-var express = require('express');
-var ejs   = require('ejs');
 
+var Twit = require('twit');
+
+var T = new Twit({
+    consumer_key: 'tQMRFGDXyeNobjg4ITI8Gw',
+    consumer_secret: 'w4NoaJKp53hjx0rF0g5YJivIuKo9AEGVixoTWAohyA',
+    access_token: '40843553-VlpHMZ72JFBVzXYBYulmBm4fuw6gXa8ix6VqA6Lw4',
+    access_token_secret: 'UYMWAPaASCUljrRGNPxfnPCHo6lhXQ3grNzKWxFxhgo'
+  });
 
 var app = express();
+
+
 
 // TODO - delete
 // whitelist for fileserving
@@ -29,15 +38,18 @@ function vineSnarf(query,page,method,callback){
   page_str = (page)? '?page='+page+'&size=20&anchor=(null)' : '';
   filter = (query.length>1) ? method+query+page_str : method;
   client.get(filter,function(err,result){
-    client.get('session_id',function(_err,id_from_redis){
+   // client.get('session_id',function(_err,id_from_redis){
+   client.smembers('session_ids',function(_err,ids){
       if(result){
         callback(result);
       }else{
+        var random_id = ids[Math.floor(Math.random() * ids.length)];
         https.get({
           host: 'api.vineapp.com',
           path: filter,
           headers: {
-            'vine-session-id': (id_from_redis) ? id_from_redis:'906281047212298240-3c6bc1dd-7517-42a5-85c2-75a79e804d9b'
+            'vine-session-id': (random_id) ? random_id:'906277305146548224-5e08e0b8-4db0-4c4b-a062-3b1d13e7c6a4',
+            'User-Agent': 'com.vine.iphone/1.0.1 (unknown, iPhone OS 6.0, iPhone, Scale/2.000000)'
           }
         }, function(res) {
           var str='';
@@ -46,16 +58,65 @@ function vineSnarf(query,page,method,callback){
             str+=chunk;
           });
           res.on('end', function() {
-            client.set(filter,str);
-            client.expire(filter,12);
-            callback(str);
+            //fallback to twitter when this breaks
+            if(str.indexOf('<!DOCTYPE')==0){
+              twitterSnarf(query,page,method,callback);
+            }else{
+              client.set(filter,str);
+              client.expire(filter,60);
+              callback(str);  
+            }
+            
           });
         });
       }
     });
 
   });
-  
+}
+function searchTwitter(query,callback){
+  T.get('search/tweets', { q: 'vine.co '+query+' since:2013-01-21',count:'40'}, function(err, reply) {
+    var len = reply.statuses.length;
+    var n = 0;
+        for(var i in reply.statuses){
+  //store it
+          storeTweet(reply.statuses[i]);
+          if(++n==len){
+  //return it just like we would w/o twitter (almost)
+            client.zrevrange('vine:'+query.toLowerCase(),'0','40',function(_err,_result){
+              if(_result){
+                var _ret = {data:{count:_result.length ,records:_result}};
+                callback(JSON.stringify(_ret));
+              }else{
+                var _ret = {data:{count:0,records:[]}}
+                callback(JSON.stringify(_ret));
+              }
+          })
+          }
+        }
+
+    });
+}
+function twitterSnarf(query,page,method,callback){
+  client.zrevrange('vine:'+query.toLowerCase(),'0','40',function(err,result){
+    //if we dont already have this tag stored.
+
+    if(result){
+      if(result.length>40){
+        var _ret = {data:{count:result.length ,records:result}};
+        callback(JSON.stringify(_ret));
+      }else{
+        searchTwitter(query,function(d){
+          callback(d);
+        })
+      }
+    }else{
+    //search for it
+      searchTwitter(query,function(d){
+        callback(d);
+      })
+    }
+  });
 }
 
 /*
@@ -67,7 +128,8 @@ app.get("/query/:query", function (req, res) {
   var query = req.params.query;
 
   res.writeHead(200,{'Content-Type': 'application/json'});
-  vineSnarf(query , page,'/timelines/tags/',function(result){
+
+  twitterSnarf(query , page,'/timelines/tags/',function(result){
     res.end(result);
   });
 });
@@ -82,7 +144,11 @@ app.get("/filter/:filter", function (req, res) {
   filter  = '/timelines/' + filter;
 
   res.writeHead(200,{'Content-Type': 'application/json'});
-  vineSnarf('' , '', filter,function(result){
+
+  // twitterSnarf('' , '', filter,function(result){
+  //   res.end(result);
+  // });
+  twitterSnarf('' , '', filter,function(result){
     res.end(result);
   });
 });
@@ -102,18 +168,76 @@ app.get("/", function(req, res) {
 
 app.listen(3000);
 
+process.on('error',function(){
+//catch the error and do nothing
+});
+
 /*
 get popular from vine
 */
 function getPopular(){
   vineSnarf('','','/timelines/popular',function(data){
-      var popPage = JSON.parse(data);
-      client.set('popularNow',JSON.stringify(popPage.data.records[0]));
+ try{
+          var popPage = JSON.parse(data);
+          client.set('popularNow',JSON.stringify(popPage.data.records[0]));
+ }catch(e){}
   });
 }
+/*
+  we can get popular when we have api access
 getPopular();
-
 //fetch popular 4 times per day (every 6 hours)
 setInterval(getPopular,21600);
+*/
 
+
+
+
+/*
+get popular from vine
+*/
+
+
+
+
+/*
+  store tweets in redis zsets
+  vine:<tag> {<source_mp4>,<timestamp>}
+  all_vines  {<source_mp4>,<timestamp>}
+*/
+function storeTweet(tweet){
+  var url=tweet.entities.urls[0].expanded_url;
+  var tags = tweet.entities.hashtags;
+  if(url.indexOf('http://vine.co/')==0){
+    https.get({
+      host: 'vine.co',
+      path: '/v/'+url.split('/v/')[1]
+    }, function(res) {
+      var str='';
+      res.setEncoding('utf8');
+      res.on('data', function(chunk) {
+        str += chunk;
+      });
+      res.on('end', function() {
+        var $ = cheerio.load(str); //jquery-ish
+        var src = $('source').attr('src');
+        if(typeof src =='string'){
+           if(src.indexOf('.mp4') != -1){
+            if(tags){
+              for(var i in tags){
+                client.zadd('vine:'+tags[i]['text'],+new Date(),src);
+              }  
+            }
+            client.zadd('all_vines',+new Date(),src);
+          }
+        }
+        
+      });
+    })
+  } 
+}
+if(redisServer != 'nodejitsudb4622528573.redis.irstack.com'){
+  var stream = T.stream('statuses/filter', { track: 'vine' });
+  stream.on('tweet', storeTweet);  
+}
 

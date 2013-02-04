@@ -2,10 +2,10 @@
 need to store as an object 
 */
 
-
 $.TVine = {
   init: function() {
     this.tagData = {};
+    this.tagData.noMore = [];
     this.currentTags  = [];
     this.previousTags = [];
     this.playlist     = [];
@@ -19,7 +19,7 @@ $.TVine = {
 
     $(".tag-input").autoGrowInput({
       maxWidth: 500,
-      minWidth: 70,
+      minWidth: 90,
       comfortZone: 50
     });
     $(".tag-input").focus();
@@ -57,6 +57,9 @@ $.TVine = {
       );
       $.TVine.navigateToCurrentTags();
     });
+    setTimeout( function() {
+      rendered.find(".tag").removeClass("just-inserted");
+    }, 750);
   },
 
   /* Refreshes currentTags -> feed
@@ -75,9 +78,19 @@ $.TVine = {
     _.each(newTags,
       function(tag) {
         $.TVine.previousTags.push(tag);
-        $.get('/query/' + tag, function(data) {
-          $.TVine.addTag(tag, data);
-        });
+        console.log('in ',tag);
+
+        $.get('/query/'+tag,function(data){
+          $.TVine.addTag(tag,data);
+        })
+        // $.ajax({type:'GET',
+        //         url:'/query/'+tag,
+        //         dataType:'json'
+        //       }).always(function(d){
+        //         var data = JSON.parse(d.responseText);
+        //         console.log(data);
+        //         $.TVine.addTag(tag,data);
+        //       });
       }
     );
     _.each(removedTags,
@@ -110,30 +123,31 @@ $.TVine = {
 
   getNextVideo: function(){
     var justWatched = this.playlist.shift();
-    var nextIdx = this.tagData[justWatched.tag].indexOf(justWatched);
-    console.log(nextIdx);
-    if(nextIdx / (this.tagData[justWatched.tag].length-1) > 0.9){
+    var next = this.tagData[justWatched.tag];
+    var nextIdx= (!_.isUndefined(next))? next.indexOf(justWatched):-1;
+    var lastIdx = (!_.isUndefined(next))? next.length : -2;
+    if(nextIdx == lastIdx){
       //fetch next page
       var page = 2;
       if(this.tagData[justWatched.tag].page){
         ++this.tagData[justWatched.tag].page;
       }
-      if(!this.tagData[justWatched.tag].noMore){
+      if(!_.isUndefined(this.tagData.noMore(justWatched.tag))){
         $.get('/query/'+justWatched.tag+'?p='+page,function(data){
           if(data.data.records.length == 0){
-            $.TVine.tagData[justWatched.tag].noMore = true;
+            $.TVine.tagData.noMore.push(justWatched.tag);
           }else{
             $.TVine.addVideos(justWatched.tag,data.data.records);
           }
         });
       }
-      console.log('almost the end of the line');
     }
     //preload the next video if it exists 
     if(typeof this.playlist[1] != 'undefined'){
       $('#video_preloader').attr('src',this.playlist[1].videoLowURL);
     }
     this.playlist.push(justWatched);
+    console.log(this.playlist[0].tag);
     return this.playlist[0];
   },
 
@@ -146,7 +160,7 @@ $.TVine = {
 
   loadNextVideo: function(){
     this.video_ref.src(this.getNextVideo().videoLowURL);
-    this.video_ref.play();
+    this.video_ref.play();    
   },
 
   addVideos: function(tag, records) {
@@ -162,7 +176,12 @@ $.TVine = {
     records = _.reduce(
       records, 
       function (paddedArray, record) {
-        record.tag = tag;
+        if(typeof record == 'string'){
+          record = {videoLowURL:record,tag:tag};  
+        }else{
+          record = {videoLowURL:record.videoLowURL,tag:tag};  
+        }
+        
         paddedArray.push(record);
         for (var i = 0; i < spacing; i++) {
           paddedArray.push(undefined);
@@ -185,13 +204,23 @@ $.TVine = {
     }
     var currentVideo = $.TVine.playlist[0];
     /* Currently playing video always preserved in case total videos goes to 0. */
+
     this.playlist =
       _.filter(
         _.rest(this.playlist),
-        function(queued) {
-          return $.TVine.tagData[tag].indexOf(queued) < 0;
+        function(queued){
+          return (queued.tag != tag);
         }
       );
+    var tmp = {}
+    //rebuild tag data
+    for(var i in this.tagData){
+     if(i != tag){
+      tmp[i]= this.tagData[i];
+     }
+    }
+         
+    this.tagData = tmp;                  
     this.playlist.push(currentVideo);
   },
   toggleMute: function(){
@@ -218,6 +247,7 @@ $.TVine = {
     console.log("height of video-box :: " + heightOfVideoBox);
     $(".video-box").css("padding-bottom", heightOfVideoBox);
     $(".container").css("max-height", heightOfVideoBox);
+    $(".overlay").css("width", heightOfVideoBox);
     $(".tags").css("width", heightOfVideoBox);
   },
 
@@ -250,6 +280,9 @@ $.TVine = {
         $(".tag-input").removeClass("clear");
       }
     });
+    $(".tag-input").blur(function() {
+      $(".tag-input").val("");
+    });
 
     this.video_ref = _V_('current_video').ready(function(){
       this.play();
@@ -269,7 +302,7 @@ $.TVine = {
       $.TVine.adjustOnResize();
     });
 
-    $(document).idleTimer(3500, {startImmediately: false});
+    $(document).idleTimer(5000, {startImmediately: false});
     $(document).on( "idle.idleTimer", function() {
       $("body").addClass("idle");
     });
