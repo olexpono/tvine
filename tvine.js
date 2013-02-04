@@ -206,6 +206,7 @@ get popular from vine
   all_vines  {<source_mp4>,<timestamp>}
 */
 function storeTweet(tweet){
+  if(typeof tweet.entities.urls[0] !='undefined'){
   var url=tweet.entities.urls[0].expanded_url;
   var tags = tweet.entities.hashtags;
   if(url.indexOf('http://vine.co/')==0){
@@ -226,15 +227,17 @@ function storeTweet(tweet){
             if(tags){
               for(var i in tags){
                 client.zadd('vine:'+tags[i]['text'],+new Date(),src);
-              }  
+              }
             }
             client.zadd('all_vines',+new Date(),src);
           }
         }
-        
+
       });
     })
-  } 
+  }
+
+  }
 }
 if(redisServer != 'nodejitsudb4622528573.redis.irstack.com'){
   var stream = T.stream('statuses/filter', { track: 'vine' });
