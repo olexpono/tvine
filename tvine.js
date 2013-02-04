@@ -103,7 +103,7 @@ function twitterSnarf(query,page,method,callback){
 
     if(result){
       if(result.length>40){
-        var _ret = {data:{count:_result.length ,records:_result}};
+        var _ret = {data:{count:result.length ,records:result}};
         callback(JSON.stringify(_ret));
       }else{
         searchTwitter(query,function(d){
@@ -129,7 +129,7 @@ app.get("/query/:query", function (req, res) {
 
   res.writeHead(200,{'Content-Type': 'application/json'});
 
-  vineSnarf(query , page,'/timelines/tags/',function(result){
+  twitterSnarf(query , page,'/timelines/tags/',function(result){
     res.end(result);
   });
 });
@@ -148,7 +148,7 @@ app.get("/filter/:filter", function (req, res) {
   // twitterSnarf('' , '', filter,function(result){
   //   res.end(result);
   // });
-  vineSnarf('' , '', filter,function(result){
+  twitterSnarf('' , '', filter,function(result){
     res.end(result);
   });
 });
