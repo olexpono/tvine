@@ -33,7 +33,8 @@ $.TVine = {
         // From here, split by +, fetch videos, and play
         console.log("Split ", tagstring.split("+"));
 
-        $.TVine.currentTags = _.sortBy( tagstring.split("+"), function(str) { return str; });
+        $.TVine.currentTags = _.sortBy( _.compact(tagstring.split("+")), function(str) { return str; });
+        $("[property='og:title']").attr("content", $.TVine.currentTags.join(", ") + " on TVine");
         $.TVine.refreshFeed();
       }
     );
