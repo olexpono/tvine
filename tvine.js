@@ -74,24 +74,28 @@ function vineSnarf(query,page,method,callback){
 }
 function searchTwitter(query,callback){
   T.get('search/tweets', { q: 'vine.co '+query+' since:2013-01-21',count:'40'}, function(err, reply) {
-    var len = reply.statuses.length;
-    var n = 0;
-        for(var i in reply.statuses){
-          storeTweet(reply.statuses[i]);
-          if(++n==len){
-            client.zrevrange('vine:'+query.toLowerCase(),'0','40',function(_err,_result){
-              if(_result){
-                var _ret = {data:{count:_result.length ,records:_result}};
-                callback(JSON.stringify(_ret));
-              }else{
-                var _ret = {data:{count:0,records:[]}}
-                callback(JSON.stringify(_ret));
-              }
-          })
-          }
-        }
-
-    });
+    if(err || !reply){
+      var _ret = {data:{count:0,records:[]}}
+      callback(JSON.stringify(_ret));
+    }else{
+      var len = reply.statuses.length;
+      var n = 0;
+      for(var i in reply.statuses){
+        storeTweet(reply.statuses[i]);
+        if(++n==len){
+          client.zrevrange('vine:'+query.toLowerCase(),'0','40',function(_err,_result){
+            if(_result){
+              var _ret = {data:{count:_result.length ,records:_result}};
+              callback(JSON.stringify(_ret));
+            }else{
+              var _ret = {data:{count:0,records:[]}}
+              callback(JSON.stringify(_ret));
+            }
+        })
+       }
+      }
+    }
+  });
 }
 function twitterSnarf(query,page,callback){
   var offset = (page-1)*40;
