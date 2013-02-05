@@ -25,9 +25,7 @@ var app = express();
 
 
 
-// TODO - delete
-// whitelist for fileserving
-// var wl = ['/js/isotope-min.js','/test.html','/css/style.css'];
+
 //https://api.vineapp.com/users/profiles/906345798374133760
 ///timelines/tags/nyc?page=2&size=20&anchor=(null)
 
@@ -59,12 +57,12 @@ function vineSnarf(query,page,method,callback){
           });
           res.on('end', function() {
             //fallback to twitter when this breaks
-            if(str.indexOf('<!DOCTYPE')==0){
-              twitterSnarf(query,page,method,callback);
-            }else{
+            if(str.indexOf('<!DOCTYPE') != 0){
               client.set(filter,str);
               client.expire(filter,60);
-              callback(str);  
+              callback(str)
+            }else{
+              twitterSnarf(query,page,method,callback);
             }
             
           });
@@ -79,10 +77,8 @@ function searchTwitter(query,callback){
     var len = reply.statuses.length;
     var n = 0;
         for(var i in reply.statuses){
-  //store it
           storeTweet(reply.statuses[i]);
           if(++n==len){
-  //return it just like we would w/o twitter (almost)
             client.zrevrange('vine:'+query.toLowerCase(),'0','40',function(_err,_result){
               if(_result){
                 var _ret = {data:{count:_result.length ,records:_result}};
@@ -97,24 +93,18 @@ function searchTwitter(query,callback){
 
     });
 }
-function twitterSnarf(query,page,method,callback){
-  client.zrevrange('vine:'+query.toLowerCase(),'0','40',function(err,result){
-    //if we dont already have this tag stored.
-
+function twitterSnarf(query,page,callback){
+  var page = (typeof page != 'undefined') ? page : 0;
+  var offset  = page*40;
+  client.zrevrange('vine:'+query.toLowerCase(),offset,'40',function(err,result){
     if(result){
-      if(result.length>40){
         var _ret = {data:{count:result.length ,records:result}};
         callback(JSON.stringify(_ret));
-      }else{
-        searchTwitter(query,function(d){
-          callback(d);
-        })
-      }
     }else{
     //search for it
       searchTwitter(query,function(d){
         callback(d);
-      })
+      });
     }
   });
 }
@@ -129,29 +119,47 @@ app.get("/query/:query", function (req, res) {
 
   res.writeHead(200,{'Content-Type': 'application/json'});
 
-  twitterSnarf(query , page,'/timelines/tags/',function(result){
+  twitterSnarf(query, page, function(result){
     res.end(result);
   });
 });
 
-/*
+/* DISABLED 
  * Examples:  /filter/global
  * Picks   :  /filter/promoted
  * Popular :  /filter/popular
- */
+
 app.get("/filter/:filter", function (req, res) {
   var filter = (req.params.filter) ? req.params.filter : 'global';
   filter  = '/timelines/' + filter;
 
   res.writeHead(200,{'Content-Type': 'application/json'});
 
-  // twitterSnarf('' , '', filter,function(result){
-  //   res.end(result);
-  // });
-  twitterSnarf('' , '', filter,function(result){
+
+  vineSnarf('' , '', filter,function(result){
     res.end(result);
   });
 });
+ */
+
+
+
+/*
+  tap into the vine
+*/
+app.get('/stream/:amount',function(req,res){
+  //impose limits
+  var amount = (req.params.amount > 0 && req.params.amount <= 15) 
+               ? req.params.amount : 15;
+  client.zrevrange('all_vines','0',amount,function(err,resp){
+      res.writeHead(200,{'Content-Type': 'application/json'});
+      if(err) res.end({status:'error'});
+      if(resp){
+        var _ret = {data:{count:resp.length ,records:resp}};
+        res.end(JSON.stringify(_ret));
+      }
+  })
+})
 
 app.use(express.static(__dirname + '/public'));
 app.set('view engine', 'ejs');
@@ -183,6 +191,8 @@ function getPopular(){
  }catch(e){}
   });
 }
+
+
 /*
   we can get popular when we have api access
 getPopular();
@@ -194,53 +204,55 @@ setInterval(getPopular,21600);
 
 
 /*
-get popular from vine
+ get the mp4 string from vine and store it 
+   vine:<tag> {<source_mp4>,<timestamp>}
+   all_vines  {<source_mp4>,<timestamp>}
 */
-
+function parseVine(url,tags){
+  https.get({
+    host: 'vine.co',
+    path: '/v/'+url.split('/v/')[1]
+  }, function(res) {
+    var str='';
+    res.setEncoding('utf8');
+    res.on('data', function(chunk) {
+      str += chunk;
+    });
+    res.on('end', function() {
+      var $ = cheerio.load(str); //jquery-ish
+      var src = $('source').attr('src');
+      if(typeof src =='string'){
+         if(src.indexOf('.mp4') != -1){
+          if(tags){
+            for(var i in tags){
+              client.zadd('vine:'+tags[i]['text'],+new Date(),src);
+            }
+          }
+          client.zadd('all_vines',+new Date(),src);
+        }
+      }
+    });
+  });
+}
 
 
 
 /*
-  store tweets in redis zsets
-  vine:<tag> {<source_mp4>,<timestamp>}
-  all_vines  {<source_mp4>,<timestamp>}
+  get the vine.co url from the tweet data.
 */
-function storeTweet(tweet){
+function parseTweet(tweet){
   if(typeof tweet.entities.urls[0] !='undefined'){
-  var url=tweet.entities.urls[0].expanded_url;
-  var tags = tweet.entities.hashtags;
-  if(url.indexOf('http://vine.co/')==0){
-    https.get({
-      host: 'vine.co',
-      path: '/v/'+url.split('/v/')[1]
-    }, function(res) {
-      var str='';
-      res.setEncoding('utf8');
-      res.on('data', function(chunk) {
-        str += chunk;
-      });
-      res.on('end', function() {
-        var $ = cheerio.load(str); //jquery-ish
-        var src = $('source').attr('src');
-        if(typeof src =='string'){
-           if(src.indexOf('.mp4') != -1){
-            if(tags){
-              for(var i in tags){
-                client.zadd('vine:'+tags[i]['text'],+new Date(),src);
-              }
-            }
-            client.zadd('all_vines',+new Date(),src);
-          }
-        }
-
-      });
-    })
-  }
+    var url=tweet.entities.urls[0].expanded_url;
+    var tags = tweet.entities.hashtags;
+    if(url.indexOf('http://vine.co/')==0){
+      parseVine(url,tags);
+    }
 
   }
 }
 if(redisServer != 'nodejitsudb4622528573.redis.irstack.com'){
   var stream = T.stream('statuses/filter', { track: 'vine' });
-  stream.on('tweet', storeTweet);  
+  stream.on('tweet', parseTweet);  
 }
+
 
