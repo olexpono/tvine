@@ -203,7 +203,7 @@ function getPopular(){
 getPopular();
 //lets leave this on until we get the realtime stuff done
 //fetch popular 4 times per day (every 6 hours)
-setInterval(getPopular,21600);
+setInterval(getPopular,21600000);
 
 
 
