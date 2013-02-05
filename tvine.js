@@ -94,9 +94,10 @@ function searchTwitter(query,callback){
     });
 }
 function twitterSnarf(query,page,callback){
-  var page = (typeof page != 'undefined') ? page : 0;
-  var offset  = page*40;
+  var offset = (page-1)*40;
+  var offset = (offset >= 0) ? offset : 0;
   client.zrevrange('vine:'+query.toLowerCase(),offset,'40',function(err,result){
+	console.log(result);
     if(result){
         var _ret = {data:{count:result.length ,records:result}};
         callback(JSON.stringify(_ret));
@@ -193,12 +194,12 @@ function getPopular(){
 }
 
 
-/*
-  we can get popular when we have api access
+
+// we can get popular when we have api access
 getPopular();
+//lets leave this on until we get the realtime stuff done
 //fetch popular 4 times per day (every 6 hours)
 setInterval(getPopular,21600);
-*/
 
 
 
