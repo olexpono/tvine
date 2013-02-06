@@ -13,9 +13,8 @@ $.TVine = {
     this.liveMode     = true;
     this.setupRoutes();
     this.setupListeners();
-//    this.fetchRecentVines();
 
-    /* Show header for first second only */
+    /* Show header for first three seconds only */
     setTimeout( function() {
       $(".overlay").removeClass("shown");
     }, 3000);
@@ -52,6 +51,7 @@ $.TVine = {
       }
     );
   },
+
   /* Utility to render a tag into stack */
   renderNewTag: function(val, count) {
     var tag_info = { tag: val, count: count };
@@ -62,7 +62,7 @@ $.TVine = {
         $.TVine.currentTags,
         function(tag) { return tag != tag_info.tag; }
       );
-        $.TVine.navigateToCurrentTags();  
+      $.TVine.navigateToCurrentTags();
     });
     setTimeout( function() {
       rendered.find(".tag").removeClass("just-inserted");
@@ -96,6 +96,7 @@ $.TVine = {
       }
     );
   },
+
   /* Utility used by refreshFeed, careful using this directly */
   addTag: function(tag, data) {
     if (data.data.records.length > 1){
@@ -106,6 +107,7 @@ $.TVine = {
     }
     //this.loop((this.currentTags.length == 0 ));
   },
+
   /* Utility used by refreshFeed, careful using this directly */
   removeTag: function(tag) {
     this.previousTags =
@@ -115,10 +117,17 @@ $.TVine = {
     this.removeVideos(tag);
     //this.loop((this.currentTags.length == 0 ));
   },
+
   toggleLive: function(isLive){
     this.liveMode = isLive;
   },
+
   getNextVideo: function(){
+    if (playlist.length < 1) {
+      // Go to Live Mode
+      window.location.hash = "";
+    }
+
     var justWatched = this.playlist.shift();
     if(typeof justWatched.tag =='undefined')
     var next = this.tagData[justWatched.tag];
@@ -154,6 +163,7 @@ $.TVine = {
     this.playlist.pop();
     return this.playlist[0];
   },
+
   /* return the next live video  and preload the following one*/
   getNextLiveVideo: function(){
     var justWatched = this.realtimeList.shift();
@@ -171,13 +181,13 @@ $.TVine = {
   loadNextVideo: function(){
     if(this.liveMode){
       this.video_ref.src(this.getNextLiveVideo());
-      this.video_ref.play();    
+      this.video_ref.play();
     }else{
       this.video_ref.src(this.getNextVideo().videoLowURL);
-      this.video_ref.play();      
+      this.video_ref.play();
     }
-    
   },
+
   addVideos: function(tag, records) {
     var spacing = 1;
 
@@ -194,12 +204,12 @@ $.TVine = {
     records = _.reduce(
       records, 
       function (paddedArray, record) {
-        if(typeof record == 'string'){
+        if (typeof record == 'string') {
           record = {videoLowURL:record,tag:tag};  
-        }else{
+        } else {
           record = {videoLowURL:record.videoLowURL,tag:tag};  
         }
-        
+
         paddedArray.push(record);
         for (var i = 0; i < spacing; i++) {
           paddedArray.push(undefined);
@@ -234,14 +244,15 @@ $.TVine = {
     var tmp = {}
     //rebuild tag data
     for(var i in this.tagData){
-     if(i != tag){
-      tmp[i] = this.tagData[i];
-     }
+      if(i != tag){
+        tmp[i] = this.tagData[i];
+      }
     }
-         
-    this.tagData = tmp;                  
+
+    this.tagData = tmp;
     this.playlist.push(currentVideo);
   },
+
   toggleMute: function(){
     if(this.video_ref.volume()){
       this.video_ref.volume(0);
@@ -249,6 +260,7 @@ $.TVine = {
       this.video_ref.volume(1);
     }
   },
+
   loop: function(turnLoopOn){
     if(turnLoopOn){
       $('video').attr('loop');
@@ -256,6 +268,7 @@ $.TVine = {
       $('video').removeAttr('loop');
     }
   },
+
   /* Update currentTags from a listener, then call this to navigate. */
   navigateToCurrentTags: function() {
     window.location.hash = this.currentTags.join("+");
@@ -273,11 +286,7 @@ $.TVine = {
   inputAlert: function(message) {
     $(".input-overlay-message").text(message);
   },
-  fetchRecentVines: function(){
-    $.get('/stream/20',function(){
-      
-    })
-  },
+
   setupListeners: function() {
     $(".tag-input").keyup(function(e) {
       if( $(".tag-input:focus") && e.keyCode == 13) {
@@ -316,7 +325,7 @@ $.TVine = {
         }
       });
       this.addEvent('ended',function(){
-          $.TVine.loadNextVideo();  
+          $.TVine.loadNextVideo();
       });
     });
     this.adjustOnResize();
@@ -361,7 +370,8 @@ $(function() {
   hasher.initialized.add(parseHash);
   hasher.changed.add(parseHash);
   hasher.init();
-//todo make this configurable
+
+  //todo make this configurable
   var socket = io.connect('http://tvine.co:8888');
     socket.on('vineTweet', function (data) {
       if($.TVine.realtimeList.length > 21 ){
@@ -370,4 +380,4 @@ $(function() {
       $.TVine.realtimeList.push(data);
     });
 });
-  
+
