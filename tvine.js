@@ -248,6 +248,7 @@ function parseVine(url,tags){
 
 
 /*
+ * TODO add check for retweet.  if it's been retweeted we don't want it.(repeat)
   get the vine.co url from the tweet data.
 */
 function parseTweet(tweet){
