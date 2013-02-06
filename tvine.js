@@ -27,13 +27,7 @@ var socketServer = http.createServer(app);
 var io = require('socket.io').listen(socketServer);
 
 io.set('log level', 1);
- io.set('transports', [
-    'websocket'
-  , 'flashsocket'
-  , 'htmlfile'
-  , 'xhr-polling'
-  , 'jsonp-polling'
-  ]);
+io.set('match origin protocol',true);
 socketServer.listen(8888);
 
 //https://api.vineapp.com/users/profiles/906345798374133760

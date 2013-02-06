@@ -359,7 +359,7 @@ $(function() {
   hasher.changed.add(parseHash);
   hasher.init();
 
-  var socket = io.connect('http://localhost:8888');
+  var socket = io.connect('http://tvine.co:8888');
     socket.on('vineTweet', function (data) {
       $.TVine.realtimeList.push(data);
     });
