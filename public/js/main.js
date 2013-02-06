@@ -37,7 +37,9 @@ $.TVine = {
         console.log("Split ", tagstring.split("+"));
 
         $.TVine.currentTags = _.sortBy( _.compact(tagstring.split("+")), function(str) { return str; });
+
         $("[property='og:title']").attr("content", $.TVine.currentTags.join(", ") + " on TVine");
+        $.TVine.toggleLive(false);
         $.TVine.refreshFeed();
       }
     );
@@ -45,6 +47,8 @@ $.TVine = {
       "/",
       function() {
         console.log("Default route detected.");
+        $.TVine.toggleLive(true);
+        $.TVine.refreshFeed();
       }
     );
   },
@@ -58,7 +62,7 @@ $.TVine = {
         $.TVine.currentTags,
         function(tag) { return tag != tag_info.tag; }
       );
-      $.TVine.navigateToCurrentTags();
+        $.TVine.navigateToCurrentTags();  
     });
     setTimeout( function() {
       rendered.find(".tag").removeClass("just-inserted");
@@ -76,8 +80,6 @@ $.TVine = {
     var removedTags =
       _.filter(this.previousTags,
                function(tag) { return $.TVine.currentTags.indexOf(tag) < 0; });
-    var end_of_array_check = newTags.length;
-    var count=0;
     _.each(newTags,
       function(tag) {
         $.TVine.previousTags.push(tag);
@@ -86,14 +88,6 @@ $.TVine = {
         $.get('/query/'+tag,function(data){
           $.TVine.addTag(tag,data);
         });
-        // $.ajax({type:'GET',
-        //         url:'/query/'+tag,
-        //         dataType:'json'
-        //       }).always(function(d){
-        //         var data = JSON.parse(d.responseText);
-        //         console.log(data);
-        //         $.TVine.addTag(tag,data);
-        //       });
       }
     );
     _.each(removedTags,
@@ -122,16 +116,7 @@ $.TVine = {
     //this.loop((this.currentTags.length == 0 ));
   },
   toggleLive: function(isLive){
-    if(isLive){
-      $('.live-mode').text('Tag Mode')
-                     .removeClass('live-on');
-      $('.tag').show();
-    }else{
-      $('.tag').hide();
-      $('.live-mode').text('Live Mode')
-                      .addClass('live-on');
-    }
-    this.liveMode= !isLive;
+    this.liveMode = isLive;
   },
   getNextVideo: function(){
     var justWatched = this.playlist.shift();
@@ -182,11 +167,9 @@ $.TVine = {
 
   loadNextVideo: function(){
     if(this.liveMode){
-      console.log('loading next live');
       this.video_ref.src(this.getNextLiveVideo());
       this.video_ref.play();    
     }else{
-      console.log('loading next not live');
       this.video_ref.src(this.getNextVideo().videoLowURL);
       this.video_ref.play();      
     }
@@ -229,7 +212,6 @@ $.TVine = {
           _.zip(this.playlist, records)
         )
       );
-      this.toggleLive(this.playlist.length>0);
   },
 
   removeVideos: function(tag) {
@@ -256,7 +238,6 @@ $.TVine = {
          
     this.tagData = tmp;                  
     this.playlist.push(currentVideo);
-    $.TVine.toggleLive(_.size(this.tagData)>1);
   },
   toggleMute: function(){
     if(this.video_ref.volume()){
@@ -309,11 +290,6 @@ $.TVine = {
           } else {
             $.TVine.inputAlert("");
           }
-          if($.TVine.currentTags.length>0){
-            $.TVine.toggleLive(false);
-          }else{
-            $.TVine.toggleLive(true);
-          }
         }
         $(".tag-input").val("");
       }
@@ -365,10 +341,6 @@ $.TVine = {
         }
       });
     });
-    $('.live-mode').on('click',function(e){
-      var isLive = $(this).hasClass('live-on');
-      $.TVine.toggleLive(isLive);
-    })
 
   }
 } /* END TVine */
