@@ -9,8 +9,11 @@ $.TVine = {
     this.currentTags  = [];
     this.previousTags = [];
     this.playlist     = [];
+    this.realtimeList = realtime;//first two are baked into template
+    this.liveMode     = true;
     this.setupRoutes();
     this.setupListeners();
+//    this.fetchRecentVines();
 
     /* Show header for first second only */
     setTimeout( function() {
@@ -45,7 +48,6 @@ $.TVine = {
       }
     );
   },
-
   /* Utility to render a tag into stack */
   renderNewTag: function(val, count) {
     var tag_info = { tag: val, count: count };
@@ -83,7 +85,7 @@ $.TVine = {
 
         $.get('/query/'+tag,function(data){
           $.TVine.addTag(tag,data);
-        })
+        });
         // $.ajax({type:'GET',
         //         url:'/query/'+tag,
         //         dataType:'json'
@@ -100,7 +102,6 @@ $.TVine = {
       }
     );
   },
-
   /* Utility used by refreshFeed, careful using this directly */
   addTag: function(tag, data) {
     if (data.data.records.length > 1){
@@ -109,7 +110,7 @@ $.TVine = {
     } else {
       this.inputAlert("No " + _.escape(tag) + " vines found.");
     }
-    this.loop((this.currentTags.length == 0 ))
+    //this.loop((this.currentTags.length == 0 ));
   },
   /* Utility used by refreshFeed, careful using this directly */
   removeTag: function(tag) {
@@ -117,13 +118,24 @@ $.TVine = {
       _.filter(this.previousTags,
                function(prevtag) { return prevtag != tag; });
     $(".tags [data-hashtag='" + tag + "']").parent().remove();
-
     this.removeVideos(tag);
-    this.loop((this.currentTags.length == 0 ))
+    //this.loop((this.currentTags.length == 0 ));
   },
-
+  toggleLive: function(isLive){
+    if(isLive){
+      $('.live-mode').text('Tag Mode')
+                     .removeClass('live-on');
+      $('.tag').show();
+    }else{
+      $('.tag').hide();
+      $('.live-mode').text('Live Mode')
+                      .addClass('live-on');
+    }
+    this.liveMode= !isLive;
+  },
   getNextVideo: function(){
     var justWatched = this.playlist.shift();
+    if(typeof justWatched.tag =='undefined')
     var next = this.tagData[justWatched.tag];
     var nextIdx= (!_.isUndefined(next))? next.indexOf(justWatched):-1;
     var lastIdx = (!_.isUndefined(next))? next.length : -2;
@@ -144,7 +156,7 @@ $.TVine = {
       }
     }
     //preload the next video if it exists 
-    if(typeof this.playlist[1] != 'undefined'){
+    if(!_.isUndefined(this.playlist[1])){
       $('#video_preloader').attr('src',this.playlist[1].videoLowURL);
     }
     this.playlist.push(justWatched);
@@ -152,20 +164,37 @@ $.TVine = {
     return this.playlist[0];
   },
 
-  /* circular list */
   getPreviousVideo: function(){
     this.playlist.unshift(_.last(this.playlist));
     this.playlist.pop();
     return this.playlist[0];
   },
-
-  loadNextVideo: function(){
-    this.video_ref.src(this.getNextVideo().videoLowURL);
-    this.video_ref.play();    
+  /* return the next live video  and preload the following one*/
+  getNextLiveVideo: function(){
+    var justWatched = this.realtimeList.shift()
+    this.realtimeList.push(justWatched);
+    if(!_.isUndefined(this.realtimeList[1])){
+      //preload the next video if it exists 
+      $('#video_preloader').attr('src',this.realtimeList[1]);
+    }
+    return this.realtimeList[0];
   },
 
+  loadNextVideo: function(){
+    if(this.liveMode){
+      console.log('loading next live');
+      this.video_ref.src(this.getNextLiveVideo());
+      this.video_ref.play();    
+    }else{
+      console.log('loading next not live');
+      this.video_ref.src(this.getNextVideo().videoLowURL);
+      this.video_ref.play();      
+    }
+    
+  },
   addVideos: function(tag, records) {
     var spacing = 1;
+
     this.tagData[tag] = _.compact(_.union(this.tagData[tag],records));
     /* Inject empty values into records to space them out,
      * then zip them with the current playlist.
@@ -173,7 +202,9 @@ $.TVine = {
 
     /* If all tags were the same page length, and we didn't want to stack more up closer
      * the /2 plus the Math function should be removed */
-    spacing = Math.floor(_.size(this.tagData) / 2);
+
+    spacing = Math.floor((_.size(this.tagData)-1) / 2);
+
     records = _.reduce(
       records, 
       function (paddedArray, record) {
@@ -191,12 +222,14 @@ $.TVine = {
       },
       []
     );
+
     this.playlist =
       _.compact(
         _.flatten(
           _.zip(this.playlist, records)
         )
       );
+      this.toggleLive(this.playlist.length>0);
   },
 
   removeVideos: function(tag) {
@@ -217,12 +250,13 @@ $.TVine = {
     //rebuild tag data
     for(var i in this.tagData){
      if(i != tag){
-      tmp[i]= this.tagData[i];
+      tmp[i] = this.tagData[i];
      }
     }
          
     this.tagData = tmp;                  
     this.playlist.push(currentVideo);
+    $.TVine.toggleLive(_.size(this.tagData)>1);
   },
   toggleMute: function(){
     if(this.video_ref.volume()){
@@ -255,7 +289,11 @@ $.TVine = {
   inputAlert: function(message) {
     $(".input-overlay-message").text(message);
   },
-
+  fetchRecentVines: function(){
+    $.get('/stream/20',function(){
+      
+    })
+  },
   setupListeners: function() {
     $(".tag-input").keyup(function(e) {
       if( $(".tag-input:focus") && e.keyCode == 13) {
@@ -270,6 +308,11 @@ $.TVine = {
             $.TVine.inputAlert("Now add a few more and sit back!");
           } else {
             $.TVine.inputAlert("");
+          }
+          if($.TVine.currentTags.length>0){
+            $.TVine.toggleLive(false);
+          }else{
+            $.TVine.toggleLive(true);
           }
         }
         $(".tag-input").val("");
@@ -294,7 +337,7 @@ $.TVine = {
         }
       });
       this.addEvent('ended',function(){
-        $.TVine.loadNextVideo();
+          $.TVine.loadNextVideo();  
       });
     });
     this.adjustOnResize();
@@ -321,7 +364,12 @@ $.TVine = {
           this.pause();
         }
       });
+    });
+    $('.live-mode').on('click',function(e){
+      var isLive = $(this).hasClass('live-on');
+      $.TVine.toggleLive(isLive);
     })
+
   }
 } /* END TVine */
 
@@ -339,4 +387,9 @@ $(function() {
   hasher.changed.add(parseHash);
   hasher.init();
 
+  var socket = io.connect('http://localhost:8888');
+    socket.on('vineTweet', function (data) {
+      $.TVine.realtimeList.push(data);
+    });
 });
+  

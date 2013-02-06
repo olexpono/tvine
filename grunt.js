@@ -15,6 +15,7 @@ module.exports = function(grunt) {
         'public/js/vendor/signals.min.js',
         'public/js/vendor/crossroads.min.js',
         'public/js/vendor/hasher.min.js',
+        'public/js/vendor/socketio.js',
         'public/js/templates.js',
         'public/js/plugins.js',
         'public/js/main.js'],

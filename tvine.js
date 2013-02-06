@@ -5,6 +5,7 @@ var url = require('url');
 var redis = require('redis');
 var express = require('express');
 var ejs   = require('ejs');
+
 var redisServer   = process.env.REDIS_HOST || '127.0.0.1';
 var redisPassword = process.env.REDIS_PASS || 'nodejitsudb4622528573.redis.irstack.com:f327cfe980c971946e80b8e975fbebb4';
 var client = redis.createClient(null,redisServer);
@@ -22,9 +23,18 @@ var T = new Twit({
   });
 
 var app = express();
+var socketServer = http.createServer(app);
+var io = require('socket.io').listen(socketServer);
 
-
-
+io.set('log level', 1);
+ io.set('transports', [
+    'websocket'
+  , 'flashsocket'
+  , 'htmlfile'
+  , 'xhr-polling'
+  , 'jsonp-polling'
+  ]);
+socketServer.listen(8888);
 
 //https://api.vineapp.com/users/profiles/906345798374133760
 ///timelines/tags/nyc?page=2&size=20&anchor=(null)
@@ -101,7 +111,6 @@ function twitterSnarf(query,page,callback){
   var offset = (page-1)*40;
   var offset = (offset >= 0) ? offset : 0;
   client.zrevrange('vine:'+query.toLowerCase(),offset,'40',function(err,result){
-	console.log(result);
     if(result){
         var _ret = {data:{count:result.length ,records:result}};
         callback(JSON.stringify(_ret));
@@ -171,11 +180,14 @@ app.set('view engine', 'ejs');
 
 app.get("/", function(req, res) {
   var version = process.env.VERSION || '1';
-  client.get('popularNow',function(err,data){
-    //could alternatively just store the video url in a env variable
-    //to save the call to redis and drop the redis dependency for index
-    var _data = JSON.parse(data);
-    res.render("index",{cachebust: version,popularVine: _data});
+  client.zrevrange('all_vines','0','2', function(err,vines){
+    var recentVine = vines[0];
+    var nextVine   = vines[1];
+    res.render("index",
+      {cachebust: version, 
+      recentVine: recentVine,
+      nextVine  : nextVine
+    });
   });
 });
 
@@ -191,8 +203,8 @@ get popular from vine
 function getPopular(){
   vineSnarf('','','/timelines/popular',function(data){
  try{
-          var popPage = JSON.parse(data);
-          client.set('popularNow',JSON.stringify(popPage.data.records[0]));
+      var popPage = JSON.parse(data);
+      client.set('popularNow',JSON.stringify(popPage.data.records[0]));
  }catch(e){}
   });
 }
@@ -200,11 +212,9 @@ function getPopular(){
 
 
 // we can get popular when we have api access
-getPopular();
 //lets leave this on until we get the realtime stuff done
 //fetch popular every hour
 setInterval(getPopular,3600000);
-
 
 
 
@@ -234,6 +244,7 @@ function parseVine(url,tags){
             }
           }
           client.zadd('all_vines',+new Date(),src);
+          io.sockets.volatile.emit('vineTweet',src);
         }
       }
     });
@@ -255,9 +266,10 @@ function parseTweet(tweet){
 
   }
 }
-if(redisServer != 'nodejitsudb4622528573.redis.irstack.com'){
+if(redisServer != 'nodejitsudb4622528573.redis.irstack.com'){//disable for nodejitsu
   var stream = T.stream('statuses/filter', { track: 'vine' });
   stream.on('tweet', parseTweet);  
 }
+
 
 
