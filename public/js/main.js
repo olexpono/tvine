@@ -361,8 +361,8 @@ $(function() {
   hasher.initialized.add(parseHash);
   hasher.changed.add(parseHash);
   hasher.init();
-
-  var socket = io.connect('http://localhost:8888');
+//todo make this configurable
+  var socket = io.connect('http://tvine.co:8888');
     socket.on('vineTweet', function (data) {
       if($.TVine.realtimeList.length > 21 ){
         $.TVine.realtimeList.shift();
