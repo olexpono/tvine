@@ -123,7 +123,7 @@ $.TVine = {
   },
 
   getNextVideo: function(){
-    if (playlist.length < 1) {
+    if (this.playlist.length < 1) {
       // Go to Live Mode
       window.location.hash = "";
     }
