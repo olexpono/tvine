@@ -13,7 +13,6 @@ $.TVine = {
     this.liveMode     = true;
     this.setupRoutes();
     this.setupListeners();
-//    this.fetchRecentVines();
 
     /* Show header for first second only */
     setTimeout( function() {
@@ -103,6 +102,8 @@ $.TVine = {
       this.addVideos(tag, data.data.records);
     } else {
       this.inputAlert("No " + _.escape(tag) + " vines found.");
+      this.currentTags = _.without(this.currentTags,tag);
+      this.navigateToCurrentTags();
     }
     //this.loop((this.currentTags.length == 0 ));
   },
@@ -158,7 +159,7 @@ $.TVine = {
   getNextLiveVideo: function(){
     var justWatched = this.realtimeList.shift();
     //limit this list to 20 videos
-    if(this.realtimeList < 20){
+    if(this.realtimeList < 3){
       this.realtimeList.push(justWatched);
     }
     if(!_.isUndefined(this.realtimeList[1])){
@@ -171,10 +172,8 @@ $.TVine = {
   loadNextVideo: function(){
     if(this.liveMode){
       this.video_ref.src(this.getNextLiveVideo());
-      //this.video_ref.play();    
     }else{
       this.video_ref.src(this.getNextVideo().videoLowURL);
-      //this.video_ref.play();      
     }
     this.video_ref.play();
   },
@@ -242,6 +241,7 @@ $.TVine = {
     this.tagData = tmp;                  
     this.playlist.push(currentVideo);
   },
+
   toggleMute: function(){
     if(this.video_ref.volume()){
       this.video_ref.volume(0);
@@ -249,6 +249,7 @@ $.TVine = {
       this.video_ref.volume(1);
     }
   },
+
   loop: function(turnLoopOn){
     if(turnLoopOn){
       $('video').attr('loop');
@@ -272,11 +273,6 @@ $.TVine = {
 
   inputAlert: function(message) {
     $(".input-overlay-message").text(message);
-  },
-  fetchRecentVines: function(){
-    $.get('/stream/20',function(){
-      
-    })
   },
   setupListeners: function() {
     $(".tag-input").keyup(function(e) {
@@ -310,11 +306,6 @@ $.TVine = {
     this.video_ref = _V_('current_video').ready(function(){
       this.play();
       var that = this;
-      this.addEvent('timeupdate',function(){
-        if(that.currentTime / that.duration > 0.5){
-          console.log('load next!');
-        }
-      });
       this.addEvent('error',function(){
         that.play();
       });
@@ -347,9 +338,10 @@ $.TVine = {
         }
       });
     });
-    $('#current_video').dblclick(function(){
-      $.TVine.loadNextVideo();
-    });
+    //why doesn't this work
+    //$('#current_video').dblclick(function(){
+    //  $.TVine.loadNextVideo();
+    //});
   }
 } /* END TVine */
 
@@ -368,11 +360,11 @@ $(function() {
   hasher.init();
 //todo make this configurable
   var socket = io.connect('http://tvine.co:8888');
-    socket.on('vineTweet', function (data) {
-      if($.TVine.realtimeList.length > 21 ){
-       $.TVine.realtimeList.splice(11,1); 
-      }
-      $.TVine.realtimeList.push(data);
-    });
+  socket.on('vineTweet', function (data) {
+    if($.TVine.realtimeList.length > 21 ){
+     $.TVine.realtimeList.splice(11,1); 
+    }
+    $.TVine.realtimeList.push(data);
+  });
 });
   
