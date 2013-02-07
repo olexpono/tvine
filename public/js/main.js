@@ -363,11 +363,11 @@ $(function() {
   hasher.init();
 //todo make this configurable
   var socket = io.connect('http://tvine.co:8888');
-    socket.on('vineTweet', function (data) {
-      if($.TVine.realtimeList.length > 21 ){
-        $.TVine.realtimeList.shift();
-      }
-      $.TVine.realtimeList.push(data);
-    });
+  socket.on('vineTweet', function (data) {
+    if($.TVine.realtimeList.length > 21 ){
+      $.TVine.realtimeList.shift();
+    }
+    $.TVine.realtimeList.push(data);
+  });
 });
   
