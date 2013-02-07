@@ -171,12 +171,12 @@ $.TVine = {
   loadNextVideo: function(){
     if(this.liveMode){
       this.video_ref.src(this.getNextLiveVideo());
-      this.video_ref.play();    
+      //this.video_ref.play();    
     }else{
       this.video_ref.src(this.getNextVideo().videoLowURL);
-      this.video_ref.play();      
+      //this.video_ref.play();      
     }
-    
+    this.video_ref.play();
   },
   addVideos: function(tag, records) {
     var spacing = 1;
@@ -315,6 +315,9 @@ $.TVine = {
           console.log('load next!');
         }
       });
+      this.addEvent('error',function(){
+        that.play();
+      });
       this.addEvent('ended',function(){
           $.TVine.loadNextVideo();  
       });
@@ -344,7 +347,9 @@ $.TVine = {
         }
       });
     });
-
+    $('#current_video').dblclick(function(){
+      $.TVine.loadNextVideo();
+    });
   }
 } /* END TVine */
 
@@ -365,7 +370,7 @@ $(function() {
   var socket = io.connect('http://tvine.co:8888');
     socket.on('vineTweet', function (data) {
       if($.TVine.realtimeList.length > 21 ){
-        $.TVine.realtimeList.shift();
+       $.TVine.realtimeList.splice(11,1); 
       }
       $.TVine.realtimeList.push(data);
     });
