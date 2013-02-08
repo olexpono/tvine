@@ -42,9 +42,9 @@
             </header>
             <h1 class="logo">6</h1>
             <video id="current_video" class=""  preload="auto" data-setup="{}">
-              <source type="video/mp4" src="<%= recentVine %>">
+              <source type="video/mp4" src="<%= vines[0] %>">
             </video>
-            <video id="video_preloader" style="display:none" src="<%= nextVine %>" preload="auto"></video>
+            <video id="video_preloader" style="display:none" src="<%= vines[1] %>" preload="auto"></video>
             <section class="tags">
               <input class="tag-input clear" tabindex="1" type="text" />
               <span class="input-overlay-message">Type something here and hit Enter.</span>
@@ -66,7 +66,7 @@
         <script>(function(d, s, id) { var js, fjs = d.getElementsByTagName(s)[0]; if (d.getElementById(id)) return; js = d.createElement(s); js.id = id; js.src = "//connect.facebook.net/en_US/all.js#xfbml=1"; fjs.parentNode.insertBefore(js, fjs); }(document, 'script', 'facebook-jssdk'));</script>
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js"></script>
         <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.8.1.min.js"></scr'+'ipt>')</script>
-        <script>var realtime = ['<%= recentVine %>','<%= nextVine%>']; </script>
+        <script>var realtime = '<%= vines %>'.split(","); </script>
         <script src="js/tvine-min.js?<%= cachebust %>"></script>
         <script type="text/javascript">
           var _gaq = _gaq || [];

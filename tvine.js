@@ -172,13 +172,12 @@ app.set('view engine', 'ejs');
 
 app.get("/", function(req, res) {
   var version = process.env.VERSION || '1';
-  client.zrevrange('all_vines','0','2', function(err,vines){
+  client.zrevrange('all_vines','0','10', function(err,vines){
     var recentVine = vines[0];
     var nextVine   = vines[1];
     res.render("index",
       {cachebust: version, 
-      recentVine: recentVine,
-      nextVine  : nextVine
+       vines: vines
     });
   });
 });
@@ -251,12 +250,17 @@ function parseVine(url,tags){
 */
 function parseTweet(tweet){
   if(typeof tweet.entities.urls[0] !='undefined'){
-    var url=tweet.entities.urls[0].expanded_url;
+    var url = tweet.entities.urls[0].expanded_url;
     var tags = tweet.entities.hashtags;
-    if(url.indexOf('http://vine.co/') == 0 && !tweet.retweeted){
-      parseVine(url,tags);
-    }
+    if(url.indexOf('http://vine.co/v/') == 0 
+       && tweet.source.indexOf('Vine for iOS') != -1){
 
+      client.sadd('vine_tweet',url,function(err,data){
+        if(data){
+          parseVine(url,tags);
+        }
+      });
+    }
   }
 }
 
