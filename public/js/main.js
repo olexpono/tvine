@@ -123,11 +123,6 @@ $.TVine = {
   },
 
   getNextVideo: function(){
-    if (this.playlist.length < 1) {
-      // Go to Live Mode
-      window.location.hash = "";
-    }
-
     var justWatched = this.playlist.shift();
     if(typeof justWatched.tag =='undefined')
     var next = this.tagData[justWatched.tag];
@@ -179,7 +174,11 @@ $.TVine = {
   },
 
   loadNextVideo: function(){
-    if(this.liveMode){
+    if (this.playlist.length < 1) {
+      // Go to Live View if we exhaust the playlist / no videos found.
+      window.location.hash = "";
+    }
+    if(this.liveMode || this.playlist.length < 1){
       this.video_ref.src(this.getNextLiveVideo());
       this.video_ref.play();
     }else{
@@ -372,12 +371,12 @@ $(function() {
   hasher.init();
 
   //todo make this configurable
-  var socket = io.connect('http://tvine.co:8888');
-    socket.on('vineTweet', function (data) {
-      if($.TVine.realtimeList.length > 21 ){
-        $.TVine.realtimeList.shift();
-      }
-      $.TVine.realtimeList.push(data);
-    });
+  var socket = io.connect('http://localhost:8888');
+  socket.on('vineTweet', function (data) {
+    if($.TVine.realtimeList.length > 21 ){
+      $.TVine.realtimeList.shift();
+    }
+    $.TVine.realtimeList.push(data);
+  });
 });
 
