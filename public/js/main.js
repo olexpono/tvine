@@ -265,7 +265,7 @@ $.TVine = {
       this.video_ref.volume(1);
     }
   },
-
+  
   loop: function(turnLoopOn){
     if(turnLoopOn){
       $('video').attr('loop');
@@ -293,7 +293,16 @@ $.TVine = {
   },
 
   setupListeners: function() {
+    $(document).keyup(function(e){
+      if(e.keyCode == 39){
+        $.TVine.loadNextVideo();
+      }
+      if(e.keyCode == 38){
+        $.TVine.video_ref.loop(!$.TVine.video_ref.loop())
+      }
+    });
     $(".tag-input").keyup(function(e) {
+
       if( $(".tag-input:focus") && e.keyCode == 13) {
         if ($.TVine.currentTags.indexOf($(".tag-input").val()) >= 0) {
           $.TVine.inputAlert("You're already watching that tag!");
