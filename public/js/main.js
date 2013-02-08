@@ -104,6 +104,8 @@ $.TVine = {
       this.addVideos(tag, data.data.records);
     } else {
       this.inputAlert("No " + _.escape(tag) + " vines found.");
+      this.currentTags = _.without(this.currentTags,tag);
+      this.navigateToCurrentTags();
     }
     //this.loop((this.currentTags.length == 0 ));
   },
@@ -126,8 +128,8 @@ $.TVine = {
     var justWatched = this.playlist.shift();
     if(typeof justWatched.tag =='undefined')
     var next = this.tagData[justWatched.tag];
-    var nextIdx= (!_.isUndefined(next))? next.indexOf(justWatched):-1;
-    var lastIdx = (!_.isUndefined(next))? next.length : -2;
+    var nextIdx= (!_.isUndefined(next)) ? next.indexOf(justWatched):-1;
+    var lastIdx = (!_.isUndefined(next)) ? next.length : -2;
     if(nextIdx == lastIdx){
       //fetch next page
       var page = 2;
@@ -162,8 +164,8 @@ $.TVine = {
   /* return the next live video  and preload the following one*/
   getNextLiveVideo: function(){
     var justWatched = this.realtimeList.shift();
-    //limit this list to 20 videos
-    if(this.realtimeList < 20){
+
+    if(this.realtimeList.length < 3){
       this.realtimeList.push(justWatched);
     }
     if(!_.isUndefined(this.realtimeList[1])){
@@ -178,13 +180,12 @@ $.TVine = {
       // Go to Live View if we exhaust the playlist / no videos found.
       window.location.hash = "";
     }
-    if(this.liveMode || this.playlist.length < 1){
+    if(this.liveMode || this.playlist.length < 1) {
       this.video_ref.src(this.getNextLiveVideo());
-      this.video_ref.play();
-    }else{
+    } else {
       this.video_ref.src(this.getNextVideo().videoLowURL);
-      this.video_ref.play();
     }
+    this.video_ref.play();
   },
 
   addVideos: function(tag, records) {
@@ -318,10 +319,8 @@ $.TVine = {
     this.video_ref = _V_('current_video').ready(function(){
       this.play();
       var that = this;
-      this.addEvent('timeupdate',function(){
-        if(that.currentTime / that.duration > 0.5){
-          console.log('load next!');
-        }
+      this.addEvent('error',function(){
+        that.play();
       });
       this.addEvent('ended',function(){
           $.TVine.loadNextVideo();
@@ -352,7 +351,10 @@ $.TVine = {
         }
       });
     });
-
+    //why doesn't this work
+    //$('#current_video').dblclick(function(){
+    //  $.TVine.loadNextVideo();
+    //});
   }
 } /* END TVine */
 
@@ -371,10 +373,10 @@ $(function() {
   hasher.init();
 
   //todo make this configurable
-  var socket = io.connect('http://localhost:8888');
+  var socket = io.connect('http://tvine.co:8888');
   socket.on('vineTweet', function (data) {
-    if($.TVine.realtimeList.length > 21 ){
-      $.TVine.realtimeList.shift();
+    if($.TVine.realtimeList.length > 21) {
+      $.TVine.realtimeList.splice(2,1);
     }
     $.TVine.realtimeList.push(data);
   });

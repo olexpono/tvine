@@ -253,7 +253,7 @@ function parseTweet(tweet){
   if(typeof tweet.entities.urls[0] !='undefined'){
     var url=tweet.entities.urls[0].expanded_url;
     var tags = tweet.entities.hashtags;
-    if(url.indexOf('http://vine.co/')==0){
+    if(url.indexOf('http://vine.co/') == 0 && !tweet.retweeted){
       parseVine(url,tags);
     }
 
