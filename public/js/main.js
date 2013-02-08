@@ -102,6 +102,7 @@ $.TVine = {
     if (data.data.records.length > 1){
       this.renderNewTag(tag, data.data.count);
       this.addVideos(tag, data.data.records);
+      _gaq.push(['_trackPageView','/tag/'+tag]);
     } else {
       this.inputAlert("No " + _.escape(tag) + " vines found.");
       this.currentTags = _.without(this.currentTags,tag);
