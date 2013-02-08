@@ -38,7 +38,7 @@ $.TVine = {
         $.TVine.currentTags = _.sortBy( _.compact(tagstring.split("+")), function(str) { return str; });
 
         $("[property='og:title']").attr("content", $.TVine.currentTags.join(", ") + " on Ch6");
-        $.TVine.toggleLive(false);
+        $.TVine.switchToTagMode();
         $.TVine.refreshFeed();
       }
     );
@@ -46,7 +46,7 @@ $.TVine = {
       "/",
       function() {
         console.log("Default route detected.");
-        $.TVine.toggleLive(true);
+        $.TVine.switchToLiveMode();
         $.TVine.refreshFeed();
       }
     );
@@ -120,8 +120,13 @@ $.TVine = {
     //this.loop((this.currentTags.length == 0 ));
   },
 
-  toggleLive: function(isLive){
-    this.liveMode = isLive;
+  switchToLiveMode: function() {
+    $(".live-badge").addClass("shown");
+    this.liveMode = true;
+  },
+  switchToTagMode: function() {
+    $(".live-badge").removeClass("shown");
+    this.liveMode = false;
   },
 
   getNextVideo: function(){

@@ -94,10 +94,10 @@ body {
 .logo {
   position: absolute;
   z-index: 99;
-  right: 38px;
-  top: 38px;
-  height: 28px;
-  width: 28px;
+  right: 20px;
+  top: 16px;
+  height: 30px;
+  width: 30px;
   border: 0.2em solid white;
   text-align: center;
   font-size: 1.25em;
@@ -107,6 +107,7 @@ body {
   box-shadow: inset 1px 1px 1px rgba(0,0,0,0.5);
   text-shadow: 1px 1px 1px rgba(0,0,0,0.5);
   cursor: default;
+  line-height: 30px;
 
   i {
     font-size: 1.333em;
@@ -119,6 +120,30 @@ body {
   -ms-border-radius: 100%;
   border-radius: 100%;
 }
+
+.live-badge {
+  position: absolute;
+  z-index: 98;
+  right: 54px;
+  top: 23px;
+  padding: 4px 10px 3px 7px;
+  font-size: 12px;
+  letter-spacing: 1px;
+  background: #e63b2d;
+  text-shadow: 1px 1px 1px rgba(0,0,0,0.5);
+  opacity: 0;
+
+  -webkit-transition: opacity 0.5s ease;
+  -moz-transition: opacity 0.5s ease;
+  -o-transition: opacity 0.5s ease;
+  -ms-transition: opacity 0.5s ease;
+  transition: opacity 0.5s ease;
+
+  &.shown {
+    opacity: 1;
+  }
+}
+
 
 #current_video {
   position: absolute;
@@ -387,6 +412,11 @@ body:not(.idle) .tag-input.clear ~ .input-overlay-message {
 
 body.idle {
   .logo {
+    opacity: 0.5;
+  }
+
+  .live-badge {
+    background: transparent;
     opacity: 0.5;
   }
 
