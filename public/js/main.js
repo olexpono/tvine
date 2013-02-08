@@ -37,7 +37,7 @@ $.TVine = {
 
         $.TVine.currentTags = _.sortBy( _.compact(tagstring.split("+")), function(str) { return str; });
 
-        $("[property='og:title']").attr("content", $.TVine.currentTags.join(", ") + " on TVine");
+        $("[property='og:title']").attr("content", $.TVine.currentTags.join(", ") + " on Ch6");
         $.TVine.toggleLive(false);
         $.TVine.refreshFeed();
       }
