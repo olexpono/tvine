@@ -96,8 +96,10 @@ body {
   z-index: 99;
   right: 38px;
   top: 38px;
-  padding: 0.15em 0.5em 0.1em;
+  height: 28px;
+  width: 28px;
   border: 0.2em solid white;
+  text-align: center;
   font-size: 1.25em;
   font-weight: 600;
   font-family: "Roboto";
@@ -105,6 +107,7 @@ body {
   box-shadow: inset 1px 1px 1px rgba(0,0,0,0.5);
   text-shadow: 1px 1px 1px rgba(0,0,0,0.5);
   cursor: default;
+
   i {
     font-size: 1.333em;
     font-weight: 500;
@@ -112,11 +115,9 @@ body {
     letter-spacing: 0px;
   }
 
-  -webkit-transition: border-radius 35s linear;
-
-  &:hover {
-    border-radius: 10px;
-  }
+  -webkit-border-radius: 100%;
+  -ms-border-radius: 100%;
+  border-radius: 100%;
 }
 
 #current_video {
@@ -461,27 +462,20 @@ body.idle {
     transition-delay: 1s;
   }
 
-  h1 {
+  .overlay-logo {
     display: block;
-    width: 4.4em;
-    margin: 35% auto 0 auto;
-    padding: 0.2em 0;
-    border: 0.2em solid white;
-    font-size: 5em;
-    font-weight: 600;
+    width: 1.6em;
+    height: 1.6em;
+    text-align: center;
+    margin: 20% auto 0.25em auto;
+    border: 0.15em solid white;
+    border-radius: 100%;
+    font-size: 10em;
+    font-weight: 900;
     font-family: "Roboto";
-    line-height: 1.666em;
-    letter-spacing: -0.075em;
-    box-shadow: inset 0 0 2px rgba(0,0,0,0.5),
-                0 0 2px rgba(0,0,0,0.5);
-    text-shadow: 0 0px 2px rgba(0,0,0,0.5);
-    i {
-      padding-left: 0.09em;
-      font-size: 1.333em;
-      font-weight: 500;
-      line-height: 1.1em;
-      letter-spacing: 0px;
-    }
+    line-height: 1.6em;
+    box-shadow: inset 0 0 2px rgba(0, 0, 0, 0.5), 0 0 2px rgba(0, 0, 0, 0.5);
+    text-shadow: 0 0px 2px rgba(0, 0, 0, 0.5);
   }
 
   h2 {
@@ -640,8 +634,8 @@ body.idle {
 @media screen and (max-width: 960px) {
   .overlay {
     font-size: 0.8em;
-    h1 {
-      margin-top: 20%;
+    .overlay-logo {
+      margin-top: 15%;
     }
   }
 }

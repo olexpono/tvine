@@ -134,8 +134,10 @@ body {
   z-index: 99;
   right: 38px;
   top: 38px;
-  padding: 0.15em 0.5em 0.1em;
+  height: 28px;
+  width: 28px;
   border: 0.2em solid white;
+  text-align: center;
   font-size: 1.25em;
   font-weight: 600;
   font-family: "Roboto";
@@ -143,16 +145,15 @@ body {
   box-shadow: inset 1px 1px 1px rgba(0, 0, 0, 0.5);
   text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.5);
   cursor: default;
-  -webkit-transition: border-radius 35s linear;
+  -webkit-border-radius: 100%;
+  -ms-border-radius: 100%;
+  border-radius: 100%;
 }
 .logo i {
   font-size: 1.333em;
   font-weight: 500;
   line-height: 1.1em;
   letter-spacing: 0px;
-}
-.logo:hover {
-  border-radius: 10px;
 }
 #current_video {
   position: absolute;
@@ -467,26 +468,20 @@ body.idle .tags:hover .tag > * {
   -ms-transition-delay: 1s;
   transition-delay: 1s;
 }
-.overlay h1 {
+.overlay .overlay-logo {
   display: block;
-  width: 4.4em;
-  margin: 35% auto 0 auto;
-  padding: 0.2em 0;
-  border: 0.2em solid white;
-  font-size: 5em;
-  font-weight: 600;
+  width: 1.6em;
+  height: 1.6em;
+  text-align: center;
+  margin: 20% auto 0.25em auto;
+  border: 0.15em solid white;
+  border-radius: 100%;
+  font-size: 10em;
+  font-weight: 900;
   font-family: "Roboto";
-  line-height: 1.666em;
-  letter-spacing: -0.075em;
+  line-height: 1.6em;
   box-shadow: inset 0 0 2px rgba(0, 0, 0, 0.5), 0 0 2px rgba(0, 0, 0, 0.5);
   text-shadow: 0 0px 2px rgba(0, 0, 0, 0.5);
-}
-.overlay h1 i {
-  padding-left: 0.09em;
-  font-size: 1.333em;
-  font-weight: 500;
-  line-height: 1.1em;
-  letter-spacing: 0px;
 }
 .overlay h2 {
   margin: 16px auto 0 auto;
@@ -619,8 +614,8 @@ body.idle .tags:hover .tag > * {
   .overlay {
     font-size: 0.8em;
   }
-  .overlay h1 {
-    margin-top: 20%;
+  .overlay .overlay-logo {
+    margin-top: 15%;
   }
 }
 @media screen and (max-width: 640px) {

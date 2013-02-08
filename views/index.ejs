@@ -12,7 +12,7 @@
         <meta property="og:description" content="A personalized channel of videos posted to Vine.">
         <meta property="og:url" content="http://tvine.co">
         <meta property="og:image" content="http://tvine.co/apple-touch-icon.png">
-        <meta property="og:title" content="TVine">
+        <meta property="og:title" content="Ch6">
         <meta property="fb:admins" content="24409159">
         <meta property="og:type" content="website">
         <meta property="fb:app_id" content="504967839554499">
@@ -20,7 +20,7 @@
         <link rel="shortcut icon" href="favicon.ico">
         <link rel="stylesheet" href="css/reset.css">
         <link rel="stylesheet" href="css/main.css">
-        <link href='http://fonts.googleapis.com/css?family=Roboto:100,700,400' rel='stylesheet' type='text/css'>
+        <link href='http://fonts.googleapis.com/css?family=Roboto:100,700,400,900' rel='stylesheet' type='text/css'>
     </head>
     <body>
         <!--[if lt IE 8]>
@@ -36,11 +36,11 @@
                 <div class="bar"></div><div class="bar"></div>
                 <div class="bar"></div><div class="bar"></div>
               </div>
-              <h1>TV<i>ine</i></h1>
+              <h1 class="overlay-logo">6</h1>
               <h2>A personalized channel of videos posted to Vine.</h2>
-              <div class="attribution">TVine is not affiliated with or endorsed by <a target="_blank" href="http://vine.co">Vine</a> in any way.</div>
+              <div class="attribution">Ch6 is not affiliated with or endorsed by <a target="_blank" href="http://vine.co">Vine</a> in any way.</div>
             </header>
-            <h1 class="logo">TV<i>ine</i></h1>
+            <h1 class="logo">6</h1>
             <video id="current_video" class=""  preload="auto" data-setup="{}">
               <source type="video/mp4" src="<%= recentVine %>">
             </video>
@@ -52,7 +52,7 @@
           </div>
           <div class="sidebar">
             <section class="about">
-              <p class="creators">TVine was designed and developed by <a href="http://twitter.com/tholex">@tholex</a>, <a href="http://twitter.com/adkatrit">@adkatrit</a>, and <a href="http://twitter.com/super_haik">@super_haik</a>.</p>
+              <p class="creators">Ch6 was designed and developed by <a href="http://twitter.com/tholex">@tholex</a>, <a href="http://twitter.com/adkatrit">@adkatrit</a>, and <a href="http://twitter.com/super_haik">@super_haik</a>.</p>
               <a href="https://twitter.com/share" class="twitter-share-button" data-hashtags="tvine">Tweet</a>
               <div class="fb-like" data-send="false" data-width="250" data-show-faces="false"></div>
               <div class="disclaimer">TVine is not affiliated with or endorsed by Vine in any way.</div>
@@ -64,7 +64,6 @@
         
         <div id="fb-root"></div>
         <script>(function(d, s, id) { var js, fjs = d.getElementsByTagName(s)[0]; if (d.getElementById(id)) return; js = d.createElement(s); js.id = id; js.src = "//connect.facebook.net/en_US/all.js#xfbml=1"; fjs.parentNode.insertBefore(js, fjs); }(document, 'script', 'facebook-jssdk'));</script>
-        <!--div id="attribution">TVine is in no way associated with <a target="_blank" href="http://vine.co">Vine.co</a></div-->
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js"></script>
         <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.8.1.min.js"></scr'+'ipt>')</script>
         <script>var realtime = ['<%= recentVine %>','<%= nextVine%>']; </script>
