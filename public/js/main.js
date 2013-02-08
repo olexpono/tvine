@@ -38,7 +38,7 @@ $.TVine = {
         $.TVine.currentTags = _.sortBy( _.compact(tagstring.split("+")), function(str) { return str; });
 
         $("[property='og:title']").attr("content", $.TVine.currentTags.join(", ") + " on Ch6");
-        $.TVine.toggleLive(false);
+        $.TVine.switchToTagMode();
         $.TVine.refreshFeed();
       }
     );
@@ -46,7 +46,7 @@ $.TVine = {
       "/",
       function() {
         console.log("Default route detected.");
-        $.TVine.toggleLive(true);
+        $.TVine.switchToLiveMode();
         $.TVine.refreshFeed();
       }
     );
@@ -121,8 +121,13 @@ $.TVine = {
     //this.loop((this.currentTags.length == 0 ));
   },
 
-  toggleLive: function(isLive){
-    this.liveMode = isLive;
+  switchToLiveMode: function() {
+    $(".live-badge").addClass("shown");
+    this.liveMode = true;
+  },
+  switchToTagMode: function() {
+    $(".live-badge").removeClass("shown");
+    this.liveMode = false;
   },
 
   getNextVideo: function(){
@@ -261,7 +266,7 @@ $.TVine = {
       this.video_ref.volume(1);
     }
   },
-
+  
   loop: function(turnLoopOn){
     if(turnLoopOn){
       $('video').attr('loop');
@@ -289,7 +294,16 @@ $.TVine = {
   },
 
   setupListeners: function() {
+    $(document).keyup(function(e){
+      if(e.keyCode == 39){
+        $.TVine.loadNextVideo();
+      }
+      if(e.keyCode == 38){
+        $.TVine.video_ref.loop(!$.TVine.video_ref.loop())
+      }
+    });
     $(".tag-input").keyup(function(e) {
+
       if( $(".tag-input:focus") && e.keyCode == 13) {
         if ($.TVine.currentTags.indexOf($(".tag-input").val()) >= 0) {
           $.TVine.inputAlert("You're already watching that tag!");
@@ -373,7 +387,7 @@ $(function() {
   hasher.changed.add(parseHash);
   hasher.init();
   //todo make this configurable
-  var socket = io.connect(window.location.origin+':8888');
+  var socket = io.connect(window.location.origin.replace(':3000','')+':8888');
   socket.on('vineTweet', function (data) {
     if($.TVine.realtimeList.length > 21) {
       $.TVine.realtimeList.splice(2,1);
