@@ -131,7 +131,18 @@ app.get("/query/:query", function (req, res) {
     res.end(result);
   });
 });
+app.get('/tags/:amount',function(req,res){
+  //impose limits
+  var amount = (req.params.amount > 0 && req.params.amount <= 15)
+               ? req.params.amount : 15;
 
+  client.zrevrange('trending_tags_now','0',amount,function(err,resp){
+      res.writeHead(200,{'Content-Type': 'application/json'});
+      if(err) res.end({status:'error'});
+      res.end(JSON.stringify(resp));
+  });
+
+});
 /* DISABLED 
  * Examples:  /filter/global
  * Picks   :  /filter/promoted
@@ -215,6 +226,8 @@ setInterval(getPopular,3600000);
    all_vines  {<source_mp4>,<timestamp>}
 */
 function parseVine(url,tags){
+  var now = Math.floor(Date.now()/1000);
+  var bucket = now - (now % 30);
   https.get({
     host: 'vine.co',
     path: '/v/'+url.split('/v/')[1]
@@ -231,10 +244,19 @@ function parseVine(url,tags){
         if(src.indexOf('.mp4') != -1){
           if(tags){
             for(var i in tags){
-              client.zadd('vine:'+tags[i]['text'], Date.now(), src);
+              //keep track of trending tags within 5 and 10 minutes
+              //send as multi/exec to save io
+              var multi = client.multi();
+              multi.zadd('vine:'+tags[i]['text'], now, src);
+              multi.zincrby('alltime_tags', 1, tags[i]['text']);
+              multi.zincrby('trending_tags_now', 100, tags[i]['text']);
+              multi.zincrby('trending_tags_later', 1, tags[i]['text']);
+              multi.expireat('trending_tags_now', bucket + 300);
+              multi.expireat('trending_tags_later', bucket + 600);
+              multi.exec();
             }
           }
-          client.zadd('all_vines', Date.now(), src);
+          client.zadd('all_vines',now,src);
           io.sockets.volatile.emit('vineTweet',src);
         }
       }
