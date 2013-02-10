@@ -135,8 +135,9 @@ app.get('/tags/:amount',function(req,res){
   //impose limits
   var amount = (req.params.amount > 0 && req.params.amount <= 15)
                ? req.params.amount : 15;
-
-  client.zrevrange('trending_tags_now','0',amount,function(err,resp){
+  var now = Math.floor(Date.now()/1000);
+  var bucket = now - (now % 300);
+  client.zrevrange('trending_tags:' + bucket,'0',amount,function(err,resp){
       res.writeHead(200,{'Content-Type': 'application/json'});
       if(err) res.end({status:'error'});
       res.end(JSON.stringify(resp));
@@ -244,15 +245,16 @@ function parseVine(url,tags){
         if(src.indexOf('.mp4') != -1){
           if(tags){
             for(var i in tags){
-              //keep track of trending tags within 5 and 10 minutes
-              //send as multi/exec to save io
+              //store tags into different sorted sets
               var multi = client.multi();
               multi.zadd('vine:'+tags[i]['text'], now, src);
               multi.zincrby('alltime_tags', 1, tags[i]['text']);
-              multi.zincrby('trending_tags_now', 100, tags[i]['text']);
-              multi.zincrby('trending_tags_later', 1, tags[i]['text']);
-              multi.expireat('trending_tags_now', bucket + 300);
-              multi.expireat('trending_tags_later', bucket + 600);
+              //time bucket based key names
+              multi.zincrby('trending_tags:' + bucket, 100, tags[i]['text']);
+              multi.zincrby('trending_tags:' + (bucket + 300), 1, tags[i]['text']);
+              //clean up after itself
+              multi.expireat('trending_tags:' + bucket, bucket + 300);
+              multi.expireat('trending_tags:' + (bucket+300), bucket + 600);
               multi.exec();
             }
           }

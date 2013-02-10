@@ -99,7 +99,7 @@ $.TVine = {
 
   /* Utility used by refreshFeed, careful using this directly */
   addTag: function(tag, data) {
-    if (data.data.records.length > 1){
+    if (data.data.records.length > 0){
       this.renderNewTag(tag, data.data.count);
       this.addVideos(tag, data.data.records);
       _gaq.push(['_trackPageView','/tag/'+tag]);
