@@ -37,7 +37,7 @@ $.TVine = {
 
         $.TVine.currentTags = _.sortBy( _.compact(tagstring.split("+")), function(str) { return str; });
 
-        $("[property='og:title']").attr("content", $.TVine.currentTags.join(", ") + " on Ch6");
+        $.TVine.updateFbTitle();
         $.TVine.switchToTagMode();
         $.TVine.refreshFeed();
       }
@@ -50,6 +50,14 @@ $.TVine = {
         $.TVine.refreshFeed();
       }
     );
+  },
+
+  /* Updates title for Facebook Sharing */
+  updateFbTitle: function() {
+    var capitalized_tags = _.map(this.currentTags, function(tag) {
+      return tag.charAt(0).toUpperCase() + tag.slice(1);
+    });
+    $("[property='og:title']").attr("content", capitalized_tags.join(", ") + " on Channel 6");
   },
 
   /* Utility to render a tag into stack */
