@@ -80,6 +80,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-forever');
 
   grunt.registerTask("build", ["less", "min", "template"]);
+  grunt.registerTask("launch", ["build", "forever:stop", "forever:start"]);
 
   grunt.registerTask("run",
     [ "forever:stop",
