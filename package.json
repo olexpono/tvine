@@ -3,6 +3,7 @@
   "version": "0.1.3",
   "private": true,
   "scripts": {
+    "predeploy": "grunt build",
     "start": "node tvine.js"
   },
   "dependencies": {
