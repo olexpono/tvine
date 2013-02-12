@@ -1,9 +1,9 @@
 {
   "name": "tvine",
-  "version": "0.1.2-10",
+  "version": "0.1.2-11",
   "private": true,
   "scripts": {
-    "start": "grunt launch"
+    "start": "./node_modules/grunt/bin/grunt launch --force"
   },
   "dependencies": {
     "express": "3.1.x",
@@ -17,8 +17,7 @@
     "cheerio": "0.10.x",
     "socket.io": "0.9.x"
   },
-  "devDependencies": {
-  },
+  "devDependencies": {},
   "engines": {
     "node": "0.8.x"
   },
