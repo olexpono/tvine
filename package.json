@@ -1,12 +1,16 @@
 {
   "name": "tvine",
-  "version": "0.1.2-9",
+  "version": "0.1.2-10",
   "private": true,
   "scripts": {
-    "start": "./node_modules/grunt/bin/grunt launch --force"
+    "start": "grunt launch"
   },
   "dependencies": {
     "express": "3.1.x",
+    "grunt": "0.3.x",
+    "grunt-jstemplater": "0.1.x",
+    "grunt-contrib-less": "0.3.x",
+    "grunt-forever": "0.2.x",
     "redis": "0.8.x",
     "ejs": "0.8.x",
     "twit": "1.0.x",
@@ -14,10 +18,6 @@
     "socket.io": "0.9.x"
   },
   "devDependencies": {
-    "grunt": "0.3.x",
-    "grunt-jstemplater": "0.1.x",
-    "grunt-contrib-less": "0.3.x",
-    "grunt-forever": "0.2.x"
   },
   "engines": {
     "node": "0.8.x"
