@@ -28,7 +28,8 @@ var io = require('socket.io').listen(socketServer);
 
 io.set('log level', 1);
 io.set('match origin protocol',true);
-socketServer.listen(8888);
+//socketServer.listen(8888);
+app.listen(3000);
 
 //https://api.vineapp.com/users/profiles/906345798374133760
 ///timelines/tags/nyc?page=2&size=20&anchor=(null)
@@ -40,8 +41,8 @@ function vineSnarf(query,page,method,callback){
   page_str = (page)? '?page='+page+'&size=20&anchor=(null)' : '';
   filter = (query.length>1) ? method+query+page_str : method;
   client.get(filter,function(err,result){
-   // client.get('session_id',function(_err,id_from_redis){
-   client.smembers('session_ids',function(_err,ids){
+    // client.get('session_id',function(_err,id_from_redis){
+    client.smembers('session_ids',function(_err,ids){
       if(result){
         callback(result);
       }else{
@@ -72,9 +73,9 @@ function vineSnarf(query,page,method,callback){
         });
       }
     });
-
   });
 }
+
 function searchTwitter(query,callback){
   T.get('search/tweets', { q: 'vine.co '+query+' since:2013-01-21',count:'40'}, function(err, reply) {
     if(err || !reply){
@@ -100,6 +101,7 @@ function searchTwitter(query,callback){
     }
   });
 }
+
 function twitterSnarf(query,page,callback){
   var offset = (page - 1) * 40;
   var offset = (offset >= 0) ? offset : 0;
@@ -194,32 +196,22 @@ app.get("/", function(req, res) {
   });
 });
 
-app.listen(3000);
-
-process.on('error',function(){
-//catch the error and do nothing
-});
-
 /*
 get popular from vine
 */
 function getPopular(){
   vineSnarf('','','/timelines/popular',function(data){
- try{
+    try {
       var popPage = JSON.parse(data);
       client.set('popularNow',JSON.stringify(popPage.data.records[0]));
- }catch(e){}
+    } catch(e) {}
   });
 }
-
-
 
 // we can get popular when we have api access
 //lets leave this on until we get the realtime stuff done
 //fetch popular every hour
 setInterval(getPopular,3600000);
-
-
 
 /*
  get the mp4 string from vine and store it 
@@ -290,6 +282,6 @@ function parseTweet(tweet){
 
 if(redisServer != 'nodejitsudb4622528573.redis.irstack.com'){//disable for nodejitsu
   var stream = T.stream('statuses/filter', { track: 'vine' });
-  stream.on('tweet', parseTweet);  
+  stream.on('tweet', parseTweet);
 }
 
