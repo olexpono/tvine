@@ -28,7 +28,8 @@ var io = require('socket.io').listen(socketServer);
 
 io.set('log level', 1);
 io.set('match origin protocol',true);
-//socketServer.listen(8888);
+
+socketServer.listen(8888);
 app.listen(3000);
 
 //https://api.vineapp.com/users/profiles/906345798374133760
