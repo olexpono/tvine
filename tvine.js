@@ -29,6 +29,7 @@ var io = require('socket.io').listen(socketServer);
 io.set('log level', 1);
 io.set('match origin protocol',true);
 
+/* It's all port 80 on jitsu */
 socketServer.listen(8888);
 app.listen(3000);
 
