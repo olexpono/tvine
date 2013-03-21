@@ -210,10 +210,11 @@ function getPopular(){
   });
 }
 
+
 // we can get popular when we have api access
 //lets leave this on until we get the realtime stuff done
 //fetch popular every hour
-setInterval(getPopular,3600000);
+//setInterval(getPopular,3600000);
 
 /*
  get the mp4 string from vine and store it 
@@ -270,9 +271,8 @@ function parseTweet(tweet){
   if(typeof tweet.entities.urls[0] !='undefined'){
     var url = tweet.entities.urls[0].expanded_url;
     var tags = tweet.entities.hashtags;
-    if(url.indexOf('http://vine.co/v/') == 0 
+    if(url.indexOf('https://vine.co/v/') == 0 
        && tweet.source.indexOf('Vine for iOS') != -1){
-
       client.sadd('vine_tweet',url,function(err,data){
         if(data){
           parseVine(url,tags);
@@ -281,9 +281,5 @@ function parseTweet(tweet){
     }
   }
 }
-
-if(redisServer != 'nodejitsudb4622528573.redis.irstack.com'){//disable for nodejitsu
   var stream = T.stream('statuses/filter', { track: 'vine' });
   stream.on('tweet', parseTweet);
-}
-
