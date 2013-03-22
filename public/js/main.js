@@ -305,9 +305,14 @@ $.TVine = {
     $(document).keyup(function(e){
       if(e.keyCode == 39){
         $.TVine.loadNextVideo();
+        $("#right-arrow").addClass("activated");
+        setTimeout(function() {
+          $("#right-arrow").removeClass("activated");
+        }, 100);
       }
       if(e.keyCode == 38){
         $.TVine.video_ref.loop(!$.TVine.video_ref.loop())
+        $("#up-arrow").toggleClass("activated");
       }
     });
     $(".tag-input").keyup(function(e) {
