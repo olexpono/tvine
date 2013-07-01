@@ -6,7 +6,7 @@ module.exports = function(grunt) {
     forever: {
       main: "tvine.js"
     },
-    min: {
+    uglify: {
       dist: {
         src:['public/js/vendor/modernizr-2.6.1.min.js',
         'public/js/vendor/video.js',
@@ -63,23 +63,23 @@ module.exports = function(grunt) {
       }
     },
 
-    template: {
-      development: {
-        src: 'public/js/templates/**/*.mustache',
+    mustache: {
+      files: {
+        src:'public/js/templates/**/*.mustache',
         dest: 'public/js/templates.js',
-        variables: {
-          name: 'TMPL',
-          staticPath: 'js/templates'
+        options: {
+          prefix: 'var TMPL = ',
+          postfix: ';',
+          verbose: true
         }
       }
     }
   });
 
   grunt.loadNpmTasks('grunt-contrib-less');
-  grunt.loadNpmTasks('grunt-jstemplater');
   grunt.loadNpmTasks('grunt-forever');
 
-  grunt.registerTask("build", ["less", "min", "template"]);
+  grunt.registerTask("build", ["less", "min", "mustache"]);
   grunt.registerTask("launch", ["build", "forever:stop", "forever:start"]);
 
   grunt.registerTask("run",
