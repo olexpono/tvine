@@ -9,7 +9,7 @@ var ejs   = require('ejs');
 var redisServer   = process.env.REDIS_HOST || '127.0.0.1';
 var redisPassword = process.env.REDIS_PASS || 'nodejitsudb4622528573.redis.irstack.com:f327cfe980c971946e80b8e975fbebb4';
 var client = redis.createClient(null,redisServer);
-if(redisServer == 'nodejitsudb4622528573.redis.irstack.com'){
+if (redisServer == 'nodejitsudb4622528573.redis.irstack.com') {
   client.auth(redisPassword);
 }
 
@@ -32,51 +32,6 @@ io.set('match origin protocol',true);
 /* It's all port 80 on jitsu */
 socketServer.listen(8888);
 app.listen(3000);
-
-//https://api.vineapp.com/users/profiles/906345798374133760
-///timelines/tags/nyc?page=2&size=20&anchor=(null)
-
-// /timelines/global
-// /timelines/popular
-// /timelines/promoted
-function vineSnarf(query,page,method,callback){
-  page_str = (page)? '?page='+page+'&size=20&anchor=(null)' : '';
-  filter = (query.length>1) ? method+query+page_str : method;
-  client.get(filter,function(err,result){
-    // client.get('session_id',function(_err,id_from_redis){
-    client.smembers('session_ids',function(_err,ids){
-      if(result){
-        callback(result);
-      }else{
-        var random_id = ids[Math.floor(Math.random() * ids.length)];
-        https.get({
-          host: 'api.vineapp.com',
-          path: filter,
-          headers: {
-            'vine-session-id': (random_id) ? random_id:'906277305146548224-5e08e0b8-4db0-4c4b-a062-3b1d13e7c6a4',
-            'User-Agent': 'com.vine.iphone/1.0.1 (unknown, iPhone OS 6.0, iPhone, Scale/2.000000)'
-          }
-        }, function(res) {
-          var str='';
-          res.setEncoding('utf8');
-          res.on('data', function(chunk) {
-            str+=chunk;
-          });
-          res.on('end', function() {
-            //fallback to twitter when this breaks
-            if(str.indexOf('<!DOCTYPE') != 0){
-              client.set(filter,str);
-              client.expire(filter,60);
-              callback(str)
-            } else {
-              twitterSnarf(query,page,method,callback);
-            }
-          });
-        });
-      }
-    });
-  });
-}
 
 function searchTwitter(query,callback){
   T.get('search/tweets', { q: 'vine.co '+query+' since:2013-01-21',count:'40'}, function(err, reply) {
@@ -148,23 +103,6 @@ app.get('/tags/:amount',function(req,res){
   });
 
 });
-/* DISABLED 
- * Examples:  /filter/global
- * Picks   :  /filter/promoted
- * Popular :  /filter/popular
-
-app.get("/filter/:filter", function (req, res) {
-  var filter = (req.params.filter) ? req.params.filter : 'global';
-  filter  = '/timelines/' + filter;
-
-  res.writeHead(200,{'Content-Type': 'application/json'});
-
-
-  vineSnarf('' , '', filter,function(result){
-    res.end(result);
-  });
-});
- */
 
 /*
   tap into the vine
@@ -197,18 +135,6 @@ app.get("/", function(req, res) {
     });
   });
 });
-
-/*
-get popular from vine
-*/
-function getPopular(){
-  vineSnarf('','','/timelines/popular',function(data){
-    try {
-      var popPage = JSON.parse(data);
-      client.set('popularNow',JSON.stringify(popPage.data.records[0]));
-    } catch(e) {}
-  });
-}
 
 
 // we can get popular when we have api access
@@ -271,15 +197,15 @@ function parseTweet(tweet){
   if(typeof tweet.entities.urls[0] !='undefined'){
     var url = tweet.entities.urls[0].expanded_url;
     var tags = tweet.entities.hashtags;
-    if(url.indexOf('https://vine.co/v/') == 0 
-       && tweet.source.indexOf('Vine for iOS') != -1){
-      client.sadd('vine_tweet',url,function(err,data){
-        if(data){
+    if (url.indexOf('https://vine.co/v/') == 0){
+      client.sadd('vine_tweet', url , function(err,data){
+        if (data) {
           parseVine(url,tags);
         }
       });
     }
   }
 }
-  var stream = T.stream('statuses/filter', { track: 'vine' });
-  stream.on('tweet', parseTweet);
+
+var stream = T.stream('statuses/filter', { track: 'vine' });
+stream.on('tweet', parseTweet);

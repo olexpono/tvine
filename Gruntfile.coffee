@@ -3,13 +3,14 @@ module.exports = (grunt)->
     pkg: grunt.file.readJSON "package.json"
 
     forever:
-      main: "tvine.js"
+      options:
+        index: "tvine.js"
 
     uglify:
       options:
         mangle: false
       dist:
-        files: 
+        files:
           'public/js/tvine-min.js' : [
             'public/js/vendor/modernizr-2.6.1.min.js',
             'public/js/vendor/video.js',
@@ -63,14 +64,16 @@ module.exports = (grunt)->
 
   grunt.loadNpmTasks('grunt-contrib-less')
   grunt.loadNpmTasks('grunt-contrib-uglify')
+  grunt.loadNpmTasks('grunt-contrib-watch')
   grunt.loadNpmTasks('grunt-mustache')
+  grunt.loadNpmTasks('grunt-forever')
 
-  grunt.registerTask("build", ["less", "min", "mustache"])
+  grunt.registerTask("build", ["less", "uglify", "mustache"])
   grunt.registerTask("launch", ["build", "forever:stop", "forever:start"])
 
   grunt.registerTask("run",
     [ "forever:stop",
       "forever:start",
-      "min",
+      "uglify",
       "watch"])
   grunt.registerTask("default", "run")
