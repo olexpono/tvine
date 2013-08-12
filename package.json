@@ -1,11 +1,15 @@
 {
   "name": "tvine",
-  "version": "0.1.4-5",
+  "version": "0.1.4-7",
   "private": true,
   "scripts": {
     "postdeploy": "grunt build",
     "start": "node tvine.js"
   },
+  "domains": [
+    "ch6.co",
+    "www.ch6.co"
+  ],
   "dependencies": {
     "express": "3.1.x",
     "grunt": "0.4.x",
