@@ -400,7 +400,7 @@ $(function() {
   hasher.changed.add(parseHash);
   hasher.init();
   //todo make this configurable
-  var socket = io.connect();
+  var socket = io.connect("http://tvine.co");
   socket.on('vineTweet', function (data) {
     if($.TVine.realtimeList.length > 21) {
       $.TVine.realtimeList.splice(2,1);

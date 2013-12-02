@@ -37,7 +37,7 @@ socketServer.listen(3000);
 
 function searchTwitter(query,callback){
   T.get('search/tweets', { q: 'vine.co '+query+' since:2013-01-21',count:'40'}, function(err, reply) {
-    console.log("Response from twitter: ", reply);
+    // console.log("Response from twitter: ", reply);
     var _ret = {data:{count:0,records:[]}};
     if(!err || reply){
       var len = reply.statuses.length;
@@ -89,6 +89,7 @@ app.get("/query/:query", function (req, res) {
   });
 });
 
+/* DISABLED
 app.get('/tags/:amount',function(req,res){
   //impose limits
   var amount = (req.params.amount > 0 && req.params.amount <= 15)
@@ -103,8 +104,8 @@ app.get('/tags/:amount',function(req,res){
         res.end(JSON.stringify(resp));
       }
   });
-
 });
+*/
 
 /*
   tap into the vine
@@ -129,11 +130,9 @@ app.set('view engine', 'ejs');
 app.get("/", function(req, res) {
   var version = process.env.VERSION || '1';
   client.zrevrange('all_vines','0','10', function(err,vines){
-    var recentVine = vines[0];
-    var nextVine   = vines[1];
-    res.render("index",
-      {cachebust: version, 
-       vines: vines
+    res.render("index", {
+      cachebust: version,
+      vines: vines
     });
   });
 });
@@ -171,13 +170,13 @@ function parseVine(url,tags){
               //store tags into different sorted sets
               var multi = client.multi();
               multi.zadd('vine:'+tags[i]['text'], now, src);
-              multi.zincrby('alltime_tags', 1, tags[i]['text']);
+              // multi.zincrby('alltime_tags', 1, tags[i]['text']);
               //time bucket based key names
-              multi.zincrby('trending_tags:' + bucket, 100, tags[i]['text']);
-              multi.zincrby('trending_tags:' + (bucket + 300), 1, tags[i]['text']);
+              // multi.zincrby('trending_tags:' + bucket, 100, tags[i]['text']);
+              // multi.zincrby('trending_tags:' + (bucket + 300), 1, tags[i]['text']);
               //clean up after itself
-              multi.expireat('trending_tags:' + bucket, bucket + 300);
-              multi.expireat('trending_tags:' + (bucket+300), bucket + 600);
+              // multi.expireat('trending_tags:' + bucket, bucket + 300);
+              // multi.expireat('trending_tags:' + (bucket+300), bucket + 600);
               multi.exec();
             }
           }
@@ -194,16 +193,12 @@ function parseVine(url,tags){
   get the vine.co url from the tweet data.
 */
 function parseTweet(tweet){
-  console.log("Parsing tweet with URLs", tweet.entities.urls);
+  // console.log("Parsing tweet with URLs", tweet.entities.urls);
   if(typeof tweet.entities.urls[0] !='undefined'){
     var url = tweet.entities.urls[0].expanded_url;
     var tags = tweet.entities.hashtags;
     if (url.indexOf('https://vine.co/v/') == 0){
-      client.sadd('vine_tweet', url , function(err,data){
-        if (data) {
-          parseVine(url,tags);
-        }
-      });
+      parseVine(url,tags);
     }
   }
 }
