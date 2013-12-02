@@ -8,10 +8,11 @@ var ejs   = require('ejs');
 
 /*
 redis://nodejitsu:nodejitsudb6508309710.redis.irstack.com:f327cfe980c971946e80b8e975fbebb4@nodejitsudb6508309710.redis.irstack.com:6379 */
-var redisServer   = process.env.REDIS_HOST || '127.0.0.1';
-var redisPassword = process.env.REDIS_PASS || 'nodejitsudb6508309710.redis.irstack.com:f327cfe980c971946e80b8e975fbebb4';
+    
+var redisServer   = process.env.REDIS_HOST || 'nodejitsudb4622528573.redis.irstack.com';
+var redisPassword = process.env.REDIS_PASS || 'nodejitsudb4622528573.redis.irstack.com:f327cfe980c971946e80b8e975fbebb4';
 var client = redis.createClient(null,redisServer);
-if (redisServer == 'nodejitsudb6508309710.redis.irstack.com') {
+if (redisServer == 'nodejitsudb4622528573.redis.irstack.com') {
   client.auth(redisPassword);
 }
 
@@ -32,15 +33,13 @@ io.set('log level', 1);
 io.set('match origin protocol',true);
 
 /* It's all port 80 on jitsu */
-socketServer.listen(8888);
-app.listen(3000);
+socketServer.listen(3000);
 
 function searchTwitter(query,callback){
   T.get('search/tweets', { q: 'vine.co '+query+' since:2013-01-21',count:'40'}, function(err, reply) {
-    if(err || !reply){
-      var _ret = {data:{count:0,records:[]}}
-      callback(JSON.stringify(_ret));
-    } else {
+    console.log("Response from twitter: ", reply);
+    var _ret = {data:{count:0,records:[]}};
+    if(!err || reply){
       var len = reply.statuses.length;
       var n = 0;
       for (var i in reply.statuses) {
@@ -49,15 +48,12 @@ function searchTwitter(query,callback){
           client.zrevrange('vine:'+query.toLowerCase(),'0','40',function(_err,_result){
             if(_result) {
               var _ret = {data:{count:_result.length ,records:_result}};
-              callback(JSON.stringify(_ret));
-            } else {
-              var _ret = {data:{count:0,records:[]}}
-              callback(JSON.stringify(_ret));
             }
           });
         }
       }
     }
+    callback(JSON.stringify(_ret));
   });
 }
 
@@ -92,6 +88,7 @@ app.get("/query/:query", function (req, res) {
     res.end(result);
   });
 });
+
 app.get('/tags/:amount',function(req,res){
   //impose limits
   var amount = (req.params.amount > 0 && req.params.amount <= 15)
@@ -100,8 +97,11 @@ app.get('/tags/:amount',function(req,res){
   var bucket = now - (now % 300);
   client.zrevrange('trending_tags:' + bucket,'0',amount,function(err,resp){
       res.writeHead(200,{'Content-Type': 'application/json'});
-      if(err) res.end({status:'error'});
-      res.end(JSON.stringify(resp));
+      if (err) {
+        res.end({status:'error'});
+      } else {
+        res.end(JSON.stringify(resp));
+      }
   });
 
 });
@@ -194,6 +194,7 @@ function parseVine(url,tags){
   get the vine.co url from the tweet data.
 */
 function parseTweet(tweet){
+  console.log("Parsing tweet with URLs", tweet.entities.urls);
   if(typeof tweet.entities.urls[0] !='undefined'){
     var url = tweet.entities.urls[0].expanded_url;
     var tags = tweet.entities.hashtags;
