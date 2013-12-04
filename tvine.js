@@ -129,7 +129,7 @@ app.set('view engine', 'ejs');
 
 app.get("/", function(req, res) {
   var version = process.env.VERSION || '1';
-  client.zrevrange('all_vines','0','10', function(err,vines){
+  client.zrevrange('all_vines',0,10,function(err,vines){
     res.render("index", {
       cachebust: version,
       vines: vines
@@ -161,7 +161,7 @@ function parseVine(url,tags){
       str += chunk;
     });
     res.on('end', function() {
-      var $ = cheerio.load(str); //jquery-ish
+      var $ = cheerio.load(str); //jquery-ih
       var src = $('source').attr('src');
       if(typeof src =='string'){
         if(src.indexOf('.mp4') != -1){
