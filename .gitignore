@@ -3,3 +3,4 @@ node_modules/
 forever/
 
 public/js/tvine-min.js
+dump.rdb

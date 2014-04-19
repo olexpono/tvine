@@ -278,7 +278,6 @@ body:not(.idle) .tag-input.clear ~ .input-overlay-message {
   border: none;
   border-radius: 0;
   /* override iphone default */
-
   outline: none;
   color: white;
   margin: 0 0 0 auto;
@@ -330,7 +329,6 @@ body:not(.idle) .tag-input.clear ~ .input-overlay-message {
 #d9baa7
 
   */
-
 }
 .tags li {
   display: block;
@@ -674,16 +672,12 @@ body.idle .tags:hover .tag > * {
 .stripe-background {
   background: -webkit-linear-gradient(left, #73655d 0%, #73655d 14.3%, #8b7c27 14.3%, #8b7c27 28.6%, #45766b 28.6%, #45766b 42.9%, #377519 42.9%, #377519 57.3%, #7e2965 57.3%, #7e2965 71.7%, #761b17 71.6%, #761b17 84.9%, #1c1249 84.9%, #1c1249);
   /* Chrome10+,Safari5.1+ */
-
   background: -o-linear-gradient(left, #73655d 0%, #73655d 14.3%, #8b7c27 14.3%, #8b7c27 28.6%, #45766b 28.6%, #45766b 42.9%, #377519 42.9%, #377519 57.3%, #7e2965 57.3%, #7e2965 71.7%, #761b17 71.6%, #761b17 84.9%, #1c1249 84.9%, #1c1249);
   /* Opera 11.10+ */
-
   background: -ms-linear-gradient(left, #73655d 0%, #73655d 14.3%, #8b7c27 14.3%, #8b7c27 28.6%, #45766b 28.6%, #45766b 42.9%, #377519 42.9%, #377519 57.3%, #7e2965 57.3%, #7e2965 71.7%, #761b17 71.6%, #761b17 84.9%, #1c1249 84.9%, #1c1249);
   /* IE10+ */
-
   background: linear-gradient(to right, #73655d 0%, #73655d 14.3%, #8b7c27 14.3%, #8b7c27 28.6%, #45766b 28.6%, #45766b 42.9%, #377519 42.9%, #377519 57.3%, #7e2965 57.3%, #7e2965 71.7%, #761b17 71.7%, #761b17 84.9%, #1c1249 84.9%, #1c1249);
   /* W3C */
-
 }
 @media screen and (max-width: 960px) {
   .overlay {

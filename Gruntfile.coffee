@@ -19,7 +19,6 @@ module.exports = (grunt)->
             'public/js/vendor/signals.min.js',
             'public/js/vendor/crossroads.min.js',
             'public/js/vendor/hasher.min.js',
-            'public/js/vendor/socketio.js',
             'public/js/templates.js',
             'public/js/plugins.js',
             'public/js/main.js'
@@ -39,11 +38,6 @@ module.exports = (grunt)->
       mustache:
         files: "public/js/templates/**/*.mustache"
         tasks: [ "mustache" ]
-        options:
-          interrupt: true
-      nodeapp:
-        files: "tvine.js"
-        tasks: [ "forever:stop", "forever:start" ]
         options:
           interrupt: true
 
@@ -66,14 +60,11 @@ module.exports = (grunt)->
   grunt.loadNpmTasks('grunt-contrib-uglify')
   grunt.loadNpmTasks('grunt-contrib-watch')
   grunt.loadNpmTasks('grunt-mustache')
-  grunt.loadNpmTasks('grunt-forever')
 
   grunt.registerTask("build", ["less", "uglify", "mustache"])
-  grunt.registerTask("launch", ["build", "forever:stop", "forever:start"])
+  grunt.registerTask("launch", ["build"])
 
   grunt.registerTask("run",
-    [ "forever:stop",
-      "forever:start",
-      "uglify",
+    [ "uglify",
       "watch"])
   grunt.registerTask("default", "run")

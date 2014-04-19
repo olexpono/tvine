@@ -399,13 +399,14 @@ $(function() {
   hasher.initialized.add(parseHash);
   hasher.changed.add(parseHash);
   hasher.init();
+
   //todo make this configurable
-  var socket = io.connect("http://ch6.co");
-  socket.on('vineTweet', function (data) {
-    if($.TVine.realtimeList.length > 21) {
-      $.TVine.realtimeList.splice(2,1);
-    }
-    $.TVine.realtimeList.push(data);
-  });
+  // var socket = io.connect("http://ch6.co");
+  // socket.on('vineTweet', function (data) {
+    // if($.TVine.realtimeList.length > 21) {
+      // $.TVine.realtimeList.splice(2,1);
+    // }
+    // $.TVine.realtimeList.push(data);
+  // });
 });
 
