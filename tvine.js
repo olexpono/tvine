@@ -12,6 +12,7 @@ var db = mongoose.connect(config.mongo.uri, config.mongo.options);
 
 var modelsPath = path.join(__dirname, 'models');
 var Vine = require(modelsPath + "/vine")
+console.log("Importing Vine model.. ", modelsPath + "/vine");
 
 var app = express();
 
@@ -31,7 +32,11 @@ app.get("/query/:query", function (req, res) {
   console.log("Queried for: ", query);
   // TODO: fetch by tags from mongo
   Vine.find({tags: req.params.query}, "videoUrl", {limit: 40}, function (err, docs) {
-    console.log("Returned documents: ", docs.length);
+    if (err) {
+      console.log("Mongo error: ", err);
+    } else {
+      console.log("Returned documents: ", docs.length);
+    }
     res.send(JSON.stringify({"vines": docs}));
   });
 });
