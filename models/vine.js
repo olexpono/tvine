@@ -11,7 +11,7 @@ var Vine = new Schema({
   videoUrl: String,
   tweetText: String,
   tags: { type: [String], index: true }
-});
+}, {read: 'secondaryPreferred'});
 
 /**
  * Validations
