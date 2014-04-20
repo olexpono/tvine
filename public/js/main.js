@@ -145,6 +145,7 @@ $.TVine = {
     $(".live-badge").addClass("shown");
     this.liveMode = true;
   },
+
   switchToTagMode: function() {
     $(".live-badge").removeClass("shown");
     this.liveMode = false;
