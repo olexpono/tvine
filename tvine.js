@@ -31,7 +31,7 @@ app.get("/query/:query", function (req, res) {
 
   console.log("Queried for: ", query);
   // TODO: fetch by tags from mongo
-  Vine.find({tags: req.params.query}, "videoUrl", {limit: 92}, function (err, docs) {
+  Vine.find({tags: req.params.query}, "videoUrl", {limit: 92, sort: { _id : -1 }}, function (err, docs) {
     if (err) {
       console.log("Mongo error: ", err);
     } else {
