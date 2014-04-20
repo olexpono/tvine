@@ -1,6 +1,6 @@
 {
-  "name": "tvine",
-  "version": "0.3.0",
+  "name": "ch6",
+  "version": "0.4.18",
   "private": true,
   "scripts": {
     "postdeploy": "grunt build",
