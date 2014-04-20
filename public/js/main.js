@@ -122,7 +122,7 @@ $.TVine = {
     if (data["vines"].length > 0){
       this.renderNewTag(tag);
       this.addVideos(tag, data.vines);
-      ga.send('pageview', {'page': '/tag/' + tag});
+      ga('send','pageview', '/tag/' + tag);
     } else {
       this.inputAlert("No " + _.escape(tag) + " vines found.");
       this.currentTags = _.without(this.currentTags, tag);
