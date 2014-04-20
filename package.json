@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "postdeploy": "grunt build",
-    "start": "node tvine.js"
+    "start": "./node_modules/grunt-cli/bin/grunt launch"
   },
   "domains": [
     "ch6.co",
