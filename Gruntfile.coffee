@@ -6,6 +6,10 @@ module.exports = (grunt)->
       options:
         index: "tvine.js"
 
+    nodemon:
+      prod:
+        script: "tvine.js"
+
     uglify:
       options:
         mangle: false
@@ -60,9 +64,10 @@ module.exports = (grunt)->
   grunt.loadNpmTasks('grunt-contrib-uglify')
   grunt.loadNpmTasks('grunt-contrib-watch')
   grunt.loadNpmTasks('grunt-mustache')
+  grunt.loadNpmTasks('grunt-nodemon')
 
   grunt.registerTask("build", ["less", "uglify", "mustache"])
-  grunt.registerTask("launch", ["build"])
+  grunt.registerTask("launch", ["build", "nodemon:prod"])
 
   grunt.registerTask("run",
     [ "uglify",
