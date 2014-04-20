@@ -1,5 +1,7 @@
 /*
-need to store as an object 
+  TODO:
+ 1. Extract out TagController, handles a single tag.
+ 2. Central TVine controller pulls from TagControllers in a row.
 */
 
 $.TVine = {
@@ -35,13 +37,17 @@ $.TVine = {
         // From here, split by +, fetch videos, and play
         console.log("Split ", tagstring.split("+"));
 
-        $.TVine.currentTags = _.sortBy( _.compact(tagstring.split("+")), function(str) { return str; });
+        $.TVine.currentTags = _.sortBy(
+          _.compact(tagstring.split("+")),
+          function(str) { return str; }
+        );
 
         $.TVine.updateFbTitle();
         $.TVine.switchToTagMode();
         $.TVine.refreshFeed();
       }
     );
+
     crossroads.addRoute(
       "/",
       function() {
@@ -58,11 +64,12 @@ $.TVine = {
       return tag.charAt(0).toUpperCase() + tag.slice(1);
     });
     $("[property='og:title']").attr("content", capitalized_tags.join(", ") + " on Channel 6");
+    $("title").text(capitalized_tags.join(", ") + " on Channel 6");
   },
 
   /* Utility to render a tag into stack */
-  renderNewTag: function(val, count) {
-    var tag_info = { tag: val, count: count };
+  renderNewTag: function(val) {
+    var tag_info = { tag: val };
     var rendered = $(Mustache.to_html(TMPL.tag, tag_info));
     rendered.insertBefore($(".tags > .tag-input"));
     rendered.find(".close").click(function() {
@@ -88,16 +95,19 @@ $.TVine = {
     var removedTags =
       _.filter(this.previousTags,
                function(tag) { return $.TVine.currentTags.indexOf(tag) < 0; });
+
     _.each(newTags,
       function(tag) {
         $.TVine.previousTags.push(tag);
         console.log('in ',tag);
 
-        $.get('/query/'+tag,function(data){
-          $.TVine.addTag(tag,data);
+        $.get('/query/' + tag ,function(data){
+          data = JSON.parse(data);
+          $.TVine.addTag(tag, data);
         });
       }
     );
+
     _.each(removedTags,
       function(tag) {
         $.TVine.removeTag(tag);
@@ -107,13 +117,15 @@ $.TVine = {
 
   /* Utility used by refreshFeed, careful using this directly */
   addTag: function(tag, data) {
-    if (data.data.records.length > 0){
-      this.renderNewTag(tag, data.data.count);
-      this.addVideos(tag, data.data.records);
+    // console.log("Adding tag – data: ", data);
+    // console.log("Adding tag – data.vines: ", data["vines"]);
+    if (data["vines"].length > 0){
+      this.renderNewTag(tag);
+      this.addVideos(tag, data.vines);
       _gaq.push(['_trackPageView','/tag/'+tag]);
     } else {
       this.inputAlert("No " + _.escape(tag) + " vines found.");
-      this.currentTags = _.without(this.currentTags,tag);
+      this.currentTags = _.without(this.currentTags, tag);
       this.navigateToCurrentTags();
     }
     //this.loop((this.currentTags.length == 0 ));
@@ -151,19 +163,21 @@ $.TVine = {
         ++this.tagData[justWatched.tag].page;
       }
       if(!_.isUndefined(this.tagData.noMore(justWatched.tag))){
-        $.get('/query/'+justWatched.tag+'?p='+page,function(data){
-          if(data.data.records.length == 0){
+        $.get('/query/'+justWatched.tag+'?p='+page, function(data){
+          data = JSON.parse(data);
+          if(data.vines.length == 0){
             $.TVine.tagData.noMore.push(justWatched.tag);
           }else{
-            $.TVine.addVideos(justWatched.tag,data.data.records);
+            $.TVine.addVideos(justWatched.tag, data.vines);
           }
         });
       }
     }
-    //preload the next video if it exists 
+    //preload the next video if it exists
     if(!_.isUndefined(this.playlist[1])){
-      $('#video_preloader').attr('src',this.playlist[1].videoLowURL);
+      $('#video_preloader').attr('src',this.playlist[1].videoUrl);
     }
+
     this.playlist.push(justWatched);
     console.log(this.playlist[0].tag);
     return this.playlist[0];
@@ -180,11 +194,11 @@ $.TVine = {
     var justWatched = this.realtimeList.shift();
 
     if(this.realtimeList.length < 3){
-      this.realtimeList.push(justWatched);
+      this.fetchLiveVideos();
     }
     if(!_.isUndefined(this.realtimeList[1])){
       //preload the next video if it exists 
-      $('#video_preloader').attr('src',this.realtimeList[1]);
+      $('#video_preloader').attr('src', this.realtimeList[1]);
     }
     return this.realtimeList[0];
   },
@@ -197,7 +211,7 @@ $.TVine = {
     if(this.liveMode || this.playlist.length < 1) {
       this.video_ref.src(this.getNextLiveVideo());
     } else {
-      this.video_ref.src(this.getNextVideo().videoLowURL);
+      this.video_ref.src(this.getNextVideo().videoUrl);
     }
     this.video_ref.play();
   },
@@ -205,7 +219,7 @@ $.TVine = {
   addVideos: function(tag, records) {
     var spacing = 1;
 
-    this.tagData[tag] = _.compact(_.union(this.tagData[tag],records));
+    this.tagData[tag] = _.compact(_.union(this.tagData[tag], records));
     /* Inject empty values into records to space them out,
      * then zip them with the current playlist.
      * more active tags => more empty values between each of the new videos */
@@ -216,12 +230,12 @@ $.TVine = {
     spacing = Math.floor((_.size(this.tagData)-1) / 2);
 
     records = _.reduce(
-      records, 
+      records,
       function (paddedArray, record) {
         if (typeof record == 'string') {
-          record = {videoLowURL:record,tag:tag};  
+          record = {videoUrl:record,tag:tag};
         } else {
-          record = {videoLowURL:record.videoLowURL,tag:tag};  
+          record = {videoUrl:record.videoUrl,tag:tag};
         }
 
         paddedArray.push(record);
@@ -267,6 +281,16 @@ $.TVine = {
     this.playlist.push(currentVideo);
   },
 
+  // Fetches recent 20 videos to add to the list
+  fetchLiveVideos: function() {
+    $.get("/stream/recent", function(data) {
+      data = JSON.parse(data);
+      data.vines.forEach(function(vine) {
+        this.realtimeList.push(vine);
+      });
+    });
+  },
+
   toggleMute: function(){
     if(this.video_ref.volume()){
       this.video_ref.volume(0);
@@ -274,7 +298,7 @@ $.TVine = {
       this.video_ref.volume(1);
     }
   },
-  
+
   loop: function(turnLoopOn){
     if(turnLoopOn){
       $('video').attr('loop');
@@ -315,8 +339,8 @@ $.TVine = {
         $("#up-arrow").toggleClass("activated");
       }
     });
-    $(".tag-input").keyup(function(e) {
 
+    $(".tag-input").keyup(function(e) {
       if( $(".tag-input:focus") && e.keyCode == 13) {
         if ($.TVine.currentTags.indexOf($(".tag-input").val()) >= 0) {
           $.TVine.inputAlert("You're already watching that tag!");
@@ -340,6 +364,7 @@ $.TVine = {
         $(".tag-input").removeClass("clear");
       }
     });
+
     $(".tag-input").blur(function() {
       $(".tag-input").val("");
     });
@@ -369,7 +394,7 @@ $.TVine = {
       $(".tag-input").focus();
     });
 
-    /*click to pause/play*/
+    /* click to pause/play */
     $('video').click(function(){
       _V_('current_video').ready(function(){
         if(this.paused()){
@@ -379,10 +404,6 @@ $.TVine = {
         }
       });
     });
-    //why doesn't this work
-    //$('#current_video').dblclick(function(){
-    //  $.TVine.loadNextVideo();
-    //});
   }
 } /* END TVine */
 
@@ -399,14 +420,5 @@ $(function() {
   hasher.initialized.add(parseHash);
   hasher.changed.add(parseHash);
   hasher.init();
-
-  //todo make this configurable
-  // var socket = io.connect("http://ch6.co");
-  // socket.on('vineTweet', function (data) {
-    // if($.TVine.realtimeList.length > 21) {
-      // $.TVine.realtimeList.splice(2,1);
-    // }
-    // $.TVine.realtimeList.push(data);
-  // });
 });
 

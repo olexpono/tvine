@@ -27,7 +27,7 @@ module.exports = (grunt)->
     watch:
       jsfiles:
         files: "public/js/!(tvine-min).js"
-        tasks: [ "min:dist" ]
+        tasks: [ "uglify:dist" ]
         options:
           interrupt: true
       less:
