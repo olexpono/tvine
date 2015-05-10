@@ -1,4 +1,7 @@
-TVine
+#Channel 6 - Vine Browser
+
+Old codebase for a side project called `ch6.co` - no longer maintained.
+
 #####
 
 #Installation
